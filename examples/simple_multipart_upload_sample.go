@@ -6,7 +6,7 @@ package examples
  */
 import (
 	"fmt"
-	"obs"
+	"github.com/huaweicloud/huaweicloud-sdk-go-obs/obs"
 	"strings"
 )
 

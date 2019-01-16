@@ -6,8 +6,8 @@ package examples
  */
 import (
 	"fmt"
+	"github.com/huaweicloud/huaweicloud-sdk-go-obs/obs"
 	"math/rand"
-	"obs"
 	"os"
 	"path/filepath"
 	"sync"

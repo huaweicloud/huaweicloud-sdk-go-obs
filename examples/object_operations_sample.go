@@ -7,8 +7,8 @@ package examples
  */
 import (
 	"fmt"
+	"github.com/huaweicloud/huaweicloud-sdk-go-obs/obs"
 	"io/ioutil"
-	"obs"
 	"strings"
 )
 

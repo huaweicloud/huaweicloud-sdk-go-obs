@@ -1,9 +1,9 @@
 package main
 
 import (
-	"examples"
 	"fmt"
-	"obs"
+	"github.com/huaweicloud/huaweicloud-sdk-go-obs/examples"
+	"github.com/huaweicloud/huaweicloud-sdk-go-obs/obs"
 	"os"
 	"strings"
 	"time"
