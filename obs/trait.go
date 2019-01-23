@@ -549,6 +549,9 @@ func (input AbortMultipartUploadInput) trans() (params map[string]string, header
 
 func (input InitiateMultipartUploadInput) trans() (params map[string]string, headers map[string][]string, data interface{}) {
 	params, headers, data = input.ObjectOperationInput.trans()
+	if input.ContentType != "" {
+		headers[HEADER_CONTENT_TYPE_CAML] = []string{input.ContentType}
+	}
 	params[string(SubResourceUploads)] = ""
 	return
 }
