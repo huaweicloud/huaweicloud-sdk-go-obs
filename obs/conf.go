@@ -303,7 +303,7 @@ func (conf *config) formatUrls(bucketName, objectKey string, params map[string]s
 	}
 
 	keys := make([]string, 0, len(params))
-	for key, _ := range params {
+	for key := range params {
 		keys = append(keys, strings.TrimSpace(key))
 	}
 	sort.Strings(keys)
@@ -330,7 +330,7 @@ func (conf *config) formatUrls(bucketName, objectKey string, params map[string]s
 				_value = ""
 			}
 			lowerKey := strings.ToLower(key)
-			_, ok := allowed_resource_parameter_names[lowerKey]
+			_, ok := allowedResourceParameterNames[lowerKey]
 			ok = ok || strings.HasPrefix(lowerKey, HEADER_PREFIX)
 			if ok {
 				if i == 0 {

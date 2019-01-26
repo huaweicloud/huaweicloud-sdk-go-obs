@@ -1,8 +1,8 @@
 package obs
 
 const (
-	obs_sdk_version      = "2.2.4"
-	USER_AGENT           = "obs-sdk-go/" + obs_sdk_version
+	OBS_SDK_VERSION      = "2.2.5"
+	USER_AGENT           = "obs-sdk-go/" + OBS_SDK_VERSION
 	HEADER_PREFIX        = "x-amz-"
 	HEADER_PREFIX_OBS    = "x-obs-"
 	HEADER_PREFIX_META   = "x-amz-meta-"
@@ -152,9 +152,9 @@ const (
 )
 
 var (
-	interested_headers = []string{"content-md5", "content-type", "date"}
+	interestedHeaders = []string{"content-md5", "content-type", "date"}
 
-	allowed_response_http_header_metadata_names = map[string]bool{
+	allowedResponseHttpHeaderMetadataNames = map[string]bool{
 		"content-type":                  true,
 		"content-md5":                   true,
 		"content-length":                true,
@@ -180,7 +180,7 @@ var (
 		"connection":                    true,
 	}
 
-	allowed_request_http_header_metadata_names = map[string]bool{
+	allowedRequestHttpHeaderMetadataNames = map[string]bool{
 		"content-type":                   true,
 		"content-md5":                    true,
 		"content-length":                 true,
@@ -206,7 +206,7 @@ var (
 		"content-range":                  true,
 	}
 
-	allowed_resource_parameter_names = map[string]bool{
+	allowedResourceParameterNames = map[string]bool{
 		"acl":                          true,
 		"backtosource":                 true,
 		"metadata":                     true,
@@ -246,7 +246,7 @@ var (
 		"x-oss-process":                true,
 	}
 
-	mime_types = map[string]string{
+	mimeTypes = map[string]string{
 		"001":     "application/x-001",
 		"301":     "application/x-301",
 		"323":     "text/h323",
@@ -372,7 +372,7 @@ var (
 		"jfif":    "image/jpeg",
 		"jpe":     "image/jpeg",
 		"jpeg":    "image/jpeg",
-		"jpg":     "application/x-jpg",
+		"jpg":     "image/jpeg",
 		"js":      "application/x-javascript",
 		"json":    "application/json",
 		"jsp":     "text/html",

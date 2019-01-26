@@ -574,7 +574,8 @@ func ParseResponseToBaseModel(resp *http.Response, baseModel IBaseModel, xmlResu
 	readCloser, ok := baseModel.(IReadCloser)
 	if !ok {
 		defer resp.Body.Close()
-		body, err := ioutil.ReadAll(resp.Body)
+		var body []byte
+		body, err = ioutil.ReadAll(resp.Body)
 		if err == nil && len(body) > 0 {
 			if xmlResult {
 				err = ParseXml(body, baseModel)

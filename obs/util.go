@@ -249,27 +249,26 @@ func GetAuthorization(ak, sk, method, bucketName, objectKey, queryUrl string, he
 
 	if isTemporary {
 		return getTemporaryAuthorization(ak, sk, method, bucketName, objectKey, signature, conf, params, headers)
-	} else {
-		signature, region, signedHeaders := parseHeaders(headers)
-		if signature == "v4" {
-			conf.signature = SignatureV4
-			requestUrl, canonicalizedUrl := conf.formatUrls(bucketName, objectKey, params, false)
-			parsedRequestUrl, _ := url.Parse(requestUrl)
-			headerKeys := strings.Split(signedHeaders, ";")
-			_headers := make(map[string][]string, len(headerKeys))
-			for _, headerKey := range headerKeys {
-				_headers[headerKey] = headers[headerKey]
-			}
-			ret = v4Auth(ak, sk, region, method, canonicalizedUrl, parsedRequestUrl.RawQuery, _headers)
-			ret[HEADER_AUTH_CAMEL] = fmt.Sprintf("%s Credential=%s,SignedHeaders=%s,Signature=%s", V4_HASH_PREFIX, ret["Credential"], ret["SignedHeaders"], ret["Signature"])
-		} else if signature == "v2" {
-			conf.signature = SignatureV2
-			_, canonicalizedUrl := conf.formatUrls(bucketName, objectKey, params, false)
-			ret = v2Auth(ak, sk, method, canonicalizedUrl, headers)
-			ret[HEADER_AUTH_CAMEL] = fmt.Sprintf("%s %s:%s", V2_HASH_PREFIX, ak, ret["Signature"])
-		}
-		return
 	}
+	signature, region, signedHeaders := parseHeaders(headers)
+	if signature == "v4" {
+		conf.signature = SignatureV4
+		requestUrl, canonicalizedUrl := conf.formatUrls(bucketName, objectKey, params, false)
+		parsedRequestUrl, _ := url.Parse(requestUrl)
+		headerKeys := strings.Split(signedHeaders, ";")
+		_headers := make(map[string][]string, len(headerKeys))
+		for _, headerKey := range headerKeys {
+			_headers[headerKey] = headers[headerKey]
+		}
+		ret = v4Auth(ak, sk, region, method, canonicalizedUrl, parsedRequestUrl.RawQuery, _headers)
+		ret[HEADER_AUTH_CAMEL] = fmt.Sprintf("%s Credential=%s,SignedHeaders=%s,Signature=%s", V4_HASH_PREFIX, ret["Credential"], ret["SignedHeaders"], ret["Signature"])
+	} else if signature == "v2" {
+		conf.signature = SignatureV2
+		_, canonicalizedUrl := conf.formatUrls(bucketName, objectKey, params, false)
+		ret = v2Auth(ak, sk, method, canonicalizedUrl, headers)
+		ret[HEADER_AUTH_CAMEL] = fmt.Sprintf("%s %s:%s", V2_HASH_PREFIX, ak, ret["Signature"])
+	}
+	return
 
 }
 

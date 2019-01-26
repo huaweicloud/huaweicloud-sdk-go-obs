@@ -34,7 +34,7 @@ func New(ak, sk, endpoint string, configurers ...configurer) (*ObsClient, error)
 
 	if isWarnLogEnabled() {
 		info := make([]string, 3)
-		info[0] = fmt.Sprintf("[OBS SDK Version=%s", obs_sdk_version)
+		info[0] = fmt.Sprintf("[OBS SDK Version=%s", OBS_SDK_VERSION)
 		info[1] = fmt.Sprintf("Endpoint=%s", conf.endpoint)
 		accessMode := "Virtual Hosting"
 		if conf.pathStyle {
@@ -563,7 +563,7 @@ func (obsClient ObsClient) PutObject(input *PutObjectInput) (output *PutObjectOu
 	}
 
 	if input.ContentType == "" && input.Key != "" {
-		if contentType, ok := mime_types[input.Key[strings.LastIndex(input.Key, ".")+1:]]; ok {
+		if contentType, ok := mimeTypes[input.Key[strings.LastIndex(input.Key, ".")+1:]]; ok {
 			input.ContentType = contentType
 		}
 	}
@@ -625,9 +625,9 @@ func (obsClient ObsClient) PutFile(input *PutFileInput) (output *PutObjectOutput
 	_input.Body = body
 
 	if _input.ContentType == "" && _input.Key != "" {
-		if contentType, ok := mime_types[_input.Key[strings.LastIndex(_input.Key, ".")+1:]]; ok {
+		if contentType, ok := mimeTypes[_input.Key[strings.LastIndex(_input.Key, ".")+1:]]; ok {
 			_input.ContentType = contentType
-		} else if contentType, ok := mime_types[sourceFile[strings.LastIndex(sourceFile, ".")+1:]]; ok {
+		} else if contentType, ok := mimeTypes[sourceFile[strings.LastIndex(sourceFile, ".")+1:]]; ok {
 			_input.ContentType = contentType
 		}
 	}
@@ -685,7 +685,7 @@ func (obsClient ObsClient) InitiateMultipartUpload(input *InitiateMultipartUploa
 	}
 
 	if input.ContentType == "" && input.Key != "" {
-		if contentType, ok := mime_types[input.Key[strings.LastIndex(input.Key, ".")+1:]]; ok {
+		if contentType, ok := mimeTypes[input.Key[strings.LastIndex(input.Key, ".")+1:]]; ok {
 			input.ContentType = contentType
 		}
 	}
@@ -739,7 +739,10 @@ func (obsClient ObsClient) UploadPart(input *UploadPartInput) (output *UploadPar
 			input.PartSize = fileSize - input.Offset
 		}
 		fileReaderWrapper.totalCount = input.PartSize
-		fd.Seek(input.Offset, 0)
+		if _, err := fd.Seek(input.Offset, 0); err != nil {
+			return nil, err
+		}
+
 		input.Body = fileReaderWrapper
 		repeatable = true
 	}

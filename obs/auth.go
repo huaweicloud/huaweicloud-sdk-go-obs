@@ -169,7 +169,7 @@ func attachHeaders(headers map[string][]string) string {
 		}
 	}
 
-	for _, interestedHeader := range interested_headers {
+	for _, interestedHeader := range interestedHeaders {
 		if _, ok := _headers[interestedHeader]; !ok {
 			_headers[interestedHeader] = []string{""}
 			keys = append(keys, interestedHeader)

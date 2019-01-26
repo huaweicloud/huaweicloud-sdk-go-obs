@@ -22,7 +22,7 @@ func prepareHeaders(headers map[string][]string, meta bool) map[string][]string 
 				continue
 			}
 			_key := strings.ToLower(key)
-			if _, ok := allowed_request_http_header_metadata_names[_key]; !ok && !strings.HasPrefix(key, HEADER_PREFIX) && !strings.HasPrefix(key, HEADER_PREFIX_OBS) {
+			if _, ok := allowedRequestHttpHeaderMetadataNames[_key]; !ok && !strings.HasPrefix(key, HEADER_PREFIX) && !strings.HasPrefix(key, HEADER_PREFIX_OBS) {
 				if !meta {
 					continue
 				}
@@ -335,9 +335,15 @@ func (obsClient ObsClient) doHttp(method, bucketName, objectKey string, params m
 			}
 			doLog(LEVEL_WARN, "Failed to send request with reason:%v, will try again", msg)
 			if r, ok := _data.(*strings.Reader); ok {
-				r.Seek(0, 0)
+				_, err := r.Seek(0, 0)
+				if err != nil {
+					return nil, err
+				}
 			} else if r, ok := _data.(*bytes.Reader); ok {
-				r.Seek(0, 0)
+				_, err := r.Seek(0, 0)
+				if err != nil {
+					return nil, err
+				}
 			} else if r, ok := _data.(*fileReaderWrapper); ok {
 				fd, err := os.Open(r.filePath)
 				if err != nil {
@@ -349,9 +355,15 @@ func (obsClient ObsClient) doHttp(method, bucketName, objectKey string, params m
 				fileReaderWrapper.reader = fd
 				fileReaderWrapper.totalCount = r.totalCount
 				_data = fileReaderWrapper
-				fd.Seek(r.mark, 0)
+				_, err = fd.Seek(r.mark, 0)
+				if err != nil {
+					return nil, err
+				}
 			} else if r, ok := _data.(*readerWrapper); ok {
-				r.seek(0, 0)
+				_, err := r.seek(0, 0)
+				if err != nil {
+					return nil, err
+				}
 			}
 			time.Sleep(time.Duration(float64(i+2) * rand.Float64() * float64(time.Second)))
 		} else {

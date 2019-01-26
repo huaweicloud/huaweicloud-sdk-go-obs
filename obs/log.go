@@ -1,7 +1,6 @@
 package obs
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -81,7 +80,9 @@ func (lw *loggerWrapper) rotate() {
 		if lw.index > logConf.backups {
 			lw.index = 1
 		}
-		os.Rename(lw.fullPath, lw.fullPath+"."+IntToString(lw.index))
+		if err := os.Rename(lw.fullPath, lw.fullPath+"."+IntToString(lw.index)); err != nil {
+			panic(err)
+		}
 		lw.index += 1
 
 		fd, err := os.OpenFile(lw.fullPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
@@ -182,7 +183,7 @@ func InitLogWithCacheCnt(logFullPath string, maxLogSize int64, backups int, leve
 
 		stat, err := os.Stat(_fullPath)
 		if err == nil && stat.IsDir() {
-			return errors.New(fmt.Sprintf("logFullPath:[%s] is a directory", _fullPath))
+			return fmt.Errorf("logFullPath:[%s] is a directory", _fullPath)
 		} else if err := os.MkdirAll(filepath.Dir(_fullPath), os.ModePerm); err != nil {
 			return err
 		}
