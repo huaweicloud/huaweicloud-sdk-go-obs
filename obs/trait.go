@@ -559,6 +559,11 @@ func (input InitiateMultipartUploadInput) trans() (params map[string]string, hea
 func (input UploadPartInput) trans() (params map[string]string, headers map[string][]string, data interface{}) {
 	params = map[string]string{"uploadId": input.UploadId, "partNumber": IntToString(input.PartNumber)}
 	headers = make(map[string][]string)
+
+	if input.PartSize > 0 {
+		headers[HEADER_CONTENT_LENGTH_CAMEL] = []string{Int64ToString(input.PartSize)}
+	}
+
 	setSseHeader(headers, input.SseHeader, true)
 	if input.Body != nil {
 		data = input.Body
