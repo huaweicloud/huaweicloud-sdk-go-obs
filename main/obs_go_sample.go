@@ -1110,11 +1110,33 @@ func putFile() {
 	}
 }
 
+func modifyObject() {
+	input := &obs.ModifyObjectInput{}
+	input.Bucket = bucketName
+	input.Key = objectKey
+	input.Metadata = map[string]string{"meta": "value"}
+	input.Position = 0
+	input.Body = strings.NewReader("Modify OBS")
+	output, err := getObsClient().ModifyObject(input)
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+		fmt.Printf("ETag:%s, StorageClass:%s\n", output.ETag, output.StorageClass)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
 func uploadPart() {
 	sourceFile := "localfile"
 	var partSize int64 = 1024 * 1024 * 5
 	fileInfo, statErr := os.Stat(sourceFile)
-	if statErr != nil{
+	if statErr != nil {
 		panic(statErr)
 	}
 	partCount := fileInfo.Size() / partSize
@@ -1360,6 +1382,7 @@ func main() {
 	//  completeMultipartUpload()
 	//  abortMultipartUpload()
 	//  putObject()
+	//  modifyObject()
 	//  putFile()
 	//  getObjectMetadata()
 	//  getObject()
