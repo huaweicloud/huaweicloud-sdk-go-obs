@@ -672,6 +672,32 @@ func (input PutObjectInput) trans(isObs bool) (params map[string]string, headers
 	return
 }
 
+func (input AppendObjectInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params, headers, data, err = input.PutObjectInput.trans(isObs)
+	if err != nil {
+		return
+	}
+	params["append"] = ""
+
+	if input.Position > 0 {
+		params["position"] = IntToString(input.Position)
+	}
+	return
+}
+
+func (input ModifyObjectInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params, headers, data, err = input.PutObjectInput.trans(isObs)
+	if err != nil {
+		return
+	}
+	params["modify"] = ""
+
+	if input.Position >= 0 {
+		params["position"] = IntToString(input.Position)
+	}
+	return
+}
+
 func (input CopyObjectInput) prepareReplaceHeaders(headers map[string][]string) {
 	if input.CacheControl != "" {
 		headers[HEADER_CACHE_CONTROL] = []string{input.CacheControl}

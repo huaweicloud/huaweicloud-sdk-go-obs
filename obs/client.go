@@ -984,6 +984,38 @@ func (obsClient ObsClient) PutFile(input *PutFileInput, extensions ...extensionO
 	return
 }
 
+func (obsClient ObsClient) ModifyObject(input *ModifyObjectInput, extensions ...extensionOptions) (output *PutObjectOutput, err error) {
+	if input == nil {
+		return nil, errors.New("ModifyObjectInput is nil")
+	}
+
+	if input.ContentType == "" && input.Key != "" {
+		if contentType, ok := mimeTypes[strings.ToLower(input.Key[strings.LastIndex(input.Key, ".")+1:])]; ok {
+			input.ContentType = contentType
+		}
+	}
+
+	output = &PutObjectOutput{}
+	var repeatable bool
+	if input.Body != nil {
+		_, repeatable = input.Body.(*strings.Reader)
+		if input.ContentLength > 0 {
+			input.Body = &readerWrapper{reader: input.Body, totalCount: input.ContentLength}
+		}
+	}
+	if repeatable {
+		err = obsClient.doActionWithBucketAndKey("PutObject", HTTP_PUT, input.Bucket, input.Key, input, output, extensions)
+	} else {
+		err = obsClient.doActionWithBucketAndKeyUnRepeatable("PutObject", HTTP_PUT, input.Bucket, input.Key, input, output, extensions)
+	}
+	if err != nil {
+		output = nil
+	} else {
+		ParsePutObjectOutput(output)
+	}
+	return
+}
+
 // CopyObject creates a copy for an existing object.
 //
 // You can use this API to create a copy for an object in a specified bucket.

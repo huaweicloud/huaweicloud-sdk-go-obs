@@ -898,6 +898,17 @@ type PutFileInput struct {
 	SourceFile string
 }
 
+// AppendObjectInput
+type AppendObjectInput struct {
+	PutObjectInput
+	Position int
+}
+
+// ModifyObjectInput is the input parameter of ModifyObject function
+type ModifyObjectInput struct {
+	AppendObjectInput
+}
+
 // PutObjectOutput is the result of PutObject function
 type PutObjectOutput struct {
 	BaseModel
