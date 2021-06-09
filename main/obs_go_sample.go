@@ -834,6 +834,59 @@ func getBucketNotification() {
 	}
 }
 
+func setBucketEncryption() {
+	input := &obs.SetBucketEncryptionInput{}
+	input.Bucket = bucketName
+
+	output, err := getObsClient().SetBucketEncryption(input)
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
+func getBucketEncryption() {
+	output, err := getObsClient().GetBucketEncryption(bucketName)
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+		if output.KMSMasterKeyID == "" {
+			fmt.Printf("KMSMasterKeyID: default master key.\n")
+		} else {
+			fmt.Printf("KMSMasterKeyID: %s\n", output.KMSMasterKeyID)
+		}
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
+func deleteBucketEncryption() {
+	output, err := getObsClient().DeleteBucketEncryption(bucketName)
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
 func listMultipartUploads() {
 	input := &obs.ListMultipartUploadsInput{}
 	input.Bucket = bucketName
@@ -1312,7 +1365,6 @@ func main() {
 	//	obs.FlushLog()
 	//	setBucketStoragePolicy()
 	//	getBucketStoragePolicy()
-	//	deleteBucket()
 	//  listObjects()
 	//  listVersions()
 	//  listMultipartUploads()
@@ -1345,6 +1397,9 @@ func main() {
 	//  deleteBucketTagging()
 	//  setBucketNotification()
 	//  getBucketNotification()
+	//  setBucketEncryption()
+	//  getBucketEncryption()
+	//  deleteBucketEncryption()
 
 	//---- object related APIs ----
 	//  deleteObject()
@@ -1363,4 +1418,6 @@ func main() {
 	//  putFile()
 	//  getObjectMetadata()
 	//  getObject()
+
+	// deleteBucket()
 }
