@@ -705,6 +705,9 @@ func ParseGetBucketMetadataOutput(output *GetBucketMetadataOutput) {
 	if ret, ok := output.ResponseHeaders[HEADER_EPID_HEADERS]; ok {
 		output.Epid = ret[0]
 	}
+	if ret, ok := output.ResponseHeaders[HEADER_AZ_REDUNDANCY]; ok {
+		output.AvailableZone = ret[0]
+	}
 	if ret, ok := output.ResponseHeaders[headerFSFileInterface]; ok {
 		output.FSStatus = parseStringToFSStatusType(ret[0])
 	} else {
