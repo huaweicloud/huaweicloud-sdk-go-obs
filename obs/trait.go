@@ -336,13 +336,9 @@ func (input SetBucketLifecycleConfigurationInput) trans(isObs bool) (params map[
 }
 
 func (input SetBucketEncryptionInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
-	algorithm := DEFAULT_SSE_KMS_ENCRYPTION
-	if isObs {
-		algorithm = DEFAULT_SSE_KMS_ENCRYPTION_OBS
-	}
-	input.SSEAlgorithm = algorithm
-
-	return trans(SubResourceEncryption, input)
+	params = map[string]string{string(SubResourceEncryption): ""}
+	data, _ = ConvertEncryptionConfigurationToXml(input.BucketEncryptionConfiguration, false, isObs)
+	return
 }
 
 func (input SetBucketTaggingInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {

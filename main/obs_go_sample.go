@@ -837,6 +837,7 @@ func getBucketNotification() {
 func setBucketEncryption() {
 	input := &obs.SetBucketEncryptionInput{}
 	input.Bucket = bucketName
+	input.SSEAlgorithm = obs.DEFAULT_SSE_KMS_ENCRYPTION
 
 	output, err := getObsClient().SetBucketEncryption(input)
 	if err == nil {
