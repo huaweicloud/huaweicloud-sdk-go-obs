@@ -258,6 +258,7 @@ var (
 		"encryption":                   true,
 		"tagging":                      true,
 		"append":                       true,
+		"modify":                       true,
 		"position":                     true,
 		"replication":                  true,
 		"response-content-type":        true,
