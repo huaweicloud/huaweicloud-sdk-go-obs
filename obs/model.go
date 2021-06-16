@@ -531,6 +531,7 @@ type GetBucketMetadataOutput struct {
 	MaxAgeSeconds int
 	ExposeHeader  string
 	Epid          string
+	AvailableZone string
 	FSStatus      FSStatusType
 }
 
