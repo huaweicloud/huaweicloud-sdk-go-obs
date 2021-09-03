@@ -1,3 +1,21 @@
+Version 3.21.8
+
+New Features:
+1. Added bucket encryption-related APIs, including SetBucketEncryption, GetBucketEncryption, and DeleteBucketEncryption.
+2. Added the AppendObject API.
+3. Added the ModifyObject API.
+4. Allowed you to specify a type in the ListBuckets API to list the buckets of this type.
+
+Documentation & Demo:
+1. Added descriptions about bucket encryption APIs.
+2. Added descriptions about the AppendObject API.
+3. Added descriptions about the ModifyObject API.
+4. Added descriptions about the new parameter for specifying a bucket type in the ListBuckets API.
+
+Resolved Issues:
+
+-----------------------------------------------------------------------------------
+
 Version 3.21.1
 
 New Features:
