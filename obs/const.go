@@ -181,6 +181,7 @@ const (
 	HTTP_OPTIONS = "OPTIONS"
 
 	REQUEST_PAYER = "request-payer"
+	TRAFFIC_LIMIT = "traffic-limit"
 	MULTI_AZ      = "3az"
 
 	MAX_PART_SIZE     = 5 * 1024 * 1024 * 1024
