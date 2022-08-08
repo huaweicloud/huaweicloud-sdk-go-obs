@@ -667,6 +667,9 @@ func (input PutObjectBasicInput) trans(isObs bool) (params map[string]string, he
 	if input.ContentType != "" {
 		headers[HEADER_CONTENT_TYPE_CAML] = []string{input.ContentType}
 	}
+	if input.ContentDisposition != "" {
+		headers[HEADER_CONTENT_DISPOSITION_CAMEL] = []string{input.ContentDisposition}
+	}
 
 	return
 }

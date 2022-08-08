@@ -226,9 +226,10 @@ type ObjectOperationInput struct {
 // PutObjectBasicInput defines the basic object operation properties
 type PutObjectBasicInput struct {
 	ObjectOperationInput
-	ContentType   string
-	ContentMD5    string
-	ContentLength int64
+	ContentType        string
+	ContentMD5         string
+	ContentLength      int64
+	ContentDisposition string
 }
 
 // PutObjectInput is the input parameter of PutObject function
