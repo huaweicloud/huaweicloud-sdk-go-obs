@@ -354,3 +354,12 @@ type GetBucketFetchJobOutput struct {
 	BaseModel
 	GetBucketFetchJobResponse
 }
+
+type GetBucketFSStatusInput struct {
+	GetBucketMetadataInput
+}
+
+type GetBucketFSStatusOutput struct {
+	GetBucketMetadataOutput
+	FSStatus FSStatusType
+}
