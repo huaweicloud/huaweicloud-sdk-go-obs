@@ -246,8 +246,8 @@ func (obsClient ObsClient) PutObject(input *PutObjectInput, extensions ...extens
 	output = &PutObjectOutput{}
 	var repeatable bool
 	if input.Body != nil {
-		if _, ok := input.Body.(*strings.Reader); !ok {
-			repeatable = false
+		if _, ok := input.Body.(*strings.Reader); ok {
+			repeatable = true
 		}
 		if input.ContentLength > 0 {
 			input.Body = &readerWrapper{reader: input.Body, totalCount: input.ContentLength}
@@ -398,8 +398,8 @@ func (obsClient ObsClient) AppendObject(input *AppendObjectInput, extensions ...
 	output = &AppendObjectOutput{}
 	var repeatable bool
 	if input.Body != nil {
-		if _, ok := input.Body.(*strings.Reader); !ok {
-			repeatable = false
+		if _, ok := input.Body.(*strings.Reader); ok {
+			repeatable = true
 		}
 		if input.ContentLength > 0 {
 			input.Body = &readerWrapper{reader: input.Body, totalCount: input.ContentLength}
@@ -428,8 +428,8 @@ func (obsClient ObsClient) ModifyObject(input *ModifyObjectInput, extensions ...
 	output = &ModifyObjectOutput{}
 	var repeatable bool
 	if input.Body != nil {
-		if _, ok := input.Body.(*strings.Reader); !ok {
-			repeatable = false
+		if _, ok := input.Body.(*strings.Reader); ok {
+			repeatable = true
 		}
 		if input.ContentLength > 0 {
 			input.Body = &readerWrapper{reader: input.Body, totalCount: input.ContentLength}

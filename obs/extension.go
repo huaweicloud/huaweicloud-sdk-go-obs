@@ -39,3 +39,7 @@ func WithReqPaymentHeader(requester PayerType) extensionHeaders {
 func WithTrafficLimitHeader(trafficLimit int64) extensionHeaders {
 	return setHeaderPrefix(TRAFFIC_LIMIT, strconv.FormatInt(trafficLimit, 10))
 }
+
+func WithCallbackHeader(callback string) extensionHeaders {
+	return setHeaderPrefix(CALLBACK, string(callback))
+}

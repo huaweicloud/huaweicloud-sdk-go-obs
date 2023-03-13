@@ -15,6 +15,7 @@ package obs
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -865,6 +866,22 @@ func parseBucketPolicyOutput(s reflect.Type, baseModel IBaseModel, body []byte) 
 			break
 		}
 	}
+}
+
+// ParseCallbackResponseToBaseModel gets response from Callback Service
+func ParseCallbackResponseToBaseModel(resp *http.Response, baseModel IBaseModel, isObs bool) error {
+	baseModel.setStatusCode(resp.StatusCode)
+	responseHeaders := cleanHeaderPrefix(resp.Header)
+	baseModel.setResponseHeaders(responseHeaders)
+	if values, ok := responseHeaders[HEADER_REQUEST_ID]; ok {
+		baseModel.setRequestID(values[0])
+	}
+	readCloser, ok := baseModel.(ICallbackReadCloser)
+	if !ok {
+		return errors.New("Failed to set CallbackBody with resp's body.")
+	}
+	readCloser.setCallbackReadCloser(resp.Body)
+	return nil
 }
 
 // ParseResponseToBaseModel gets response from OBS

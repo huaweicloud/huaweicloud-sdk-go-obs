@@ -13,6 +13,9 @@
 package main
 
 import (
+	"bytes"
+	"encoding/base64"
+	"encoding/json"
 	"examples"
 	"fmt"
 	"obs"
@@ -475,6 +478,44 @@ func getBucketMetadata() {
 	if err == nil {
 		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
 		fmt.Printf("StorageClass:%s\n", output.StorageClass)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Printf("StatusCode:%d\n", obsError.StatusCode)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
+func getBucketFSStatus() {
+	input := &obs.GetBucketFSStatusInput{}
+	input.Bucket = bucketName
+	output, err := getObsClient().GetBucketFSStatus(input)
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+		fmt.Printf("StorageClass:%s\n", output.StorageClass)
+		fmt.Printf("FSStatus:%s\n", output.FSStatus)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Printf("StatusCode:%d\n", obsError.StatusCode)
+		} else {
+			fmt.Println(err)
+		}
+	}
+
+}
+
+func getAttribute() {
+	input := &obs.GetAttributeInput{}
+	input.Bucket = bucketName
+	input.Key = objectKey
+	output, err := getObsClient().GetAttribute(input)
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+		fmt.Printf("StorageClass:%s\n", output.StorageClass)
+		fmt.Printf("ContentLength:%s\n", output.ContentLength)
+		fmt.Printf("ContentType:%s\n", output.ContentType)
+		fmt.Printf("ObjectType:%s\n", output.ObjectType)
 	} else {
 		if obsError, ok := err.(obs.ObsError); ok {
 			fmt.Printf("StatusCode:%d\n", obsError.StatusCode)
@@ -1144,6 +1185,58 @@ func putObject() {
 	}
 }
 
+func putObjectWithCallback() {
+	input := &obs.PutObjectInput{}
+	input.Bucket = bucketName
+	input.Key = objectKey
+
+	callbackMap := map[string]string{}
+	callbackMap["callbackUrl"] = "http://example.com:80"
+	// callbackMap["callbackHost"] = "example.com"
+	callbackMap["callbackBody"] = "key=$(key)&size=$(size)&bucket=$(bucket)&etag=$(etag)"
+	// callbackMap["callbackBodyType"] = "application/x-www-form-urlencoded"
+	callbackBuffer := bytes.NewBuffer([]byte{})
+	callbackEncoder := json.NewEncoder(callbackBuffer)
+	//do not encode '&' to "\u0026"
+	callbackEncoder.SetEscapeHTML(false)
+	err := callbackEncoder.Encode(callbackMap)
+	if err != nil {
+		fmt.Print(err)
+	}
+	callbackVal := base64.StdEncoding.EncodeToString(callbackBuffer.Bytes())
+
+	input.Body = strings.NewReader("Hello OBS")
+
+	output, err := getObsClient().PutObject(input, obs.WithCallbackHeader(callbackVal))
+	if err == nil {
+		defer output.CloseCallbackBody()
+
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+		fmt.Printf("ETag:%s, StorageClass:%s\n", output.ETag, output.StorageClass)
+		p := make([]byte, 1024)
+		var readErr error
+		var readCount int
+		for {
+			readCount, readErr = output.ReadCallbackBody(p)
+			if readCount > 0 {
+				fmt.Printf("%s", p[:readCount])
+			}
+			if readErr != nil {
+				break
+			}
+		}
+	} else {
+
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
 func putFile() {
 	input := &obs.PutFileInput{}
 	input.Bucket = bucketName
@@ -1168,7 +1261,7 @@ func uploadPart() {
 	sourceFile := "localfile"
 	var partSize int64 = 1024 * 1024 * 5
 	fileInfo, statErr := os.Stat(sourceFile)
-	if statErr != nil{
+	if statErr != nil {
 		panic(statErr)
 	}
 	partCount := fileInfo.Size() / partSize
@@ -1333,6 +1426,77 @@ func getObject() {
 	}
 }
 
+func newFolder() {
+	input := &obs.NewFolderInput{}
+	input.Bucket = bucketName
+	input.Key = objectKey
+	output, err := getObsClient().NewFolder(input)
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+		fmt.Printf("ETag:%s\n", output.ETag)
+		fmt.Printf("ObjectUrl:%s\n", output.ObjectUrl)
+		fmt.Printf("StorageClass:%s\n", output.StorageClass)
+		fmt.Printf("SseHeader:%s\n", output.SseHeader)
+
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+
+}
+
+func renameFile() {
+	input := &obs.RenameFileInput{}
+	input.Bucket = bucketName
+	input.Key = objectKey
+	input.NewObjectKey = "NewFile"
+	output, err := getObsClient().RenameFile(input)
+	if err == nil {
+		fmt.Printf("StatusCode:%s\n", output.StatusCode)
+		fmt.Printf("RequestId:%s\n", output.RequestId)
+		fmt.Printf("ResponseHeaders:%s\n", output.ResponseHeaders)
+
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+
+}
+
+func renameFolder() {
+
+	input := &obs.RenameFolderInput{}
+	input.Bucket = bucketName
+	input.Key = objectKey
+	input.NewObjectKey = "NewObjectKey"
+	output, err := getObsClient().RenameFolder(input)
+	if err == nil {
+		fmt.Printf("StatusCode:%s\n", output.StatusCode)
+		fmt.Printf("RequestId:%s\n", output.RequestId)
+		fmt.Printf("ResponseHeaders:%s\n", output.ResponseHeaders)
+
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+
+}
+
 func runExamples() {
 	examples.RunBucketOperationsSample()
 	//	examples.RunObjectOperationsSample()
@@ -1401,6 +1565,11 @@ func main() {
 	//  setBucketEncryption()
 	//  getBucketEncryption()
 	//  deleteBucketEncryption()
+	//  getBucketFSStatus()
+	//  getAttribute()
+	//  newFolder()
+	//  renameFolder()
+	//  renameFile()
 
 	//---- object related APIs ----
 	//  deleteObject()
@@ -1419,6 +1588,6 @@ func main() {
 	//  putFile()
 	//  getObjectMetadata()
 	//  getObject()
-
-	// deleteBucket()
+	//  putObjectWithCallback()
+	//  deleteBucket()
 }

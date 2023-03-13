@@ -26,7 +26,7 @@ import (
 	"time"
 )
 
-const(
+const (
 	filePathSample string = "/temp/text.txt"
 )
 
@@ -57,8 +57,8 @@ func (sample ConcurrentCopyPartSample) CreateBucket() {
 	fmt.Println()
 }
 
-func (sample ConcurrentCopyPartSample) checkError(err error){
-	if err != nil{
+func (sample ConcurrentCopyPartSample) checkError(err error) {
+	if err != nil {
 		panic(err)
 	}
 }
@@ -97,7 +97,7 @@ func (sample ConcurrentCopyPartSample) createSampleFile(sampleFilePath string, b
 		}
 	}
 
-	defer func(){
+	defer func() {
 		errMsg := fd.Close()
 		sample.checkError(errMsg)
 	}()
@@ -140,7 +140,7 @@ func (sample ConcurrentCopyPartSample) DoConcurrentCopyPart() {
 	getObjectMetadataInput.Bucket = sourceBucketName
 	getObjectMetadataInput.Key = sourceObjectKey
 	getObjectMetadataOutput, err := sample.obsClient.GetObjectMetadata(getObjectMetadataInput)
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 
@@ -187,7 +187,7 @@ func (sample ConcurrentCopyPartSample) DoConcurrentCopyPart() {
 			} else {
 				panic(errMsg)
 			}
-		}(rangeStart,rangeEnd,partNumber)
+		}(rangeStart, rangeEnd, partNumber)
 	}
 
 	parts := make([]obs.Part, 0, partCount)
@@ -213,14 +213,13 @@ func (sample ConcurrentCopyPartSample) DoConcurrentCopyPart() {
 	sample.doCompleteMultipartUpload(completeMultipartUploadInput)
 }
 
-func (sample ConcurrentCopyPartSample) doCompleteMultipartUpload(input *obs.CompleteMultipartUploadInput){
+func (sample ConcurrentCopyPartSample) doCompleteMultipartUpload(input *obs.CompleteMultipartUploadInput) {
 	_, err := sample.obsClient.CompleteMultipartUpload(input)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("Complete multiparts finished")
 }
-
 
 func RunConcurrentCopyPartSample() {
 	const (

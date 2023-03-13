@@ -22,6 +22,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	"net/http"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -47,6 +48,37 @@ func XmlTranscoding(src string) string {
 	srcTmp = StringContains(srcTmp, "'", "&apos;")
 	srcTmp = StringContains(srcTmp, "\"", "&quot;")
 	return srcTmp
+}
+
+func HandleHttpResponse(action string, headers map[string][]string, output IBaseModel, resp *http.Response, xmlResult bool, isObs bool) (err error) {
+	if IsHandleCallbackResponse(action, headers, isObs) {
+		if err = ParseCallbackResponseToBaseModel(resp, output, isObs); err != nil {
+			doLog(LEVEL_WARN, "Parse callback response to BaseModel with error: %v", err)
+		}
+	} else {
+		if err = ParseResponseToBaseModel(resp, output, xmlResult, isObs); err != nil {
+			doLog(LEVEL_WARN, "Parse response to BaseModel with error: %v", err)
+		}
+	}
+	return
+}
+
+func IsHandleCallbackResponse(action string, headers map[string][]string, isObs bool) bool {
+	var headerPrefix = HEADER_PREFIX
+	if isObs == true {
+		headerPrefix = HEADER_PREFIX_OBS
+	}
+	supportCallbackActions := []string{"PutObject", "PutFile", "CompleteMultipartUpload"}
+	return len(headers[headerPrefix+CALLBACK]) != 0 && IsContain(supportCallbackActions, action)
+}
+
+func IsContain(items []string, item string) bool {
+	for _, eachItem := range items {
+		if eachItem == item {
+			return true
+		}
+	}
+	return false
 }
 
 // StringToInt converts string value to int value with default value

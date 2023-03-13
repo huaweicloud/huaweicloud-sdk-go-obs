@@ -13,7 +13,7 @@
 package obs
 
 const (
-	OBS_SDK_VERSION        = "3.22.11"
+	OBS_SDK_VERSION        = "3.23.3"
 	USER_AGENT             = "obs-sdk-go/" + OBS_SDK_VERSION
 	HEADER_PREFIX          = "x-amz-"
 	HEADER_PREFIX_META     = "x-amz-meta-"
@@ -185,6 +185,7 @@ const (
 
 	REQUEST_PAYER = "request-payer"
 	TRAFFIC_LIMIT = "traffic-limit"
+	CALLBACK      = "callback"
 	MULTI_AZ      = "3az"
 
 	MAX_PART_SIZE     = 5 * 1024 * 1024 * 1024

@@ -105,8 +105,9 @@ func (obsClient ObsClient) doAction(action, method, bucketName, objectKey string
 	var respError error
 	doLog(LEVEL_INFO, "Enter method %s...", action)
 	start := GetCurrentTimestamp()
+	isObs := obsClient.conf.signature == SignatureObs
 
-	params, headers, data, err := input.trans(obsClient.conf.signature == SignatureObs)
+	params, headers, data, err := input.trans(isObs)
 	if err != nil {
 		return err
 	}
@@ -121,8 +122,7 @@ func (obsClient ObsClient) doAction(action, method, bucketName, objectKey string
 
 	for _, extension := range extensions {
 		if extensionHeader, ok := extension.(extensionHeaders); ok {
-			_err := extensionHeader(headers, obsClient.conf.signature == SignatureObs)
-			if _err != nil {
+			if _err := extensionHeader(headers, isObs); err != nil {
 				doLog(LEVEL_INFO, fmt.Sprintf("set header with error: %v", _err))
 			}
 		} else {
@@ -147,10 +147,7 @@ func (obsClient ObsClient) doAction(action, method, bucketName, objectKey string
 		respError = errors.New("Unexpect http method error")
 	}
 	if respError == nil && output != nil {
-		respError = ParseResponseToBaseModel(resp, output, xmlResult, obsClient.conf.signature == SignatureObs)
-		if respError != nil {
-			doLog(LEVEL_WARN, "Parse response to BaseModel with error: %v", respError)
-		}
+		respError = HandleHttpResponse(action, headers, output, resp, xmlResult, isObs)
 	} else {
 		doLog(LEVEL_WARN, "Do http request with error: %v", respError)
 	}
@@ -429,6 +426,15 @@ func prepareRetry(resp *http.Response, headers map[string][]string, _data io.Rea
 		checkAndLogErr(_err, LEVEL_WARN, "Failed to close resp body")
 		resp = nil
 	}
+
+	if _, ok := headers[HEADER_DATE_CAMEL]; ok {
+		headers[HEADER_DATE_CAMEL] = []string{FormatUtcToRfc1123(time.Now().UTC())}
+	}
+
+	if _, ok := headers[HEADER_DATE_AMZ]; ok {
+		headers[HEADER_DATE_AMZ] = []string{FormatUtcToRfc1123(time.Now().UTC())}
+	}
+
 	if _, ok := headers[HEADER_AUTH_CAMEL]; ok {
 		delete(headers, HEADER_AUTH_CAMEL)
 	}

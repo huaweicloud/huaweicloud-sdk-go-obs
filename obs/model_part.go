@@ -114,6 +114,7 @@ type CompleteMultipartUploadOutput struct {
 	Key          string     `xml:"Key"`
 	ETag         string     `xml:"ETag"`
 	EncodingType string     `xml:"EncodingType,omitempty"`
+	CallbackBody
 }
 
 // ListPartsInput is the input parameter of ListParts function

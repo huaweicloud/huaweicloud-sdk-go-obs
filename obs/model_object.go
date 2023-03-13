@@ -271,6 +271,7 @@ type PutObjectOutput struct {
 	StorageClass StorageClassType
 	ETag         string
 	ObjectUrl    string
+	CallbackBody
 }
 
 // CopyObjectInput is the input parameter of CopyObject function

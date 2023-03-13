@@ -35,7 +35,7 @@ type TemporarySignatureSample struct {
 func newTemporarySignatureSample(ak, sk, endpoint, bucketName, objectKey, location string) *TemporarySignatureSample {
 	obsClient, err := obs.New(ak, sk, endpoint)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	return &TemporarySignatureSample{obsClient: obsClient, bucketName: bucketName, objectKey: objectKey, location: location}
 }
@@ -46,20 +46,33 @@ func (sample TemporarySignatureSample) CreateBucket() {
 	input.Method = obs.HttpMethodPut
 	input.Expires = 3600
 	output, err := sample.obsClient.CreateSignedUrl(input)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("%s using temporary signature url:\n", "CreateBucket")
+		fmt.Println(output.SignedUrl)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("%s using temporary signature url:\n", "CreateBucket")
-	fmt.Println(output.SignedUrl)
 
 	data := strings.NewReader(fmt.Sprintf("<CreateBucketConfiguration><LocationConstraint>%s</LocationConstraint></CreateBucketConfiguration>", sample.location))
 
 	_, err = sample.obsClient.CreateBucketWithSignedUrl(output.SignedUrl, output.ActualSignedRequestHeaders, data)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("Create bucket:%s successfully!\n", sample.bucketName)
+		fmt.Println()
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("Create bucket:%s successfully!\n", sample.bucketName)
-	fmt.Println()
+
 }
 
 func (sample TemporarySignatureSample) ListBuckets() {
@@ -67,18 +80,30 @@ func (sample TemporarySignatureSample) ListBuckets() {
 	input.Method = obs.HttpMethodGet
 	input.Expires = 3600
 	output, err := sample.obsClient.CreateSignedUrl(input)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("%s using temporary signature url:\n", "ListBuckets")
+		fmt.Println(output.SignedUrl)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("%s using temporary signature url:\n", "ListBuckets")
-	fmt.Println(output.SignedUrl)
 
 	listBucketsOutput, err := sample.obsClient.ListBucketsWithSignedUrl(output.SignedUrl, output.ActualSignedRequestHeaders)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("Owner.DisplayName:%s, Owner.ID:%s\n", listBucketsOutput.Owner.DisplayName, listBucketsOutput.Owner.ID)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
 
-	fmt.Printf("Owner.DisplayName:%s, Owner.ID:%s\n", listBucketsOutput.Owner.DisplayName, listBucketsOutput.Owner.ID)
 	for index, val := range listBucketsOutput.Buckets {
 		fmt.Printf("Bucket[%d]-Name:%s,CreationDate:%s\n", index, val.Name, val.CreationDate)
 	}
@@ -108,31 +133,54 @@ func (sample TemporarySignatureSample) DoBucketCors() {
 	input.Expires = 3600
 	input.Headers = map[string]string{obs.HEADER_MD5_CAMEL: obs.Base64Md5([]byte(rawData))}
 	output, err := sample.obsClient.CreateSignedUrl(input)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("%s using temporary signature url:\n", "SetBucketCors")
+		fmt.Println(output.SignedUrl)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("%s using temporary signature url:\n", "SetBucketCors")
-	fmt.Println(output.SignedUrl)
 
 	data := strings.NewReader(rawData)
 	_, err = sample.obsClient.SetBucketCorsWithSignedUrl(output.SignedUrl, output.ActualSignedRequestHeaders, data)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("Set bucket cors:%s successfully!\n", sample.bucketName)
+		fmt.Println()
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("Set bucket cors:%s successfully!\n", sample.bucketName)
-	fmt.Println()
 
 	input.Method = obs.HttpMethodGet
 	output, err = sample.obsClient.CreateSignedUrl(input)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("%s using temporary signature url:\n", "GetBucketCors")
+		fmt.Println(output.SignedUrl)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("%s using temporary signature url:\n", "GetBucketCors")
-	fmt.Println(output.SignedUrl)
 
 	getBucketCorsOutput, err := sample.obsClient.GetBucketCorsWithSignedUrl(output.SignedUrl, output.ActualSignedRequestHeaders)
-	if err != nil{
-		panic(err)
+	if err != nil {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
 	for index, corsRule := range getBucketCorsOutput.CorsRules {
 		fmt.Printf("CorsRule[%d]\n", index)
@@ -144,18 +192,31 @@ func (sample TemporarySignatureSample) DoBucketCors() {
 
 	input.Method = obs.HttpMethodDelete
 	output, err = sample.obsClient.CreateSignedUrl(input)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("%s using temporary signature url:\n", "DeleteBucketCors")
+		fmt.Println(output.SignedUrl)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("%s using temporary signature url:\n", "DeleteBucketCors")
-	fmt.Println(output.SignedUrl)
 
 	_, err = sample.obsClient.DeleteBucketCorsWithSignedUrl(output.SignedUrl, output.ActualSignedRequestHeaders)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Println("Delete bucket cors successfully!")
+		fmt.Println()
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Println("Delete bucket cors successfully!")
-	fmt.Println()
+
 }
 
 func (sample TemporarySignatureSample) PutObject() {
@@ -165,28 +226,41 @@ func (sample TemporarySignatureSample) PutObject() {
 	input.Key = sample.objectKey
 	input.Expires = 3600
 	output, err := sample.obsClient.CreateSignedUrl(input)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("%s using temporary signature url:\n", "PutObject")
+		fmt.Println(output.SignedUrl)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("%s using temporary signature url:\n", "PutObject")
-	fmt.Println(output.SignedUrl)
 
 	data := strings.NewReader("Hello OBS")
 	_, err = sample.obsClient.PutObjectWithSignedUrl(output.SignedUrl, output.ActualSignedRequestHeaders, data)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("Put object:%s successfully!\n", sample.objectKey)
+		fmt.Println()
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("Put object:%s successfully!\n", sample.objectKey)
-	fmt.Println()
+
 }
 
 func (TemporarySignatureSample) createSampleFile(sampleFilePath string) {
 	if err := os.MkdirAll(filepath.Dir(sampleFilePath), os.ModePerm); err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 
 	if err := ioutil.WriteFile(sampleFilePath, []byte("Hello OBS from file"), os.ModePerm); err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 }
 
@@ -197,18 +271,31 @@ func (sample TemporarySignatureSample) PutFile(sampleFilePath string) {
 	input.Key = sample.objectKey
 	input.Expires = 3600
 	output, err := sample.obsClient.CreateSignedUrl(input)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("%s using temporary signature url:\n", "PutFile")
+		fmt.Println(output.SignedUrl)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("%s using temporary signature url:\n", "PutFile")
-	fmt.Println(output.SignedUrl)
 
 	_, err = sample.obsClient.PutFileWithSignedUrl(output.SignedUrl, output.ActualSignedRequestHeaders, sampleFilePath)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("Put file:%s successfully!\n", sample.objectKey)
+		fmt.Println()
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("Put file:%s successfully!\n", sample.objectKey)
-	fmt.Println()
+
 }
 
 func (sample TemporarySignatureSample) GetObject() {
@@ -218,29 +305,42 @@ func (sample TemporarySignatureSample) GetObject() {
 	input.Key = sample.objectKey
 	input.Expires = 3600
 	output, err := sample.obsClient.CreateSignedUrl(input)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("%s using temporary signature url:\n", "GetObject")
+		fmt.Println(output.SignedUrl)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("%s using temporary signature url:\n", "GetObject")
-	fmt.Println(output.SignedUrl)
 
 	getObjectOutput, err := sample.obsClient.GetObjectWithSignedUrl(output.SignedUrl, output.ActualSignedRequestHeaders)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
-	defer func(){
+	defer func() {
 		errMsg := getObjectOutput.Body.Close()
-		if errMsg != nil{
-			panic(errMsg)
+		if errMsg != nil {
+			fmt.Println(err)
 		}
 	}()
 	fmt.Println("Object content:")
 	body, err := ioutil.ReadAll(getObjectOutput.Body)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Println(string(body))
+		fmt.Println()
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Println(string(body))
-	fmt.Println()
+
 }
 
 func (sample TemporarySignatureSample) DoObjectAcl() {
@@ -252,32 +352,56 @@ func (sample TemporarySignatureSample) DoObjectAcl() {
 	input.Expires = 3600
 	input.Headers = map[string]string{obs.HEADER_ACL_AMZ: string(obs.AclPublicRead)}
 	output, err := sample.obsClient.CreateSignedUrl(input)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("%s using temporary signature url:\n", "SetObjectAcl")
+		fmt.Println(output.SignedUrl)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("%s using temporary signature url:\n", "SetObjectAcl")
-	fmt.Println(output.SignedUrl)
 
 	_, err = sample.obsClient.SetObjectAclWithSignedUrl(output.SignedUrl, output.ActualSignedRequestHeaders, nil)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("Set object acl:%s successfully!\n", sample.objectKey)
+		fmt.Println()
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("Set object acl:%s successfully!\n", sample.objectKey)
-	fmt.Println()
 
 	input.Method = obs.HttpMethodGet
 	output, err = sample.obsClient.CreateSignedUrl(input)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("%s using temporary signature url:\n", "GetObjectAcl")
+		fmt.Println(output.SignedUrl)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("%s using temporary signature url:\n", "GetObjectAcl")
-	fmt.Println(output.SignedUrl)
 
 	getObjectAclOutput, err := sample.obsClient.GetObjectAclWithSignedUrl(output.SignedUrl, output.ActualSignedRequestHeaders)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("Object owner - ownerId:%s, ownerName:%s\n", getObjectAclOutput.Owner.ID, getObjectAclOutput.Owner.DisplayName)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("Object owner - ownerId:%s, ownerName:%s\n", getObjectAclOutput.Owner.ID, getObjectAclOutput.Owner.DisplayName)
 	for index, grant := range getObjectAclOutput.Grants {
 		fmt.Printf("Grant[%d]\n", index)
 		fmt.Printf("GranteeUri:%s, GranteeId:%s, GranteeName:%s\n", grant.Grantee.URI, grant.Grantee.ID, grant.Grantee.DisplayName)
@@ -293,18 +417,31 @@ func (sample TemporarySignatureSample) DeleteObject() {
 	input.Key = sample.objectKey
 	input.Expires = 3600
 	output, err := sample.obsClient.CreateSignedUrl(input)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("%s using temporary signature url:\n", "DeleteObject")
+		fmt.Println(output.SignedUrl)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("%s using temporary signature url:\n", "DeleteObject")
-	fmt.Println(output.SignedUrl)
 
 	_, err = sample.obsClient.DeleteObjectWithSignedUrl(output.SignedUrl, output.ActualSignedRequestHeaders)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("Delete object:%s successfully!\n", sample.objectKey)
+		fmt.Println()
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("Delete object:%s successfully!\n", sample.objectKey)
-	fmt.Println()
+
 }
 
 func (sample TemporarySignatureSample) DeleteBucket() {
@@ -313,18 +450,31 @@ func (sample TemporarySignatureSample) DeleteBucket() {
 	input.Bucket = sample.bucketName
 	input.Expires = 3600
 	output, err := sample.obsClient.CreateSignedUrl(input)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("%s using temporary signature url:\n", "DeleteBucket")
+		fmt.Println(output.SignedUrl)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("%s using temporary signature url:\n", "DeleteBucket")
-	fmt.Println(output.SignedUrl)
 
 	_, err = sample.obsClient.DeleteBucketWithSignedUrl(output.SignedUrl, output.ActualSignedRequestHeaders)
-	if err != nil {
-		panic(err)
+	if err == nil {
+		fmt.Printf("Delete bucket:%s successfully!\n", sample.bucketName)
+		fmt.Println()
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println("Code:" + obsError.Code)
+			fmt.Println("Message:" + obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
 	}
-	fmt.Printf("Delete bucket:%s successfully!\n", sample.bucketName)
-	fmt.Println()
+
 }
 
 func RunTemporarySignatureSample() {

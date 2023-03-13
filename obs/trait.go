@@ -602,18 +602,18 @@ func (input GetObjectInput) trans(isObs bool) (params map[string]string, headers
 	return
 }
 
-func (input ObjectOperationInput) prepareGrantHeaders(headers map[string][]string) {
+func (input ObjectOperationInput) prepareGrantHeaders(headers map[string][]string, isObs bool) {
 	if GrantReadID := input.GrantReadId; GrantReadID != "" {
-		setHeaders(headers, HEADER_GRANT_READ_OBS, []string{GrantReadID}, true)
+		setHeaders(headers, HEADER_GRANT_READ_OBS, []string{GrantReadID}, isObs)
 	}
 	if GrantReadAcpID := input.GrantReadAcpId; GrantReadAcpID != "" {
-		setHeaders(headers, HEADER_GRANT_READ_ACP_OBS, []string{GrantReadAcpID}, true)
+		setHeaders(headers, HEADER_GRANT_READ_ACP_OBS, []string{GrantReadAcpID}, isObs)
 	}
 	if GrantWriteAcpID := input.GrantWriteAcpId; GrantWriteAcpID != "" {
-		setHeaders(headers, HEADER_GRANT_WRITE_ACP_OBS, []string{GrantWriteAcpID}, true)
+		setHeaders(headers, HEADER_GRANT_WRITE_ACP_OBS, []string{GrantWriteAcpID}, isObs)
 	}
 	if GrantFullControlID := input.GrantFullControlId; GrantFullControlID != "" {
-		setHeaders(headers, HEADER_GRANT_FULL_CONTROL_OBS, []string{GrantFullControlID}, true)
+		setHeaders(headers, HEADER_GRANT_FULL_CONTROL_OBS, []string{GrantFullControlID}, isObs)
 	}
 }
 
@@ -623,7 +623,7 @@ func (input ObjectOperationInput) trans(isObs bool) (params map[string]string, h
 	if acl := string(input.ACL); acl != "" {
 		setHeaders(headers, HEADER_ACL, []string{acl}, isObs)
 	}
-	input.prepareGrantHeaders(headers)
+	input.prepareGrantHeaders(headers, isObs)
 	if storageClass := string(input.StorageClass); storageClass != "" {
 		if !isObs {
 			if storageClass == string(StorageClassWarm) {

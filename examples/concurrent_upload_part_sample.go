@@ -53,8 +53,8 @@ func (sample ConcurrentUploadPartSample) CreateBucket() {
 	fmt.Println()
 }
 
-func (sample ConcurrentUploadPartSample) checkError(err error){
-	if err != nil{
+func (sample ConcurrentUploadPartSample) checkError(err error) {
+	if err != nil {
 		panic(err)
 	}
 }
@@ -93,7 +93,7 @@ func (sample ConcurrentUploadPartSample) createSampleFile(sampleFilePath string,
 		}
 	}
 
-	defer func(){
+	defer func() {
 		errMsg := fd.Close()
 		sample.checkError(errMsg)
 	}()
@@ -172,7 +172,7 @@ func (sample ConcurrentUploadPartSample) DoConcurrentUploadPart(sampleFilePath s
 			} else {
 				panic(errMsg)
 			}
-		}(partNumber, offset,currPartSize)
+		}(partNumber, offset, currPartSize)
 	}
 
 	parts := make([]obs.Part, 0, partCount)
@@ -198,7 +198,7 @@ func (sample ConcurrentUploadPartSample) DoConcurrentUploadPart(sampleFilePath s
 	sample.doCompleteMultipartUpload(completeMultipartUploadInput)
 }
 
-func (sample ConcurrentUploadPartSample) doCompleteMultipartUpload(input *obs.CompleteMultipartUploadInput){
+func (sample ConcurrentUploadPartSample) doCompleteMultipartUpload(input *obs.CompleteMultipartUploadInput) {
 	_, err := sample.obsClient.CompleteMultipartUpload(input)
 	if err != nil {
 		panic(err)
