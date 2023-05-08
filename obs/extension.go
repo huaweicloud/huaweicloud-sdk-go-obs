@@ -43,3 +43,13 @@ func WithTrafficLimitHeader(trafficLimit int64) extensionHeaders {
 func WithCallbackHeader(callback string) extensionHeaders {
 	return setHeaderPrefix(CALLBACK, string(callback))
 }
+
+func WithCustomHeader(key string, value string) extensionHeaders {
+	return func(headers map[string][]string, isObs bool) error {
+		if strings.TrimSpace(value) == "" {
+			return fmt.Errorf("set header %s with empty value", key)
+		}
+		headers[key] = []string{value}
+		return nil
+	}
+}

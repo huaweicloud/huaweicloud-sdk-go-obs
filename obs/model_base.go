@@ -9,6 +9,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 // CONDITIONS OF ANY KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations under the License.
+
 package obs
 
 import (
@@ -360,4 +361,14 @@ type Part struct {
 type BucketPayer struct {
 	XMLName xml.Name  `xml:"RequestPaymentConfiguration"`
 	Payer   PayerType `xml:"Payer"`
+}
+
+// HttpHeader defines the standard metadata
+type HttpHeader struct {
+	CacheControl       string
+	ContentDisposition string
+	ContentEncoding    string
+	ContentLanguage    string
+	ContentType        string
+	HttpExpires        string
 }

@@ -636,10 +636,34 @@ func parseUnCommonHeader(output *GetObjectMetadataOutput) {
 	}
 }
 
+func parseStandardMetadataHeader(output *GetObjectMetadataOutput) {
+	httpHeader := HttpHeader{}
+	if ret, ok := output.ResponseHeaders[HEADER_CONTENT_TYPE]; ok {
+		httpHeader.ContentType = ret[0]
+	}
+	if ret, ok := output.ResponseHeaders[HEADER_CONTENT_ENCODING]; ok {
+		httpHeader.ContentEncoding = ret[0]
+	}
+	if ret, ok := output.ResponseHeaders[HEADER_CACHE_CONTROL]; ok {
+		httpHeader.CacheControl = ret[0]
+	}
+	if ret, ok := output.ResponseHeaders[HEADER_CONTENT_DISPOSITION]; ok {
+		httpHeader.ContentDisposition = ret[0]
+	}
+	if ret, ok := output.ResponseHeaders[HEADER_CONTENT_LANGUAGE]; ok {
+		httpHeader.ContentLanguage = ret[0]
+	}
+	if ret, ok := output.ResponseHeaders[HEADER_EXPIRES]; ok {
+		httpHeader.HttpExpires = ret[0]
+	}
+	output.HttpHeader = httpHeader
+}
+
 // ParseGetObjectMetadataOutput sets GetObjectMetadataOutput field values with response headers
 func ParseGetObjectMetadataOutput(output *GetObjectMetadataOutput) {
 	output.AllowOrigin, output.AllowHeader, output.AllowMethod, output.ExposeHeader, output.MaxAgeSeconds = parseCorsHeader(output.BaseModel)
 	parseUnCommonHeader(output)
+	parseStandardMetadataHeader(output)
 	if ret, ok := output.ResponseHeaders[HEADER_STORAGE_CLASS2]; ok {
 		output.StorageClass = ParseStringToStorageClassType(ret[0])
 	}
@@ -746,6 +770,9 @@ func ParseGetBucketMetadataOutput(output *GetBucketMetadataOutput) {
 	}
 	if ret, ok := output.ResponseHeaders[HEADER_AZ_REDUNDANCY]; ok {
 		output.AZRedundancy = ret[0]
+	}
+	if ret, ok := output.ResponseHeaders[HEADER_BUCKET_REDUNDANCY]; ok {
+		output.BucketRedundancy = parseStringToBucketRedundancy(ret[0])
 	}
 	if ret, ok := output.ResponseHeaders[headerFSFileInterface]; ok {
 		output.FSStatus = parseStringToFSStatusType(ret[0])
@@ -859,7 +886,7 @@ func ConvertRequestToIoReader(req interface{}) (io.Reader, error) {
 	return nil, err
 }
 
-func parseBucketPolicyOutput(s reflect.Type, baseModel IBaseModel, body []byte) {
+func parseResponseBodyOutput(s reflect.Type, baseModel IBaseModel, body []byte) {
 	for i := 0; i < s.NumField(); i++ {
 		if s.Field(i).Tag == "json:\"body\"" {
 			reflect.ValueOf(baseModel).Elem().FieldByName(s.Field(i).Name).SetString(string(body))
@@ -901,8 +928,9 @@ func ParseResponseToBaseModel(resp *http.Response, baseModel IBaseModel, xmlResu
 				err = ParseXml(body, baseModel)
 			} else {
 				s := reflect.TypeOf(baseModel).Elem()
-				if reflect.TypeOf(baseModel).Elem().Name() == "GetBucketPolicyOutput" {
-					parseBucketPolicyOutput(s, baseModel, body)
+				name := reflect.TypeOf(baseModel).Elem().Name()
+				if name == "GetBucketPolicyOutput" || name == "GetBucketMirrorBackToSourceOuput" {
+					parseResponseBodyOutput(s, baseModel, body)
 				} else {
 					err = parseJSON(body, baseModel)
 				}
@@ -978,6 +1006,18 @@ func parseStringToFSStatusType(value string) (ret FSStatusType) {
 		ret = FSStatusEnabled
 	case "Disabled":
 		ret = FSStatusDisabled
+	default:
+		ret = ""
+	}
+	return
+}
+
+func parseStringToBucketRedundancy(value string) (ret BucketRedundancyType) {
+	switch value {
+	case "FUSION":
+		ret = BucketRedundancyFusion
+	case "CLASSIC":
+		ret = BucketRedundancyClassic
 	default:
 		ret = ""
 	}

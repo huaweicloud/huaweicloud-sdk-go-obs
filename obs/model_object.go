@@ -9,6 +9,7 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 // CONDITIONS OF ANY KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations under the License.
+
 package obs
 
 import (
@@ -157,6 +158,7 @@ type GetObjectMetadataInput struct {
 // GetObjectMetadataOutput is the result of GetObjectMetadata function
 type GetObjectMetadataOutput struct {
 	BaseModel
+	HttpHeader
 	VersionId               string
 	WebsiteRedirectLocation string
 	Expiration              string
@@ -236,10 +238,9 @@ type ObjectOperationInput struct {
 // PutObjectBasicInput defines the basic object operation properties
 type PutObjectBasicInput struct {
 	ObjectOperationInput
-	ContentType     string
-	ContentMD5      string
-	ContentLength   int64
-	ContentEncoding string
+	ContentMD5    string
+	ContentLength int64
+	HttpHeader
 }
 
 // PutObjectInput is the input parameter of PutObject function

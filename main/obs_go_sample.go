@@ -770,6 +770,111 @@ func deleteBucketLifecycleConfiguration() {
 		}
 	}
 }
+func setBucketMirrorBackToSource() {
+	input := &obs.SetBucketMirrorBackToSourceInput{}
+	input.Bucket = bucketName
+	input.Rules = "your rules"
+	output, err := getObsClient().SetBucketMirrorBackToSource(input)
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
+func getBucketMirrorBackToSource() {
+	output, err := getObsClient().GetBucketMirrorBackToSource(bucketName)
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+		fmt.Printf("Rules:%s\n", output.Rules)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
+func deleteBucketMirrorBackToSource() {
+	output, err := getObsClient().DeleteBucketMirrorBackToSource(bucketName)
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
+func setBucketCustomDomain() {
+	input := &obs.SetBucketCustomDomainInput{}
+	input.Bucket = bucketName
+	input.CustomDomain = "www.example.com"
+
+	output, err := getObsClient().SetBucketCustomDomain(input)
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
+func getBucketCustomDomain() {
+
+	output, err := getObsClient().GetBucketCustomDomain(bucketName)
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+		for index, domain := range output.Domains {
+			fmt.Printf("index[%d], DomainName:%s, CreateTime:%s\n", index, domain.DomainName, domain.CreateTime)
+		}
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
+func deleteBucketCustomdomain() {
+	input := &obs.DeleteBucketCustomDomainInput{}
+	input.Bucket = bucketName
+	input.CustomDomain = "www.test-go4444.com"
+
+	output, err := getObsClient().DeleteBucketCustomDomain(input)
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
 
 func setBucketTagging() {
 	input := &obs.SetBucketTaggingInput{}
@@ -1565,6 +1670,12 @@ func main() {
 	//  setBucketEncryption()
 	//  getBucketEncryption()
 	//  deleteBucketEncryption()
+	//  setBucketMirrorBackToSource()
+	//  getBucketMirrorBackToSource()
+	//  deleteBucketMirrorBackToSource()
+	//  setBucketCustomDomain()
+	//  getBucketCustomDomain()
+	//  deleteBucketCustomdomain()
 	//  getBucketFSStatus()
 	//  getAttribute()
 	//  newFolder()

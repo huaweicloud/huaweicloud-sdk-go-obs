@@ -9,11 +9,47 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 // CONDITIONS OF ANY KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations under the License.
+
 package obs
 
 import (
 	"encoding/xml"
 )
+
+// DeleteBucketCustomDomainInput is the input parameter of DeleteBucketCustomDomain function
+type DeleteBucketCustomDomainInput struct {
+	Bucket       string
+	CustomDomain string
+}
+
+// GetBucketCustomDomainOuput is the result of GetBucketCustomdomain function
+type GetBucketCustomDomainOuput struct {
+	BaseModel
+	Domains []Domain `xml:"Domains"`
+}
+
+// SetBucketCustomDomainInput is the input parameter of SetBucketCustomDomain function
+type SetBucketCustomDomainInput struct {
+	Bucket       string
+	CustomDomain string
+}
+
+// GetBucketMirrorBackToSourceOuput is the result of GetBucketMirrorBackToSource function
+type GetBucketMirrorBackToSourceOuput struct {
+	BaseModel
+	Rules string `json:"body"`
+}
+
+type SetBucketMirrorBackToSourceInput struct {
+	Bucket string
+	Rules  string `json:"body"`
+}
+
+// Content defines the object content properties
+type Domain struct {
+	DomainName string `xml:"DomainName"`
+	CreateTime string `xml:"CreateTime"`
+}
 
 // ListBucketsInput is the input parameter of ListBuckets function
 type ListBucketsInput struct {
@@ -32,19 +68,22 @@ type ListBucketsOutput struct {
 // CreateBucketInput is the input parameter of CreateBucket function
 type CreateBucketInput struct {
 	BucketLocation
-	Bucket                      string           `xml:"-"`
-	ACL                         AclType          `xml:"-"`
-	StorageClass                StorageClassType `xml:"-"`
-	GrantReadId                 string           `xml:"-"`
-	GrantWriteId                string           `xml:"-"`
-	GrantReadAcpId              string           `xml:"-"`
-	GrantWriteAcpId             string           `xml:"-"`
-	GrantFullControlId          string           `xml:"-"`
-	GrantReadDeliveredId        string           `xml:"-"`
-	GrantFullControlDeliveredId string           `xml:"-"`
-	Epid                        string           `xml:"-"`
-	AvailableZone               string           `xml:"-"`
-	IsFSFileInterface           bool             `xml:"-"`
+	Bucket                      string               `xml:"-"`
+	ACL                         AclType              `xml:"-"`
+	StorageClass                StorageClassType     `xml:"-"`
+	GrantReadId                 string               `xml:"-"`
+	GrantWriteId                string               `xml:"-"`
+	GrantReadAcpId              string               `xml:"-"`
+	GrantWriteAcpId             string               `xml:"-"`
+	GrantFullControlId          string               `xml:"-"`
+	GrantReadDeliveredId        string               `xml:"-"`
+	GrantFullControlDeliveredId string               `xml:"-"`
+	Epid                        string               `xml:"-"`
+	AvailableZone               string               `xml:"-"`
+	IsFSFileInterface           bool                 `xml:"-"`
+	BucketRedundancy            BucketRedundancyType `xml:"-"`
+	IsFusionAllowUpgrade        bool                 `xml:"-"`
+	IsRedundancyAllowALT        bool                 `xml:"-"`
 }
 
 // SetBucketStoragePolicyInput is the input parameter of SetBucketStoragePolicy function
@@ -212,17 +251,18 @@ type SetObjectMetadataOutput struct {
 // GetBucketMetadataOutput is the result of GetBucketMetadata function
 type GetBucketMetadataOutput struct {
 	BaseModel
-	StorageClass  StorageClassType
-	Location      string
-	Version       string
-	AllowOrigin   string
-	AllowMethod   string
-	AllowHeader   string
-	MaxAgeSeconds int
-	ExposeHeader  string
-	Epid          string
-	AZRedundancy  string
-	FSStatus      FSStatusType
+	StorageClass     StorageClassType
+	Location         string
+	Version          string
+	AllowOrigin      string
+	AllowMethod      string
+	AllowHeader      string
+	MaxAgeSeconds    int
+	ExposeHeader     string
+	Epid             string
+	AZRedundancy     string
+	FSStatus         FSStatusType
+	BucketRedundancy BucketRedundancyType
 }
 
 // SetBucketLoggingConfigurationInput is the input parameter of SetBucketLoggingConfiguration function
