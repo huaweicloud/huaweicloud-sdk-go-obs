@@ -23,7 +23,7 @@ import (
 // ListObjects lists objects in a bucket.
 //
 // You can use this API to list objects in a bucket. By default, a maximum of 1000 objects are listed.
-func (obsClient ObsClient) ListObjects(input *ListObjectsInput, extensions ...extensionOptions) (output *ListObjectsOutput, err error) {
+func (obsClient ObsClient) ListObjects(input *ListObjectsInput, extensions ...ExtensionOptions) (output *ListObjectsOutput, err error) {
 	if input == nil {
 		return nil, errors.New("ListObjectsInput is nil")
 	}
@@ -49,7 +49,7 @@ func (obsClient ObsClient) ListObjects(input *ListObjectsInput, extensions ...ex
 // ListVersions lists versioning objects in a bucket.
 //
 // You can use this API to list versioning objects in a bucket. By default, a maximum of 1000 versioning objects are listed.
-func (obsClient ObsClient) ListVersions(input *ListVersionsInput, extensions ...extensionOptions) (output *ListVersionsOutput, err error) {
+func (obsClient ObsClient) ListVersions(input *ListVersionsInput, extensions ...ExtensionOptions) (output *ListVersionsOutput, err error) {
 	if input == nil {
 		return nil, errors.New("ListVersionsInput is nil")
 	}
@@ -75,7 +75,7 @@ func (obsClient ObsClient) ListVersions(input *ListVersionsInput, extensions ...
 // HeadObject checks whether an object exists.
 //
 // You can use this API to check whether an object exists.
-func (obsClient ObsClient) HeadObject(input *HeadObjectInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) HeadObject(input *HeadObjectInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("HeadObjectInput is nil")
 	}
@@ -88,7 +88,7 @@ func (obsClient ObsClient) HeadObject(input *HeadObjectInput, extensions ...exte
 }
 
 // SetObjectMetadata sets object metadata.
-func (obsClient ObsClient) SetObjectMetadata(input *SetObjectMetadataInput, extensions ...extensionOptions) (output *SetObjectMetadataOutput, err error) {
+func (obsClient ObsClient) SetObjectMetadata(input *SetObjectMetadataInput, extensions ...ExtensionOptions) (output *SetObjectMetadataOutput, err error) {
 	output = &SetObjectMetadataOutput{}
 	err = obsClient.doActionWithBucketAndKey("SetObjectMetadata", HTTP_PUT, input.Bucket, input.Key, input, output, extensions)
 	if err != nil {
@@ -102,7 +102,7 @@ func (obsClient ObsClient) SetObjectMetadata(input *SetObjectMetadataInput, exte
 // DeleteObject deletes an object.
 //
 // You can use this API to delete an object from a specified bucket.
-func (obsClient ObsClient) DeleteObject(input *DeleteObjectInput, extensions ...extensionOptions) (output *DeleteObjectOutput, err error) {
+func (obsClient ObsClient) DeleteObject(input *DeleteObjectInput, extensions ...ExtensionOptions) (output *DeleteObjectOutput, err error) {
 	if input == nil {
 		return nil, errors.New("DeleteObjectInput is nil")
 	}
@@ -119,7 +119,7 @@ func (obsClient ObsClient) DeleteObject(input *DeleteObjectInput, extensions ...
 // DeleteObjects deletes objects in a batch.
 //
 // You can use this API to batch delete objects from a specified bucket.
-func (obsClient ObsClient) DeleteObjects(input *DeleteObjectsInput, extensions ...extensionOptions) (output *DeleteObjectsOutput, err error) {
+func (obsClient ObsClient) DeleteObjects(input *DeleteObjectsInput, extensions ...ExtensionOptions) (output *DeleteObjectsOutput, err error) {
 	if input == nil {
 		return nil, errors.New("DeleteObjectsInput is nil")
 	}
@@ -140,7 +140,7 @@ func (obsClient ObsClient) DeleteObjects(input *DeleteObjectsInput, extensions .
 // SetObjectAcl sets ACL for an object.
 //
 // You can use this API to set the ACL for an object in a specified bucket.
-func (obsClient ObsClient) SetObjectAcl(input *SetObjectAclInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetObjectAcl(input *SetObjectAclInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("SetObjectAclInput is nil")
 	}
@@ -155,7 +155,7 @@ func (obsClient ObsClient) SetObjectAcl(input *SetObjectAclInput, extensions ...
 // GetObjectAcl gets the ACL of an object.
 //
 // You can use this API to obtain the ACL of an object in a specified bucket.
-func (obsClient ObsClient) GetObjectAcl(input *GetObjectAclInput, extensions ...extensionOptions) (output *GetObjectAclOutput, err error) {
+func (obsClient ObsClient) GetObjectAcl(input *GetObjectAclInput, extensions ...ExtensionOptions) (output *GetObjectAclOutput, err error) {
 	if input == nil {
 		return nil, errors.New("GetObjectAclInput is nil")
 	}
@@ -172,7 +172,7 @@ func (obsClient ObsClient) GetObjectAcl(input *GetObjectAclInput, extensions ...
 }
 
 // RestoreObject restores an object.
-func (obsClient ObsClient) RestoreObject(input *RestoreObjectInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) RestoreObject(input *RestoreObjectInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("RestoreObjectInput is nil")
 	}
@@ -187,7 +187,7 @@ func (obsClient ObsClient) RestoreObject(input *RestoreObjectInput, extensions .
 // GetObjectMetadata gets object metadata.
 //
 // You can use this API to send a HEAD request to the object of a specified bucket to obtain its metadata.
-func (obsClient ObsClient) GetObjectMetadata(input *GetObjectMetadataInput, extensions ...extensionOptions) (output *GetObjectMetadataOutput, err error) {
+func (obsClient ObsClient) GetObjectMetadata(input *GetObjectMetadataInput, extensions ...ExtensionOptions) (output *GetObjectMetadataOutput, err error) {
 	if input == nil {
 		return nil, errors.New("GetObjectMetadataInput is nil")
 	}
@@ -201,7 +201,7 @@ func (obsClient ObsClient) GetObjectMetadata(input *GetObjectMetadataInput, exte
 	return
 }
 
-func (obsClient ObsClient) GetAttribute(input *GetAttributeInput, extensions ...extensionOptions) (output *GetAttributeOutput, err error) {
+func (obsClient ObsClient) GetAttribute(input *GetAttributeInput, extensions ...ExtensionOptions) (output *GetAttributeOutput, err error) {
 	if input == nil {
 		return nil, errors.New("GetAttributeInput is nil")
 	}
@@ -218,7 +218,7 @@ func (obsClient ObsClient) GetAttribute(input *GetAttributeInput, extensions ...
 // GetObject downloads object.
 //
 // You can use this API to download an object in a specified bucket.
-func (obsClient ObsClient) GetObject(input *GetObjectInput, extensions ...extensionOptions) (output *GetObjectOutput, err error) {
+func (obsClient ObsClient) GetObject(input *GetObjectInput, extensions ...ExtensionOptions) (output *GetObjectOutput, err error) {
 	if input == nil {
 		return nil, errors.New("GetObjectInput is nil")
 	}
@@ -233,7 +233,7 @@ func (obsClient ObsClient) GetObject(input *GetObjectInput, extensions ...extens
 }
 
 // PutObject uploads an object to the specified bucket.
-func (obsClient ObsClient) PutObject(input *PutObjectInput, extensions ...extensionOptions) (output *PutObjectOutput, err error) {
+func (obsClient ObsClient) PutObject(input *PutObjectInput, extensions ...ExtensionOptions) (output *PutObjectOutput, err error) {
 	if input == nil {
 		return nil, errors.New("PutObjectInput is nil")
 	}
@@ -283,7 +283,7 @@ func (obsClient ObsClient) isGetContentType(input *PutObjectInput) bool {
 	return false
 }
 
-func (obsClient ObsClient) NewFolder(input *NewFolderInput, extensions ...extensionOptions) (output *NewFolderOutput, err error) {
+func (obsClient ObsClient) NewFolder(input *NewFolderInput, extensions ...ExtensionOptions) (output *NewFolderOutput, err error) {
 	if input == nil {
 		return nil, errors.New("NewFolderInput is nil")
 	}
@@ -304,7 +304,7 @@ func (obsClient ObsClient) NewFolder(input *NewFolderInput, extensions ...extens
 }
 
 // PutFile uploads a file to the specified bucket.
-func (obsClient ObsClient) PutFile(input *PutFileInput, extensions ...extensionOptions) (output *PutObjectOutput, err error) {
+func (obsClient ObsClient) PutFile(input *PutFileInput, extensions ...ExtensionOptions) (output *PutObjectOutput, err error) {
 	if input == nil {
 		return nil, errors.New("PutFileInput is nil")
 	}
@@ -363,7 +363,7 @@ func (obsClient ObsClient) PutFile(input *PutFileInput, extensions ...extensionO
 // CopyObject creates a copy for an existing object.
 //
 // You can use this API to create a copy for an object in a specified bucket.
-func (obsClient ObsClient) CopyObject(input *CopyObjectInput, extensions ...extensionOptions) (output *CopyObjectOutput, err error) {
+func (obsClient ObsClient) CopyObject(input *CopyObjectInput, extensions ...ExtensionOptions) (output *CopyObjectOutput, err error) {
 	if input == nil {
 		return nil, errors.New("CopyObjectInput is nil")
 	}
@@ -385,7 +385,7 @@ func (obsClient ObsClient) CopyObject(input *CopyObjectInput, extensions ...exte
 	return
 }
 
-func (obsClient ObsClient) AppendObject(input *AppendObjectInput, extensions ...extensionOptions) (output *AppendObjectOutput, err error) {
+func (obsClient ObsClient) AppendObject(input *AppendObjectInput, extensions ...ExtensionOptions) (output *AppendObjectOutput, err error) {
 	if input == nil {
 		return nil, errors.New("AppendObjectInput is nil")
 	}
@@ -420,7 +420,7 @@ func (obsClient ObsClient) AppendObject(input *AppendObjectInput, extensions ...
 	return
 }
 
-func (obsClient ObsClient) ModifyObject(input *ModifyObjectInput, extensions ...extensionOptions) (output *ModifyObjectOutput, err error) {
+func (obsClient ObsClient) ModifyObject(input *ModifyObjectInput, extensions ...ExtensionOptions) (output *ModifyObjectOutput, err error) {
 	if input == nil {
 		return nil, errors.New("ModifyObjectInput is nil")
 	}
@@ -448,7 +448,7 @@ func (obsClient ObsClient) ModifyObject(input *ModifyObjectInput, extensions ...
 	return
 }
 
-func (obsClient ObsClient) RenameFile(input *RenameFileInput, extensions ...extensionOptions) (output *RenameFileOutput, err error) {
+func (obsClient ObsClient) RenameFile(input *RenameFileInput, extensions ...ExtensionOptions) (output *RenameFileOutput, err error) {
 	if input == nil {
 		return nil, errors.New("RenameFileInput is nil")
 	}
@@ -461,7 +461,7 @@ func (obsClient ObsClient) RenameFile(input *RenameFileInput, extensions ...exte
 	return
 }
 
-func (obsClient ObsClient) RenameFolder(input *RenameFolderInput, extensions ...extensionOptions) (output *RenameFolderOutput, err error) {
+func (obsClient ObsClient) RenameFolder(input *RenameFolderInput, extensions ...ExtensionOptions) (output *RenameFolderOutput, err error) {
 	if input == nil {
 		return nil, errors.New("RenameFolderInput is nil")
 	}

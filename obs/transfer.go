@@ -79,7 +79,7 @@ type uploadPartTask struct {
 	UploadPartInput
 	obsClient        *ObsClient
 	abort            *int32
-	extensions       []extensionOptions
+	extensions       []ExtensionOptions
 	enableCheckpoint bool
 }
 
@@ -144,7 +144,7 @@ func updateCheckpointFile(fc interface{}, checkpointFilePath string) error {
 	return err
 }
 
-func getCheckpointFile(ufc *UploadCheckpoint, uploadFileStat os.FileInfo, input *UploadFileInput, obsClient *ObsClient, extensions []extensionOptions) (needCheckpoint bool, err error) {
+func getCheckpointFile(ufc *UploadCheckpoint, uploadFileStat os.FileInfo, input *UploadFileInput, obsClient *ObsClient, extensions []ExtensionOptions) (needCheckpoint bool, err error) {
 	checkpointFilePath := input.CheckpointFile
 	checkpointFileStat, err := os.Stat(checkpointFilePath)
 	if err != nil {
@@ -177,7 +177,7 @@ func getCheckpointFile(ufc *UploadCheckpoint, uploadFileStat os.FileInfo, input 
 	return true, nil
 }
 
-func prepareUpload(ufc *UploadCheckpoint, uploadFileStat os.FileInfo, input *UploadFileInput, obsClient *ObsClient, extensions []extensionOptions) error {
+func prepareUpload(ufc *UploadCheckpoint, uploadFileStat os.FileInfo, input *UploadFileInput, obsClient *ObsClient, extensions []ExtensionOptions) error {
 	initiateInput := &InitiateMultipartUploadInput{}
 	initiateInput.ObjectOperationInput = input.ObjectOperationInput
 	initiateInput.ContentType = input.ContentType
@@ -246,7 +246,7 @@ func sliceFile(partSize int64, ufc *UploadCheckpoint) error {
 	return nil
 }
 
-func abortTask(bucket, key, uploadID string, obsClient *ObsClient, extensions []extensionOptions) error {
+func abortTask(bucket, key, uploadID string, obsClient *ObsClient, extensions []ExtensionOptions) error {
 	input := &AbortMultipartUploadInput{}
 	input.Bucket = bucket
 	input.Key = key
@@ -259,7 +259,7 @@ func abortTask(bucket, key, uploadID string, obsClient *ObsClient, extensions []
 	return err
 }
 
-func handleUploadFileResult(uploadPartError error, ufc *UploadCheckpoint, enableCheckpoint bool, obsClient *ObsClient, extensions []extensionOptions) error {
+func handleUploadFileResult(uploadPartError error, ufc *UploadCheckpoint, enableCheckpoint bool, obsClient *ObsClient, extensions []ExtensionOptions) error {
 	if uploadPartError != nil {
 		if enableCheckpoint {
 			return uploadPartError
@@ -273,7 +273,7 @@ func handleUploadFileResult(uploadPartError error, ufc *UploadCheckpoint, enable
 	return nil
 }
 
-func completeParts(ufc *UploadCheckpoint, enableCheckpoint bool, checkpointFilePath string, obsClient *ObsClient, encodingType string, extensions []extensionOptions) (output *CompleteMultipartUploadOutput, err error) {
+func completeParts(ufc *UploadCheckpoint, enableCheckpoint bool, checkpointFilePath string, obsClient *ObsClient, encodingType string, extensions []ExtensionOptions) (output *CompleteMultipartUploadOutput, err error) {
 	completeInput := &CompleteMultipartUploadInput{}
 	completeInput.Bucket = ufc.Bucket
 	completeInput.Key = ufc.Key
@@ -312,7 +312,7 @@ func completeParts(ufc *UploadCheckpoint, enableCheckpoint bool, checkpointFileP
 	return completeOutput, err
 }
 
-func (obsClient ObsClient) resumeUpload(input *UploadFileInput, extensions []extensionOptions) (output *CompleteMultipartUploadOutput, err error) {
+func (obsClient ObsClient) resumeUpload(input *UploadFileInput, extensions []ExtensionOptions) (output *CompleteMultipartUploadOutput, err error) {
 	uploadFileStat, err := os.Stat(input.UploadFile)
 	if err != nil {
 		doLog(LEVEL_ERROR, fmt.Sprintf("Failed to stat uploadFile with error: [%v].", err))
@@ -384,7 +384,7 @@ func handleUploadTaskResult(result interface{}, ufc *UploadCheckpoint, partNum i
 	return
 }
 
-func (obsClient ObsClient) uploadPartConcurrent(ufc *UploadCheckpoint, checkpointFilePath string, input *UploadFileInput, extensions []extensionOptions) error {
+func (obsClient ObsClient) uploadPartConcurrent(ufc *UploadCheckpoint, checkpointFilePath string, input *UploadFileInput, extensions []ExtensionOptions) error {
 	pool := NewRoutinePool(input.TaskNum, MAX_PART_NUM)
 	var uploadPartError atomic.Value
 	var errFlag int32
@@ -490,7 +490,7 @@ func (dfc *DownloadCheckpoint) isValid(input *DownloadFileInput, output *GetObje
 type downloadPartTask struct {
 	GetObjectInput
 	obsClient        *ObsClient
-	extensions       []extensionOptions
+	extensions       []ExtensionOptions
 	abort            *int32
 	partNumber       int64
 	tempFileURL      string
@@ -541,7 +541,7 @@ func (task *downloadPartTask) Run() interface{} {
 	return err
 }
 
-func getObjectInfo(input *DownloadFileInput, obsClient *ObsClient, extensions []extensionOptions) (getObjectmetaOutput *GetObjectMetadataOutput, err error) {
+func getObjectInfo(input *DownloadFileInput, obsClient *ObsClient, extensions []ExtensionOptions) (getObjectmetaOutput *GetObjectMetadataOutput, err error) {
 	if len(extensions) != 0 {
 		getObjectmetaOutput, err = obsClient.GetObjectMetadata(&input.GetObjectMetadataInput, extensions...)
 	} else {
@@ -684,7 +684,7 @@ func handleDownloadFileResult(tempFileURL string, enableCheckpoint bool, downloa
 	return nil
 }
 
-func (obsClient ObsClient) resumeDownload(input *DownloadFileInput, extensions []extensionOptions) (output *GetObjectMetadataOutput, err error) {
+func (obsClient ObsClient) resumeDownload(input *DownloadFileInput, extensions []ExtensionOptions) (output *GetObjectMetadataOutput, err error) {
 	getObjectmetaOutput, err := getObjectInfo(input, &obsClient, extensions)
 	if err != nil {
 		return nil, err
@@ -826,7 +826,7 @@ func handleDownloadTaskResult(result interface{}, dfc *DownloadCheckpoint, partN
 	return
 }
 
-func (obsClient ObsClient) downloadFileConcurrent(input *DownloadFileInput, dfc *DownloadCheckpoint, extensions []extensionOptions) error {
+func (obsClient ObsClient) downloadFileConcurrent(input *DownloadFileInput, dfc *DownloadCheckpoint, extensions []ExtensionOptions) error {
 	pool := NewRoutinePool(input.TaskNum, MAX_PART_NUM)
 	var downloadPartError atomic.Value
 	var errFlag int32

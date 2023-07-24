@@ -23,7 +23,7 @@ import (
 // ListMultipartUploads lists the multipart uploads.
 //
 // You can use this API to list the multipart uploads that are initialized but not combined or aborted in a specified bucket.
-func (obsClient ObsClient) ListMultipartUploads(input *ListMultipartUploadsInput, extensions ...extensionOptions) (output *ListMultipartUploadsOutput, err error) {
+func (obsClient ObsClient) ListMultipartUploads(input *ListMultipartUploadsInput, extensions ...ExtensionOptions) (output *ListMultipartUploadsOutput, err error) {
 	if input == nil {
 		return nil, errors.New("ListMultipartUploadsInput is nil")
 	}
@@ -42,7 +42,7 @@ func (obsClient ObsClient) ListMultipartUploads(input *ListMultipartUploadsInput
 }
 
 // AbortMultipartUpload aborts a multipart upload in a specified bucket by using the multipart upload ID.
-func (obsClient ObsClient) AbortMultipartUpload(input *AbortMultipartUploadInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) AbortMultipartUpload(input *AbortMultipartUploadInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("AbortMultipartUploadInput is nil")
 	}
@@ -58,7 +58,7 @@ func (obsClient ObsClient) AbortMultipartUpload(input *AbortMultipartUploadInput
 }
 
 // InitiateMultipartUpload initializes a multipart upload.
-func (obsClient ObsClient) InitiateMultipartUpload(input *InitiateMultipartUploadInput, extensions ...extensionOptions) (output *InitiateMultipartUploadOutput, err error) {
+func (obsClient ObsClient) InitiateMultipartUpload(input *InitiateMultipartUploadInput, extensions ...ExtensionOptions) (output *InitiateMultipartUploadOutput, err error) {
 	if input == nil {
 		return nil, errors.New("InitiateMultipartUploadInput is nil")
 	}
@@ -91,7 +91,7 @@ func (obsClient ObsClient) InitiateMultipartUpload(input *InitiateMultipartUploa
 // After a multipart upload is initialized, you can use this API to upload a part to a specified bucket
 // by using the multipart upload ID. Except for the last uploaded part whose size ranges from 0 to 5 GB,
 // sizes of the other parts range from 100 KB to 5 GB. The upload part ID ranges from 1 to 10000.
-func (obsClient ObsClient) UploadPart(_input *UploadPartInput, extensions ...extensionOptions) (output *UploadPartOutput, err error) {
+func (obsClient ObsClient) UploadPart(_input *UploadPartInput, extensions ...ExtensionOptions) (output *UploadPartOutput, err error) {
 	if _input == nil {
 		return nil, errors.New("UploadPartInput is nil")
 	}
@@ -172,7 +172,7 @@ func (obsClient ObsClient) UploadPart(_input *UploadPartInput, extensions ...ext
 }
 
 // CompleteMultipartUpload combines the uploaded parts in a specified bucket by using the multipart upload ID.
-func (obsClient ObsClient) CompleteMultipartUpload(input *CompleteMultipartUploadInput, extensions ...extensionOptions) (output *CompleteMultipartUploadOutput, err error) {
+func (obsClient ObsClient) CompleteMultipartUpload(input *CompleteMultipartUploadInput, extensions ...ExtensionOptions) (output *CompleteMultipartUploadOutput, err error) {
 	if input == nil {
 		return nil, errors.New("CompleteMultipartUploadInput is nil")
 	}
@@ -202,7 +202,7 @@ func (obsClient ObsClient) CompleteMultipartUpload(input *CompleteMultipartUploa
 }
 
 // ListParts lists the uploaded parts in a bucket by using the multipart upload ID.
-func (obsClient ObsClient) ListParts(input *ListPartsInput, extensions ...extensionOptions) (output *ListPartsOutput, err error) {
+func (obsClient ObsClient) ListParts(input *ListPartsInput, extensions ...ExtensionOptions) (output *ListPartsOutput, err error) {
 	if input == nil {
 		return nil, errors.New("ListPartsInput is nil")
 	}
@@ -226,7 +226,7 @@ func (obsClient ObsClient) ListParts(input *ListPartsInput, extensions ...extens
 // CopyPart copy a part to a specified bucket by using a specified multipart upload ID.
 //
 // After a multipart upload is initialized, you can use this API to copy a part to a specified bucket by using the multipart upload ID.
-func (obsClient ObsClient) CopyPart(input *CopyPartInput, extensions ...extensionOptions) (output *CopyPartOutput, err error) {
+func (obsClient ObsClient) CopyPart(input *CopyPartInput, extensions ...ExtensionOptions) (output *CopyPartOutput, err error) {
 	if input == nil {
 		return nil, errors.New("CopyPartInput is nil")
 	}

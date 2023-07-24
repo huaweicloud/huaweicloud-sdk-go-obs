@@ -18,7 +18,7 @@ import (
 	"strings"
 )
 
-func (obsClient ObsClient) DeleteBucketCustomDomain(input *DeleteBucketCustomDomainInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) DeleteBucketCustomDomain(input *DeleteBucketCustomDomainInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("DeleteBucketCustomDomainInput is nil")
 	}
@@ -31,7 +31,7 @@ func (obsClient ObsClient) DeleteBucketCustomDomain(input *DeleteBucketCustomDom
 	return
 }
 
-func (obsClient ObsClient) SetBucketCustomDomain(input *SetBucketCustomDomainInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetBucketCustomDomain(input *SetBucketCustomDomainInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("SetBucketCustomDomainInput is nil")
 	}
@@ -44,7 +44,7 @@ func (obsClient ObsClient) SetBucketCustomDomain(input *SetBucketCustomDomainInp
 	return
 }
 
-func (obsClient ObsClient) GetBucketCustomDomain(bucketName string, extensions ...extensionOptions) (output *GetBucketCustomDomainOuput, err error) {
+func (obsClient ObsClient) GetBucketCustomDomain(bucketName string, extensions ...ExtensionOptions) (output *GetBucketCustomDomainOuput, err error) {
 	output = &GetBucketCustomDomainOuput{}
 	err = obsClient.doActionWithBucket("GetBucketCustomDomain", HTTP_GET, bucketName, newSubResourceSerial(SubResourceCustomDomain), output, extensions)
 	if err != nil {
@@ -53,7 +53,7 @@ func (obsClient ObsClient) GetBucketCustomDomain(bucketName string, extensions .
 	return
 }
 
-func (obsClient ObsClient) SetBucketMirrorBackToSource(input *SetBucketMirrorBackToSourceInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetBucketMirrorBackToSource(input *SetBucketMirrorBackToSourceInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 
 	output = &BaseModel{}
 	err = obsClient.doActionWithBucket("SetBucketMirrorBackToSource", HTTP_PUT, input.Bucket, input, output, extensions)
@@ -63,7 +63,7 @@ func (obsClient ObsClient) SetBucketMirrorBackToSource(input *SetBucketMirrorBac
 	return
 }
 
-func (obsClient ObsClient) DeleteBucketMirrorBackToSource(bucketName string, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) DeleteBucketMirrorBackToSource(bucketName string, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	output = &BaseModel{}
 	err = obsClient.doActionWithBucketV2("DeleteBucketMirrorBackToSource", HTTP_DELETE, bucketName, newSubResourceSerial(SubResourceMirrorBackToSource), output, extensions)
 	if err != nil {
@@ -72,7 +72,7 @@ func (obsClient ObsClient) DeleteBucketMirrorBackToSource(bucketName string, ext
 	return
 }
 
-func (obsClient ObsClient) GetBucketMirrorBackToSource(bucketName string, extensions ...extensionOptions) (output *GetBucketMirrorBackToSourceOuput, err error) {
+func (obsClient ObsClient) GetBucketMirrorBackToSource(bucketName string, extensions ...ExtensionOptions) (output *GetBucketMirrorBackToSourceOuput, err error) {
 	output = &GetBucketMirrorBackToSourceOuput{}
 	err = obsClient.doActionWithBucketV2("GetBucketMirrorBackToSource", HTTP_GET, bucketName, newSubResourceSerial(SubResourceMirrorBackToSource), output, extensions)
 	if err != nil {
@@ -84,7 +84,7 @@ func (obsClient ObsClient) GetBucketMirrorBackToSource(bucketName string, extens
 // ListBuckets lists buckets.
 //
 // You can use this API to obtain the bucket list. In the list, bucket names are displayed in lexicographical order.
-func (obsClient ObsClient) ListBuckets(input *ListBucketsInput, extensions ...extensionOptions) (output *ListBucketsOutput, err error) {
+func (obsClient ObsClient) ListBuckets(input *ListBucketsInput, extensions ...ExtensionOptions) (output *ListBucketsOutput, err error) {
 	if input == nil {
 		input = &ListBucketsInput{}
 	}
@@ -99,7 +99,7 @@ func (obsClient ObsClient) ListBuckets(input *ListBucketsInput, extensions ...ex
 // CreateBucket creates a bucket.
 //
 // You can use this API to create a bucket and name it as you specify. The created bucket name must be unique in OBS.
-func (obsClient ObsClient) CreateBucket(input *CreateBucketInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) CreateBucket(input *CreateBucketInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("CreateBucketInput is nil")
 	}
@@ -115,7 +115,7 @@ func (obsClient ObsClient) CreateBucket(input *CreateBucketInput, extensions ...
 //
 // You can use this API to delete a bucket. The bucket to be deleted must be empty
 // (containing no objects, noncurrent object versions, or part fragments).
-func (obsClient ObsClient) DeleteBucket(bucketName string, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) DeleteBucket(bucketName string, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	output = &BaseModel{}
 	err = obsClient.doActionWithBucket("DeleteBucket", HTTP_DELETE, bucketName, defaultSerializable, output, extensions)
 	if err != nil {
@@ -127,7 +127,7 @@ func (obsClient ObsClient) DeleteBucket(bucketName string, extensions ...extensi
 // SetBucketStoragePolicy sets bucket storage class.
 //
 // You can use this API to set storage class for bucket.
-func (obsClient ObsClient) SetBucketStoragePolicy(input *SetBucketStoragePolicyInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetBucketStoragePolicy(input *SetBucketStoragePolicyInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("SetBucketStoragePolicyInput is nil")
 	}
@@ -138,7 +138,7 @@ func (obsClient ObsClient) SetBucketStoragePolicy(input *SetBucketStoragePolicyI
 	}
 	return
 }
-func (obsClient ObsClient) getBucketStoragePolicyS3(bucketName string, extensions []extensionOptions) (output *GetBucketStoragePolicyOutput, err error) {
+func (obsClient ObsClient) getBucketStoragePolicyS3(bucketName string, extensions []ExtensionOptions) (output *GetBucketStoragePolicyOutput, err error) {
 	output = &GetBucketStoragePolicyOutput{}
 	var outputS3 *getBucketStoragePolicyOutputS3
 	outputS3 = &getBucketStoragePolicyOutputS3{}
@@ -152,7 +152,7 @@ func (obsClient ObsClient) getBucketStoragePolicyS3(bucketName string, extension
 	return
 }
 
-func (obsClient ObsClient) getBucketStoragePolicyObs(bucketName string, extensions []extensionOptions) (output *GetBucketStoragePolicyOutput, err error) {
+func (obsClient ObsClient) getBucketStoragePolicyObs(bucketName string, extensions []ExtensionOptions) (output *GetBucketStoragePolicyOutput, err error) {
 	output = &GetBucketStoragePolicyOutput{}
 	var outputObs *getBucketStoragePolicyOutputObs
 	outputObs = &getBucketStoragePolicyOutputObs{}
@@ -169,7 +169,7 @@ func (obsClient ObsClient) getBucketStoragePolicyObs(bucketName string, extensio
 // GetBucketStoragePolicy gets bucket storage class.
 //
 // You can use this API to obtain the storage class of a bucket.
-func (obsClient ObsClient) GetBucketStoragePolicy(bucketName string, extensions ...extensionOptions) (output *GetBucketStoragePolicyOutput, err error) {
+func (obsClient ObsClient) GetBucketStoragePolicy(bucketName string, extensions ...ExtensionOptions) (output *GetBucketStoragePolicyOutput, err error) {
 	if obsClient.conf.signature == SignatureObs {
 		return obsClient.getBucketStoragePolicyObs(bucketName, extensions)
 	}
@@ -179,7 +179,7 @@ func (obsClient ObsClient) GetBucketStoragePolicy(bucketName string, extensions 
 // SetBucketQuota sets the bucket quota.
 //
 // You can use this API to set the bucket quota. A bucket quota must be expressed in bytes and the maximum value is 2^63-1.
-func (obsClient ObsClient) SetBucketQuota(input *SetBucketQuotaInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetBucketQuota(input *SetBucketQuotaInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("SetBucketQuotaInput is nil")
 	}
@@ -194,7 +194,7 @@ func (obsClient ObsClient) SetBucketQuota(input *SetBucketQuotaInput, extensions
 // GetBucketQuota gets the bucket quota.
 //
 // You can use this API to obtain the bucket quota. Value 0 indicates that no upper limit is set for the bucket quota.
-func (obsClient ObsClient) GetBucketQuota(bucketName string, extensions ...extensionOptions) (output *GetBucketQuotaOutput, err error) {
+func (obsClient ObsClient) GetBucketQuota(bucketName string, extensions ...ExtensionOptions) (output *GetBucketQuotaOutput, err error) {
 	output = &GetBucketQuotaOutput{}
 	err = obsClient.doActionWithBucket("GetBucketQuota", HTTP_GET, bucketName, newSubResourceSerial(SubResourceQuota), output, extensions)
 	if err != nil {
@@ -206,7 +206,7 @@ func (obsClient ObsClient) GetBucketQuota(bucketName string, extensions ...exten
 // HeadBucket checks whether a bucket exists.
 //
 // You can use this API to check whether a bucket exists.
-func (obsClient ObsClient) HeadBucket(bucketName string, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) HeadBucket(bucketName string, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	output = &BaseModel{}
 	err = obsClient.doActionWithBucket("HeadBucket", HTTP_HEAD, bucketName, defaultSerializable, output, extensions)
 	if err != nil {
@@ -219,7 +219,7 @@ func (obsClient ObsClient) HeadBucket(bucketName string, extensions ...extension
 //
 // You can use this API to send a HEAD request to a bucket to obtain the bucket
 // metadata such as the storage class and CORS rules (if set).
-func (obsClient ObsClient) GetBucketMetadata(input *GetBucketMetadataInput, extensions ...extensionOptions) (output *GetBucketMetadataOutput, err error) {
+func (obsClient ObsClient) GetBucketMetadata(input *GetBucketMetadataInput, extensions ...ExtensionOptions) (output *GetBucketMetadataOutput, err error) {
 	output = &GetBucketMetadataOutput{}
 	err = obsClient.doActionWithBucket("GetBucketMetadata", HTTP_HEAD, input.Bucket, input, output, extensions)
 	if err != nil {
@@ -230,7 +230,7 @@ func (obsClient ObsClient) GetBucketMetadata(input *GetBucketMetadataInput, exte
 	return
 }
 
-func (obsClient ObsClient) GetBucketFSStatus(input *GetBucketFSStatusInput, extensions ...extensionOptions) (output *GetBucketFSStatusOutput, err error) {
+func (obsClient ObsClient) GetBucketFSStatus(input *GetBucketFSStatusInput, extensions ...ExtensionOptions) (output *GetBucketFSStatusOutput, err error) {
 	output = &GetBucketFSStatusOutput{}
 	err = obsClient.doActionWithBucket("GetBucketFSStatus", HTTP_HEAD, input.Bucket, input, output, extensions)
 	if err != nil {
@@ -245,7 +245,7 @@ func (obsClient ObsClient) GetBucketFSStatus(input *GetBucketFSStatusInput, exte
 //
 // You can use this API to obtain storage information about a bucket, including the
 // bucket size and number of objects in the bucket.
-func (obsClient ObsClient) GetBucketStorageInfo(bucketName string, extensions ...extensionOptions) (output *GetBucketStorageInfoOutput, err error) {
+func (obsClient ObsClient) GetBucketStorageInfo(bucketName string, extensions ...ExtensionOptions) (output *GetBucketStorageInfoOutput, err error) {
 	output = &GetBucketStorageInfoOutput{}
 	err = obsClient.doActionWithBucket("GetBucketStorageInfo", HTTP_GET, bucketName, newSubResourceSerial(SubResourceStorageInfo), output, extensions)
 	if err != nil {
@@ -254,7 +254,7 @@ func (obsClient ObsClient) GetBucketStorageInfo(bucketName string, extensions ..
 	return
 }
 
-func (obsClient ObsClient) getBucketLocationS3(bucketName string, extensions []extensionOptions) (output *GetBucketLocationOutput, err error) {
+func (obsClient ObsClient) getBucketLocationS3(bucketName string, extensions []ExtensionOptions) (output *GetBucketLocationOutput, err error) {
 	output = &GetBucketLocationOutput{}
 	var outputS3 *getBucketLocationOutputS3
 	outputS3 = &getBucketLocationOutputS3{}
@@ -267,7 +267,7 @@ func (obsClient ObsClient) getBucketLocationS3(bucketName string, extensions []e
 	}
 	return
 }
-func (obsClient ObsClient) getBucketLocationObs(bucketName string, extensions []extensionOptions) (output *GetBucketLocationOutput, err error) {
+func (obsClient ObsClient) getBucketLocationObs(bucketName string, extensions []ExtensionOptions) (output *GetBucketLocationOutput, err error) {
 	output = &GetBucketLocationOutput{}
 	var outputObs *getBucketLocationOutputObs
 	outputObs = &getBucketLocationOutputObs{}
@@ -284,7 +284,7 @@ func (obsClient ObsClient) getBucketLocationObs(bucketName string, extensions []
 // GetBucketLocation gets the location of a bucket.
 //
 // You can use this API to obtain the bucket location.
-func (obsClient ObsClient) GetBucketLocation(bucketName string, extensions ...extensionOptions) (output *GetBucketLocationOutput, err error) {
+func (obsClient ObsClient) GetBucketLocation(bucketName string, extensions ...ExtensionOptions) (output *GetBucketLocationOutput, err error) {
 	if obsClient.conf.signature == SignatureObs {
 		return obsClient.getBucketLocationObs(bucketName, extensions)
 	}
@@ -294,7 +294,7 @@ func (obsClient ObsClient) GetBucketLocation(bucketName string, extensions ...ex
 // SetBucketAcl sets the bucket ACL.
 //
 // You can use this API to set the ACL for a bucket.
-func (obsClient ObsClient) SetBucketAcl(input *SetBucketAclInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetBucketAcl(input *SetBucketAclInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("SetBucketAclInput is nil")
 	}
@@ -305,7 +305,7 @@ func (obsClient ObsClient) SetBucketAcl(input *SetBucketAclInput, extensions ...
 	}
 	return
 }
-func (obsClient ObsClient) getBucketACLObs(bucketName string, extensions []extensionOptions) (output *GetBucketAclOutput, err error) {
+func (obsClient ObsClient) getBucketACLObs(bucketName string, extensions []ExtensionOptions) (output *GetBucketAclOutput, err error) {
 	output = &GetBucketAclOutput{}
 	var outputObs *getBucketACLOutputObs
 	outputObs = &getBucketACLOutputObs{}
@@ -334,7 +334,7 @@ func (obsClient ObsClient) getBucketACLObs(bucketName string, extensions []exten
 // GetBucketAcl gets the bucket ACL.
 //
 // You can use this API to obtain a bucket ACL.
-func (obsClient ObsClient) GetBucketAcl(bucketName string, extensions ...extensionOptions) (output *GetBucketAclOutput, err error) {
+func (obsClient ObsClient) GetBucketAcl(bucketName string, extensions ...ExtensionOptions) (output *GetBucketAclOutput, err error) {
 	output = &GetBucketAclOutput{}
 	if obsClient.conf.signature == SignatureObs {
 		return obsClient.getBucketACLObs(bucketName, extensions)
@@ -350,7 +350,7 @@ func (obsClient ObsClient) GetBucketAcl(bucketName string, extensions ...extensi
 //
 // You can use this API to set a bucket policy. If the bucket already has a policy, the
 // policy will be overwritten by the one specified in this request.
-func (obsClient ObsClient) SetBucketPolicy(input *SetBucketPolicyInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetBucketPolicy(input *SetBucketPolicyInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("SetBucketPolicy is nil")
 	}
@@ -365,7 +365,7 @@ func (obsClient ObsClient) SetBucketPolicy(input *SetBucketPolicyInput, extensio
 // GetBucketPolicy gets the bucket policy.
 //
 // You can use this API to obtain the policy of a bucket.
-func (obsClient ObsClient) GetBucketPolicy(bucketName string, extensions ...extensionOptions) (output *GetBucketPolicyOutput, err error) {
+func (obsClient ObsClient) GetBucketPolicy(bucketName string, extensions ...ExtensionOptions) (output *GetBucketPolicyOutput, err error) {
 	output = &GetBucketPolicyOutput{}
 	err = obsClient.doActionWithBucketV2("GetBucketPolicy", HTTP_GET, bucketName, newSubResourceSerial(SubResourcePolicy), output, extensions)
 	if err != nil {
@@ -377,7 +377,7 @@ func (obsClient ObsClient) GetBucketPolicy(bucketName string, extensions ...exte
 // DeleteBucketPolicy deletes the bucket policy.
 //
 // You can use this API to delete the policy of a bucket.
-func (obsClient ObsClient) DeleteBucketPolicy(bucketName string, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) DeleteBucketPolicy(bucketName string, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	output = &BaseModel{}
 	err = obsClient.doActionWithBucket("DeleteBucketPolicy", HTTP_DELETE, bucketName, newSubResourceSerial(SubResourcePolicy), output, extensions)
 	if err != nil {
@@ -389,7 +389,7 @@ func (obsClient ObsClient) DeleteBucketPolicy(bucketName string, extensions ...e
 // SetBucketCors sets CORS rules for a bucket.
 //
 // You can use this API to set CORS rules for a bucket to allow client browsers to send cross-origin requests.
-func (obsClient ObsClient) SetBucketCors(input *SetBucketCorsInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetBucketCors(input *SetBucketCorsInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("SetBucketCorsInput is nil")
 	}
@@ -404,7 +404,7 @@ func (obsClient ObsClient) SetBucketCors(input *SetBucketCorsInput, extensions .
 // GetBucketCors gets CORS rules of a bucket.
 //
 // You can use this API to obtain the CORS rules of a specified bucket.
-func (obsClient ObsClient) GetBucketCors(bucketName string, extensions ...extensionOptions) (output *GetBucketCorsOutput, err error) {
+func (obsClient ObsClient) GetBucketCors(bucketName string, extensions ...ExtensionOptions) (output *GetBucketCorsOutput, err error) {
 	output = &GetBucketCorsOutput{}
 	err = obsClient.doActionWithBucket("GetBucketCors", HTTP_GET, bucketName, newSubResourceSerial(SubResourceCors), output, extensions)
 	if err != nil {
@@ -416,7 +416,7 @@ func (obsClient ObsClient) GetBucketCors(bucketName string, extensions ...extens
 // DeleteBucketCors deletes CORS rules of a bucket.
 //
 // You can use this API to delete the CORS rules of a specified bucket.
-func (obsClient ObsClient) DeleteBucketCors(bucketName string, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) DeleteBucketCors(bucketName string, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	output = &BaseModel{}
 	err = obsClient.doActionWithBucket("DeleteBucketCors", HTTP_DELETE, bucketName, newSubResourceSerial(SubResourceCors), output, extensions)
 	if err != nil {
@@ -428,7 +428,7 @@ func (obsClient ObsClient) DeleteBucketCors(bucketName string, extensions ...ext
 // SetBucketVersioning sets the versioning status for a bucket.
 //
 // You can use this API to set the versioning status for a bucket.
-func (obsClient ObsClient) SetBucketVersioning(input *SetBucketVersioningInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetBucketVersioning(input *SetBucketVersioningInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("SetBucketVersioningInput is nil")
 	}
@@ -443,7 +443,7 @@ func (obsClient ObsClient) SetBucketVersioning(input *SetBucketVersioningInput, 
 // GetBucketVersioning gets the versioning status of a bucket.
 //
 // You can use this API to obtain the versioning status of a bucket.
-func (obsClient ObsClient) GetBucketVersioning(bucketName string, extensions ...extensionOptions) (output *GetBucketVersioningOutput, err error) {
+func (obsClient ObsClient) GetBucketVersioning(bucketName string, extensions ...ExtensionOptions) (output *GetBucketVersioningOutput, err error) {
 	output = &GetBucketVersioningOutput{}
 	err = obsClient.doActionWithBucket("GetBucketVersioning", HTTP_GET, bucketName, newSubResourceSerial(SubResourceVersioning), output, extensions)
 	if err != nil {
@@ -455,7 +455,7 @@ func (obsClient ObsClient) GetBucketVersioning(bucketName string, extensions ...
 // SetBucketWebsiteConfiguration sets website hosting for a bucket.
 //
 // You can use this API to set website hosting for a bucket.
-func (obsClient ObsClient) SetBucketWebsiteConfiguration(input *SetBucketWebsiteConfigurationInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetBucketWebsiteConfiguration(input *SetBucketWebsiteConfigurationInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("SetBucketWebsiteConfigurationInput is nil")
 	}
@@ -470,7 +470,7 @@ func (obsClient ObsClient) SetBucketWebsiteConfiguration(input *SetBucketWebsite
 // GetBucketWebsiteConfiguration gets the website hosting settings of a bucket.
 //
 // You can use this API to obtain the website hosting settings of a bucket.
-func (obsClient ObsClient) GetBucketWebsiteConfiguration(bucketName string, extensions ...extensionOptions) (output *GetBucketWebsiteConfigurationOutput, err error) {
+func (obsClient ObsClient) GetBucketWebsiteConfiguration(bucketName string, extensions ...ExtensionOptions) (output *GetBucketWebsiteConfigurationOutput, err error) {
 	output = &GetBucketWebsiteConfigurationOutput{}
 	err = obsClient.doActionWithBucket("GetBucketWebsiteConfiguration", HTTP_GET, bucketName, newSubResourceSerial(SubResourceWebsite), output, extensions)
 	if err != nil {
@@ -482,7 +482,7 @@ func (obsClient ObsClient) GetBucketWebsiteConfiguration(bucketName string, exte
 // DeleteBucketWebsiteConfiguration deletes the website hosting settings of a bucket.
 //
 // You can use this API to delete the website hosting settings of a bucket.
-func (obsClient ObsClient) DeleteBucketWebsiteConfiguration(bucketName string, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) DeleteBucketWebsiteConfiguration(bucketName string, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	output = &BaseModel{}
 	err = obsClient.doActionWithBucket("DeleteBucketWebsiteConfiguration", HTTP_DELETE, bucketName, newSubResourceSerial(SubResourceWebsite), output, extensions)
 	if err != nil {
@@ -494,7 +494,7 @@ func (obsClient ObsClient) DeleteBucketWebsiteConfiguration(bucketName string, e
 // SetBucketLoggingConfiguration sets the bucket logging.
 //
 // You can use this API to configure access logging for a bucket.
-func (obsClient ObsClient) SetBucketLoggingConfiguration(input *SetBucketLoggingConfigurationInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetBucketLoggingConfiguration(input *SetBucketLoggingConfigurationInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("SetBucketLoggingConfigurationInput is nil")
 	}
@@ -509,7 +509,7 @@ func (obsClient ObsClient) SetBucketLoggingConfiguration(input *SetBucketLogging
 // GetBucketLoggingConfiguration gets the logging settings of a bucket.
 //
 // You can use this API to obtain the access logging settings of a bucket.
-func (obsClient ObsClient) GetBucketLoggingConfiguration(bucketName string, extensions ...extensionOptions) (output *GetBucketLoggingConfigurationOutput, err error) {
+func (obsClient ObsClient) GetBucketLoggingConfiguration(bucketName string, extensions ...ExtensionOptions) (output *GetBucketLoggingConfigurationOutput, err error) {
 	output = &GetBucketLoggingConfigurationOutput{}
 	err = obsClient.doActionWithBucket("GetBucketLoggingConfiguration", HTTP_GET, bucketName, newSubResourceSerial(SubResourceLogging), output, extensions)
 	if err != nil {
@@ -522,7 +522,7 @@ func (obsClient ObsClient) GetBucketLoggingConfiguration(bucketName string, exte
 //
 // You can use this API to set lifecycle rules for a bucket, to periodically transit
 // storage classes of objects and delete objects in the bucket.
-func (obsClient ObsClient) SetBucketLifecycleConfiguration(input *SetBucketLifecycleConfigurationInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetBucketLifecycleConfiguration(input *SetBucketLifecycleConfigurationInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("SetBucketLifecycleConfigurationInput is nil")
 	}
@@ -537,7 +537,7 @@ func (obsClient ObsClient) SetBucketLifecycleConfiguration(input *SetBucketLifec
 // GetBucketLifecycleConfiguration gets lifecycle rules of a bucket.
 //
 // You can use this API to obtain the lifecycle rules of a bucket.
-func (obsClient ObsClient) GetBucketLifecycleConfiguration(bucketName string, extensions ...extensionOptions) (output *GetBucketLifecycleConfigurationOutput, err error) {
+func (obsClient ObsClient) GetBucketLifecycleConfiguration(bucketName string, extensions ...ExtensionOptions) (output *GetBucketLifecycleConfigurationOutput, err error) {
 	output = &GetBucketLifecycleConfigurationOutput{}
 	err = obsClient.doActionWithBucket("GetBucketLifecycleConfiguration", HTTP_GET, bucketName, newSubResourceSerial(SubResourceLifecycle), output, extensions)
 	if err != nil {
@@ -549,7 +549,7 @@ func (obsClient ObsClient) GetBucketLifecycleConfiguration(bucketName string, ex
 // DeleteBucketLifecycleConfiguration deletes lifecycle rules of a bucket.
 //
 // You can use this API to delete all lifecycle rules of a bucket.
-func (obsClient ObsClient) DeleteBucketLifecycleConfiguration(bucketName string, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) DeleteBucketLifecycleConfiguration(bucketName string, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	output = &BaseModel{}
 	err = obsClient.doActionWithBucket("DeleteBucketLifecycleConfiguration", HTTP_DELETE, bucketName, newSubResourceSerial(SubResourceLifecycle), output, extensions)
 	if err != nil {
@@ -561,7 +561,7 @@ func (obsClient ObsClient) DeleteBucketLifecycleConfiguration(bucketName string,
 // SetBucketEncryption sets the default server-side encryption for a bucket.
 //
 // You can use this API to create or update the default server-side encryption for a bucket.
-func (obsClient ObsClient) SetBucketEncryption(input *SetBucketEncryptionInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetBucketEncryption(input *SetBucketEncryptionInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("SetBucketEncryptionInput is nil")
 	}
@@ -576,7 +576,7 @@ func (obsClient ObsClient) SetBucketEncryption(input *SetBucketEncryptionInput, 
 // GetBucketEncryption gets the encryption configuration of a bucket.
 //
 // You can use this API to obtain obtain the encryption configuration of a bucket.
-func (obsClient ObsClient) GetBucketEncryption(bucketName string, extensions ...extensionOptions) (output *GetBucketEncryptionOutput, err error) {
+func (obsClient ObsClient) GetBucketEncryption(bucketName string, extensions ...ExtensionOptions) (output *GetBucketEncryptionOutput, err error) {
 	output = &GetBucketEncryptionOutput{}
 	err = obsClient.doActionWithBucket("GetBucketEncryption", HTTP_GET, bucketName, newSubResourceSerial(SubResourceEncryption), output, extensions)
 	if err != nil {
@@ -588,7 +588,7 @@ func (obsClient ObsClient) GetBucketEncryption(bucketName string, extensions ...
 // DeleteBucketEncryption deletes the encryption configuration of a bucket.
 //
 // You can use this API to delete the encryption configuration of a bucket.
-func (obsClient ObsClient) DeleteBucketEncryption(bucketName string, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) DeleteBucketEncryption(bucketName string, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	output = &BaseModel{}
 	err = obsClient.doActionWithBucket("DeleteBucketEncryption", HTTP_DELETE, bucketName, newSubResourceSerial(SubResourceEncryption), output, extensions)
 	if err != nil {
@@ -600,7 +600,7 @@ func (obsClient ObsClient) DeleteBucketEncryption(bucketName string, extensions 
 // SetBucketTagging sets bucket tags.
 //
 // You can use this API to set bucket tags.
-func (obsClient ObsClient) SetBucketTagging(input *SetBucketTaggingInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetBucketTagging(input *SetBucketTaggingInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("SetBucketTaggingInput is nil")
 	}
@@ -615,7 +615,7 @@ func (obsClient ObsClient) SetBucketTagging(input *SetBucketTaggingInput, extens
 // GetBucketTagging gets bucket tags.
 //
 // You can use this API to obtain the tags of a specified bucket.
-func (obsClient ObsClient) GetBucketTagging(bucketName string, extensions ...extensionOptions) (output *GetBucketTaggingOutput, err error) {
+func (obsClient ObsClient) GetBucketTagging(bucketName string, extensions ...ExtensionOptions) (output *GetBucketTaggingOutput, err error) {
 	output = &GetBucketTaggingOutput{}
 	err = obsClient.doActionWithBucket("GetBucketTagging", HTTP_GET, bucketName, newSubResourceSerial(SubResourceTagging), output, extensions)
 	if err != nil {
@@ -627,7 +627,7 @@ func (obsClient ObsClient) GetBucketTagging(bucketName string, extensions ...ext
 // DeleteBucketTagging deletes bucket tags.
 //
 // You can use this API to delete the tags of a specified bucket.
-func (obsClient ObsClient) DeleteBucketTagging(bucketName string, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) DeleteBucketTagging(bucketName string, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	output = &BaseModel{}
 	err = obsClient.doActionWithBucket("DeleteBucketTagging", HTTP_DELETE, bucketName, newSubResourceSerial(SubResourceTagging), output, extensions)
 	if err != nil {
@@ -640,7 +640,7 @@ func (obsClient ObsClient) DeleteBucketTagging(bucketName string, extensions ...
 //
 // You can use this API to configure event notification for a bucket. You will be notified of all
 // specified operations performed on the bucket.
-func (obsClient ObsClient) SetBucketNotification(input *SetBucketNotificationInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetBucketNotification(input *SetBucketNotificationInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("SetBucketNotificationInput is nil")
 	}
@@ -655,7 +655,7 @@ func (obsClient ObsClient) SetBucketNotification(input *SetBucketNotificationInp
 // GetBucketNotification gets event notification settings of a bucket.
 //
 // You can use this API to obtain the event notification configuration of a bucket.
-func (obsClient ObsClient) GetBucketNotification(bucketName string, extensions ...extensionOptions) (output *GetBucketNotificationOutput, err error) {
+func (obsClient ObsClient) GetBucketNotification(bucketName string, extensions ...ExtensionOptions) (output *GetBucketNotificationOutput, err error) {
 	if obsClient.conf.signature != SignatureObs {
 		return obsClient.getBucketNotificationS3(bucketName, extensions)
 	}
@@ -667,7 +667,7 @@ func (obsClient ObsClient) GetBucketNotification(bucketName string, extensions .
 	return
 }
 
-func (obsClient ObsClient) getBucketNotificationS3(bucketName string, extensions []extensionOptions) (output *GetBucketNotificationOutput, err error) {
+func (obsClient ObsClient) getBucketNotificationS3(bucketName string, extensions []ExtensionOptions) (output *GetBucketNotificationOutput, err error) {
 	outputS3 := &getBucketNotificationOutputS3{}
 	err = obsClient.doActionWithBucket("GetBucketNotification", HTTP_GET, bucketName, newSubResourceSerial(SubResourceNotification), outputS3, extensions)
 	if err != nil {
@@ -695,7 +695,7 @@ func (obsClient ObsClient) getBucketNotificationS3(bucketName string, extensions
 }
 
 // SetBucketRequestPayment sets requester-pays setting for a bucket.
-func (obsClient ObsClient) SetBucketRequestPayment(input *SetBucketRequestPaymentInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetBucketRequestPayment(input *SetBucketRequestPaymentInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("SetBucketRequestPaymentInput is nil")
 	}
@@ -708,7 +708,7 @@ func (obsClient ObsClient) SetBucketRequestPayment(input *SetBucketRequestPaymen
 }
 
 // GetBucketRequestPayment gets requester-pays setting of a bucket.
-func (obsClient ObsClient) GetBucketRequestPayment(bucketName string, extensions ...extensionOptions) (output *GetBucketRequestPaymentOutput, err error) {
+func (obsClient ObsClient) GetBucketRequestPayment(bucketName string, extensions ...ExtensionOptions) (output *GetBucketRequestPaymentOutput, err error) {
 	output = &GetBucketRequestPaymentOutput{}
 	err = obsClient.doActionWithBucket("GetBucketRequestPayment", HTTP_GET, bucketName, newSubResourceSerial(SubResourceRequestPayment), output, extensions)
 	if err != nil {
@@ -720,7 +720,7 @@ func (obsClient ObsClient) GetBucketRequestPayment(bucketName string, extensions
 // SetBucketFetchPolicy sets the bucket fetch policy.
 //
 // You can use this API to set a bucket fetch policy.
-func (obsClient ObsClient) SetBucketFetchPolicy(input *SetBucketFetchPolicyInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) SetBucketFetchPolicy(input *SetBucketFetchPolicyInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("SetBucketFetchPolicyInput is nil")
 	}
@@ -741,7 +741,7 @@ func (obsClient ObsClient) SetBucketFetchPolicy(input *SetBucketFetchPolicyInput
 // GetBucketFetchPolicy gets the bucket fetch policy.
 //
 // You can use this API to obtain the fetch policy of a bucket.
-func (obsClient ObsClient) GetBucketFetchPolicy(input *GetBucketFetchPolicyInput, extensions ...extensionOptions) (output *GetBucketFetchPolicyOutput, err error) {
+func (obsClient ObsClient) GetBucketFetchPolicy(input *GetBucketFetchPolicyInput, extensions ...ExtensionOptions) (output *GetBucketFetchPolicyOutput, err error) {
 	if input == nil {
 		return nil, errors.New("GetBucketFetchPolicyInput is nil")
 	}
@@ -756,7 +756,7 @@ func (obsClient ObsClient) GetBucketFetchPolicy(input *GetBucketFetchPolicyInput
 // DeleteBucketFetchPolicy deletes the bucket fetch policy.
 //
 // You can use this API to delete the fetch policy of a bucket.
-func (obsClient ObsClient) DeleteBucketFetchPolicy(input *DeleteBucketFetchPolicyInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+func (obsClient ObsClient) DeleteBucketFetchPolicy(input *DeleteBucketFetchPolicyInput, extensions ...ExtensionOptions) (output *BaseModel, err error) {
 	if input == nil {
 		return nil, errors.New("DeleteBucketFetchPolicyInput is nil")
 	}
@@ -771,7 +771,7 @@ func (obsClient ObsClient) DeleteBucketFetchPolicy(input *DeleteBucketFetchPolic
 // SetBucketFetchJob sets the bucket fetch job.
 //
 // You can use this API to set a bucket fetch job.
-func (obsClient ObsClient) SetBucketFetchJob(input *SetBucketFetchJobInput, extensions ...extensionOptions) (output *SetBucketFetchJobOutput, err error) {
+func (obsClient ObsClient) SetBucketFetchJob(input *SetBucketFetchJobInput, extensions ...ExtensionOptions) (output *SetBucketFetchJobOutput, err error) {
 	if input == nil {
 		return nil, errors.New("SetBucketFetchJobInput is nil")
 	}
@@ -789,7 +789,7 @@ func (obsClient ObsClient) SetBucketFetchJob(input *SetBucketFetchJobInput, exte
 // GetBucketFetchJob gets the bucket fetch job.
 //
 // You can use this API to obtain the fetch job of a bucket.
-func (obsClient ObsClient) GetBucketFetchJob(input *GetBucketFetchJobInput, extensions ...extensionOptions) (output *GetBucketFetchJobOutput, err error) {
+func (obsClient ObsClient) GetBucketFetchJob(input *GetBucketFetchJobInput, extensions ...ExtensionOptions) (output *GetBucketFetchJobOutput, err error) {
 	if input == nil {
 		return nil, errors.New("GetBucketFetchJobInput is nil")
 	}

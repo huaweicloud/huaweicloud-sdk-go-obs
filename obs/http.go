@@ -53,29 +53,29 @@ func prepareHeaders(headers map[string][]string, meta bool, isObs bool) map[stri
 	return _headers
 }
 
-func (obsClient ObsClient) doActionWithoutBucket(action, method string, input ISerializable, output IBaseModel, extensions []extensionOptions) error {
+func (obsClient ObsClient) doActionWithoutBucket(action, method string, input ISerializable, output IBaseModel, extensions []ExtensionOptions) error {
 	return obsClient.doAction(action, method, "", "", input, output, true, true, extensions)
 }
 
-func (obsClient ObsClient) doActionWithBucketV2(action, method, bucketName string, input ISerializable, output IBaseModel, extensions []extensionOptions) error {
+func (obsClient ObsClient) doActionWithBucketV2(action, method, bucketName string, input ISerializable, output IBaseModel, extensions []ExtensionOptions) error {
 	if strings.TrimSpace(bucketName) == "" && !obsClient.conf.cname {
 		return errors.New("Bucket is empty")
 	}
 	return obsClient.doAction(action, method, bucketName, "", input, output, false, true, extensions)
 }
 
-func (obsClient ObsClient) doActionWithBucket(action, method, bucketName string, input ISerializable, output IBaseModel, extensions []extensionOptions) error {
+func (obsClient ObsClient) doActionWithBucket(action, method, bucketName string, input ISerializable, output IBaseModel, extensions []ExtensionOptions) error {
 	if strings.TrimSpace(bucketName) == "" && !obsClient.conf.cname {
 		return errors.New("Bucket is empty")
 	}
 	return obsClient.doAction(action, method, bucketName, "", input, output, true, true, extensions)
 }
 
-func (obsClient ObsClient) doActionWithBucketAndKey(action, method, bucketName, objectKey string, input ISerializable, output IBaseModel, extensions []extensionOptions) error {
+func (obsClient ObsClient) doActionWithBucketAndKey(action, method, bucketName, objectKey string, input ISerializable, output IBaseModel, extensions []ExtensionOptions) error {
 	return obsClient._doActionWithBucketAndKey(action, method, bucketName, objectKey, input, output, true, extensions)
 }
 
-func (obsClient ObsClient) doActionWithBucketAndKeyV2(action, method, bucketName, objectKey string, input ISerializable, output IBaseModel, extensions []extensionOptions) error {
+func (obsClient ObsClient) doActionWithBucketAndKeyV2(action, method, bucketName, objectKey string, input ISerializable, output IBaseModel, extensions []ExtensionOptions) error {
 	if strings.TrimSpace(bucketName) == "" && !obsClient.conf.cname {
 		return errors.New("Bucket is empty")
 	}
@@ -85,11 +85,11 @@ func (obsClient ObsClient) doActionWithBucketAndKeyV2(action, method, bucketName
 	return obsClient.doAction(action, method, bucketName, objectKey, input, output, false, true, extensions)
 }
 
-func (obsClient ObsClient) doActionWithBucketAndKeyUnRepeatable(action, method, bucketName, objectKey string, input ISerializable, output IBaseModel, extensions []extensionOptions) error {
+func (obsClient ObsClient) doActionWithBucketAndKeyUnRepeatable(action, method, bucketName, objectKey string, input ISerializable, output IBaseModel, extensions []ExtensionOptions) error {
 	return obsClient._doActionWithBucketAndKey(action, method, bucketName, objectKey, input, output, false, extensions)
 }
 
-func (obsClient ObsClient) _doActionWithBucketAndKey(action, method, bucketName, objectKey string, input ISerializable, output IBaseModel, repeatable bool, extensions []extensionOptions) error {
+func (obsClient ObsClient) _doActionWithBucketAndKey(action, method, bucketName, objectKey string, input ISerializable, output IBaseModel, repeatable bool, extensions []ExtensionOptions) error {
 	if strings.TrimSpace(bucketName) == "" && !obsClient.conf.cname {
 		return errors.New("Bucket is empty")
 	}
@@ -99,7 +99,7 @@ func (obsClient ObsClient) _doActionWithBucketAndKey(action, method, bucketName,
 	return obsClient.doAction(action, method, bucketName, objectKey, input, output, true, repeatable, extensions)
 }
 
-func (obsClient ObsClient) doAction(action, method, bucketName, objectKey string, input ISerializable, output IBaseModel, xmlResult bool, repeatable bool, extensions []extensionOptions) error {
+func (obsClient ObsClient) doAction(action, method, bucketName, objectKey string, input ISerializable, output IBaseModel, xmlResult bool, repeatable bool, extensions []ExtensionOptions) error {
 
 	var resp *http.Response
 	var respError error
@@ -121,7 +121,7 @@ func (obsClient ObsClient) doAction(action, method, bucketName, objectKey string
 	}
 
 	for _, extension := range extensions {
-		if extensionHeader, ok := extension.(extensionHeaders); ok {
+		if extensionHeader, ok := extension.(ExtensionHeaders); ok {
 			if _err := extensionHeader(headers, isObs); err != nil {
 				doLog(LEVEL_INFO, fmt.Sprintf("set header with error: %v", _err))
 			}

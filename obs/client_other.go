@@ -17,7 +17,7 @@ import (
 )
 
 // Refresh refreshes ak, sk and securityToken for obsClient.
-func (obsClient ObsClient) Refresh(ak, sk, securityToken string) {
+func (obsClient ObsClient) refresh(ak, sk, securityToken string) {
 	for _, sp := range obsClient.conf.securityProviders {
 		if bsp, ok := sp.(*BasicSecurityProvider); ok {
 			bsp.refresh(strings.TrimSpace(ak), strings.TrimSpace(sk), strings.TrimSpace(securityToken))
@@ -42,7 +42,7 @@ func (obsClient ObsClient) getSecurity() securityHolder {
 }
 
 // Close closes ObsClient.
-func (obsClient *ObsClient) Close() {
+func (obsClient *ObsClient) close() {
 	obsClient.httpClient = nil
 	obsClient.conf.transport.CloseIdleConnections()
 	obsClient.conf = nil
