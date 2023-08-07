@@ -16,12 +16,13 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
-	"examples"
 	"fmt"
-	"obs"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/huaweicloud/huaweicloud-sdk-go-obs/examples"
+	"github.com/huaweicloud/huaweicloud-sdk-go-obs/obs"
 )
 
 const (
@@ -1302,7 +1303,7 @@ func putObjectWithCallback() {
 	// callbackMap["callbackBodyType"] = "application/x-www-form-urlencoded"
 	callbackBuffer := bytes.NewBuffer([]byte{})
 	callbackEncoder := json.NewEncoder(callbackBuffer)
-	//do not encode '&' to "\u0026"
+	// do not encode '&' to "\u0026"
 	callbackEncoder.SetEscapeHTML(false)
 	err := callbackEncoder.Encode(callbackMap)
 	if err != nil {
@@ -1622,14 +1623,14 @@ func runExamples() {
 }
 
 func main() {
-	//---- init log ----
+	// ---- init log ----
 	defer obs.CloseLog()
 	obs.InitLog("/temp/OBS-SDK.log", 1024*1024*100, 5, obs.LEVEL_WARN, false)
 
-	//---- run examples----
+	// ---- run examples----
 	//	runExamples()
 
-	//---- bucket related APIs ----
+	// ---- bucket related APIs ----
 	//	createBucket()
 	//  listBuckets()
 	//	obs.FlushLog()
@@ -1682,7 +1683,7 @@ func main() {
 	//  renameFolder()
 	//  renameFile()
 
-	//---- object related APIs ----
+	// ---- object related APIs ----
 	//  deleteObject()
 	//  deleteObjects()
 	//  setObjectAcl()

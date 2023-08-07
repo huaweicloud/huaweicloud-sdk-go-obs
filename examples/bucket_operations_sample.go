@@ -15,13 +15,15 @@
  * (such as do bucket ACL/CORS/Lifecycle/Logging/Website/Location/Tagging)
  * on OBS using the OBS SDK for Go.
  */
+
 package examples
 
 import (
 	"fmt"
-	"obs"
 	"strings"
 	"time"
+
+	"github.com/huaweicloud/huaweicloud-sdk-go-obs/obs"
 )
 
 type BucketOperationsSample struct {
@@ -101,7 +103,7 @@ func (sample BucketOperationsSample) DoBucketVersioningOperation() {
 	input.Bucket = sample.bucketName
 	input.Status = obs.VersioningStatusEnabled
 	_, err = sample.obsClient.SetBucketVersioning(input)
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 
@@ -117,7 +119,7 @@ func (sample BucketOperationsSample) DoBucketVersioningOperation() {
 	input.Bucket = sample.bucketName
 	input.Status = obs.VersioningStatusSuspended
 	_, err = sample.obsClient.SetBucketVersioning(input)
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 
@@ -185,7 +187,7 @@ func (sample BucketOperationsSample) DoBucketCorsOperation() {
 	fmt.Println()
 
 	output, err := sample.obsClient.GetBucketCors(sample.bucketName)
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 	for index, corsRule := range output.CorsRules {
@@ -341,7 +343,7 @@ func (sample BucketOperationsSample) DoBucketLoggingOperation() {
 	fmt.Println()
 
 	output, err := sample.obsClient.GetBucketLoggingConfiguration(sample.bucketName)
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 	fmt.Printf("TargetBucket:%s, TargetPrefix:%s\n", output.TargetBucket, output.TargetPrefix)

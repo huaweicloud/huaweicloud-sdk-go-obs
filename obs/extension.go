@@ -18,10 +18,10 @@ import (
 	"strings"
 )
 
-type extensionOptions interface{}
-type extensionHeaders func(headers map[string][]string, isObs bool) error
+type ExtensionOptions interface{}
+type ExtensionHeaders func(headers map[string][]string, isObs bool) error
 
-func setHeaderPrefix(key string, value string) extensionHeaders {
+func setHeaderPrefix(key string, value string) ExtensionHeaders {
 	return func(headers map[string][]string, isObs bool) error {
 		if strings.TrimSpace(value) == "" {
 			return fmt.Errorf("set header %s with empty value", key)
@@ -32,19 +32,19 @@ func setHeaderPrefix(key string, value string) extensionHeaders {
 }
 
 // WithReqPaymentHeader sets header for requester-pays
-func WithReqPaymentHeader(requester PayerType) extensionHeaders {
+func WithReqPaymentHeader(requester PayerType) ExtensionHeaders {
 	return setHeaderPrefix(REQUEST_PAYER, string(requester))
 }
 
-func WithTrafficLimitHeader(trafficLimit int64) extensionHeaders {
+func WithTrafficLimitHeader(trafficLimit int64) ExtensionHeaders {
 	return setHeaderPrefix(TRAFFIC_LIMIT, strconv.FormatInt(trafficLimit, 10))
 }
 
-func WithCallbackHeader(callback string) extensionHeaders {
+func WithCallbackHeader(callback string) ExtensionHeaders {
 	return setHeaderPrefix(CALLBACK, string(callback))
 }
 
-func WithCustomHeader(key string, value string) extensionHeaders {
+func WithCustomHeader(key string, value string) ExtensionHeaders {
 	return func(headers map[string][]string, isObs bool) error {
 		if strings.TrimSpace(value) == "" {
 			return fmt.Errorf("set header %s with empty value", key)

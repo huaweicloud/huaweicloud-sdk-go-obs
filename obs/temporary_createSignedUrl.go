@@ -18,7 +18,7 @@ import (
 )
 
 // CreateSignedUrl creates signed url with the specified CreateSignedUrlInput, and returns the CreateSignedUrlOutput and error
-func (obsClient ObsClient) CreateSignedUrl(input *CreateSignedUrlInput, extensions ...extensionOptions) (output *CreateSignedUrlOutput, err error) {
+func (obsClient ObsClient) CreateSignedUrl(input *CreateSignedUrlInput, extensions ...ExtensionOptions) (output *CreateSignedUrlOutput, err error) {
 	if input == nil {
 		return nil, errors.New("CreateSignedUrlInput is nil")
 	}
@@ -38,7 +38,7 @@ func (obsClient ObsClient) CreateSignedUrl(input *CreateSignedUrlInput, extensio
 	}
 
 	for _, extension := range extensions {
-		if extensionHeader, ok := extension.(extensionHeaders); ok {
+		if extensionHeader, ok := extension.(ExtensionHeaders); ok {
 			_err := extensionHeader(headers, obsClient.conf.signature == SignatureObs)
 			if _err != nil {
 				doLog(LEVEL_INFO, fmt.Sprintf("set header with error: %v", _err))
