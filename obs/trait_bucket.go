@@ -18,6 +18,13 @@ import (
 )
 
 func (input ListBucketsInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params = make(map[string]string)
+	if input.MaxKeys > 0 {
+		params["max-keys"] = IntToString(input.MaxKeys)
+	}
+	if input.Marker != "" {
+		params["marker"] = input.Marker
+	}
 	headers = make(map[string][]string)
 	if input.QueryLocation && !isObs {
 		setHeaders(headers, HEADER_LOCATION_AMZ, []string{"true"}, isObs)

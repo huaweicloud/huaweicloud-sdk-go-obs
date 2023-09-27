@@ -21,6 +21,11 @@ import (
 type extensionOptions interface{}
 type extensionHeaders func(headers map[string][]string, isObs bool) error
 
+func WithProgress(progressListener ProgressListener) configurer {
+	return func(conf *config) {
+		conf.progressListener = progressListener
+	}
+}
 func setHeaderPrefix(key string, value string) extensionHeaders {
 	return func(headers map[string][]string, isObs bool) error {
 		if strings.TrimSpace(value) == "" {

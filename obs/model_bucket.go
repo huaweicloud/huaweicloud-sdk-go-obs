@@ -55,14 +55,20 @@ type Domain struct {
 type ListBucketsInput struct {
 	QueryLocation bool
 	BucketType    BucketType
+	MaxKeys       int
+	Marker        string
 }
 
 // ListBucketsOutput is the result of ListBuckets function
 type ListBucketsOutput struct {
 	BaseModel
-	XMLName xml.Name `xml:"ListAllMyBucketsResult"`
-	Owner   Owner    `xml:"Owner"`
-	Buckets []Bucket `xml:"Buckets>Bucket"`
+	XMLName     xml.Name `xml:"ListAllMyBucketsResult"`
+	Owner       Owner    `xml:"Owner"`
+	Buckets     []Bucket `xml:"Buckets>Bucket"`
+	IsTruncated bool     `xml:"IsTruncated"`
+	Marker      string   `xml:"Marker"`
+	NextMarker  string   `xml:"NextMarker"`
+	MaxKeys     int      `xml:"MaxKeys"`
 }
 
 // CreateBucketInput is the input parameter of CreateBucket function
@@ -222,15 +228,11 @@ type SetObjectMetadataInput struct {
 	Key                     string
 	VersionId               string
 	MetadataDirective       MetadataDirectiveType
-	CacheControl            string
-	ContentDisposition      string
-	ContentEncoding         string
-	ContentLanguage         string
-	ContentType             string
 	Expires                 string
 	WebsiteRedirectLocation string
 	StorageClass            StorageClassType
 	Metadata                map[string]string
+	HttpHeader
 }
 
 //SetObjectMetadataOutput is the result of SetObjectMetadata function
@@ -260,7 +262,7 @@ type GetBucketMetadataOutput struct {
 	MaxAgeSeconds    int
 	ExposeHeader     string
 	Epid             string
-	AZRedundancy     string
+	AZRedundancy     AvailableZoneType
 	FSStatus         FSStatusType
 	BucketRedundancy BucketRedundancyType
 }

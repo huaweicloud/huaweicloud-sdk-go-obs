@@ -16,6 +16,10 @@ import (
 	"io"
 )
 
+type IRepeatable interface {
+	Reset() error
+}
+
 // IReadCloser defines interface with function: setReadCloser
 type IReadCloser interface {
 	setReadCloser(body io.ReadCloser)

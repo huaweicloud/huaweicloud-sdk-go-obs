@@ -49,6 +49,8 @@ const (
 	HEADER_GRANT_READ_DELIVERED_OBS         = "grant-read-delivered"
 	HEADER_GRANT_FULL_CONTROL_DELIVERED_OBS = "grant-full-control-delivered"
 	HEADER_REQUEST_ID                       = "request-id"
+	HEADER_ERROR_CODE                       = "error-code"
+	HEADER_ERROR_MESSAGE                    = "error-message"
 	HEADER_BUCKET_REGION                    = "bucket-region"
 	HEADER_ACCESS_CONRTOL_ALLOW_ORIGIN      = "access-control-allow-origin"
 	HEADER_ACCESS_CONRTOL_ALLOW_HEADERS     = "access-control-allow-headers"
@@ -130,6 +132,7 @@ const (
 	HEADER_CONTENT_ENCODING_CAMEL              = "Content-Encoding"
 	HEADER_CONTENT_LANGUAGE_CAMEL              = "Content-Language"
 	HEADER_EXPIRES_CAMEL                       = "Expires"
+	HEADER_ACCEPT_ENCODING                     = "Accept-Encoding"
 
 	PARAM_VERSION_ID                   = "versionId"
 	PARAM_RESPONSE_CONTENT_TYPE        = "response-content-type"
@@ -157,7 +160,6 @@ const (
 	DEFAULT_MAX_RETRY_COUNT      = 3
 	DEFAULT_MAX_REDIRECT_COUNT   = 3
 	DEFAULT_MAX_CONN_PER_HOST    = 1000
-	EMPTY_CONTENT_SHA256         = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 	UNSIGNED_PAYLOAD             = "UNSIGNED-PAYLOAD"
 	LONG_DATE_FORMAT             = "20060102T150405Z"
 	SHORT_DATE_FORMAT            = "20060102"
@@ -195,6 +197,11 @@ const (
 	MIN_PART_SIZE     = 100 * 1024
 	DEFAULT_PART_SIZE = 9 * 1024 * 1024
 	MAX_PART_NUM      = 10000
+
+	GET_OBJECT    = "GetObject"
+	PUT_OBJECT    = "PutObject"
+	PUT_FILE      = "PutFile"
+	APPEND_OBJECT = "AppendObject"
 )
 
 var (
@@ -224,6 +231,16 @@ var (
 		"if-none-match":                  true,
 		"last-modified":                  true,
 		"content-range":                  true,
+		"accept-encoding":                true,
+	}
+
+	allowedLogResponseHTTPHeaderNames = map[string]bool{
+		"content-type":   true,
+		"etag":           true,
+		"connection":     true,
+		"content-length": true,
+		"date":           true,
+		"server":         true,
 	}
 
 	allowedResourceParameterNames = map[string]bool{

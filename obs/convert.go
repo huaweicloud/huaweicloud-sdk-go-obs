@@ -348,11 +348,24 @@ func convertTransitionsToXML(transitions []Transition, isObs bool) string {
 	return ""
 }
 
+func converLifeCycleFilterToXML(filter LifecycleFilter) string {
+	if filter.Prefix == "" && len(filter.Tags) == 0 {
+		return ""
+	}
+	data, err := TransToXml(filter)
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
 func convertExpirationToXML(expiration Expiration) string {
 	if expiration.Days > 0 {
 		return fmt.Sprintf("<Expiration><Days>%d</Days></Expiration>", expiration.Days)
 	} else if !expiration.Date.IsZero() {
 		return fmt.Sprintf("<Expiration><Date>%s</Date></Expiration>", expiration.Date.UTC().Format(ISO8601_MIDNIGHT_DATE_FORMAT))
+	} else if expiration.ExpiredObjectDeleteMarker != "" {
+		return fmt.Sprintf("<Expiration><ExpiredObjectDeleteMarker>%s</ExpiredObjectDeleteMarker></Expiration>", expiration.ExpiredObjectDeleteMarker)
 	}
 	return ""
 }
@@ -385,6 +398,13 @@ func convertNoncurrentVersionExpirationToXML(noncurrentVersionExpiration Noncurr
 	return ""
 }
 
+func convertAbortIncompleteMultipartUploadToXML(abortIncompleteMultipartUpload AbortIncompleteMultipartUpload) string {
+	if abortIncompleteMultipartUpload.DaysAfterInitiation > 0 {
+		return fmt.Sprintf("<AbortIncompleteMultipartUpload><DaysAfterInitiation>%d</DaysAfterInitiation></AbortIncompleteMultipartUpload>", abortIncompleteMultipartUpload.DaysAfterInitiation)
+	}
+	return ""
+}
+
 // ConvertLifecyleConfigurationToXml converts BucketLifecyleConfiguration value to XML data and returns it
 func ConvertLifecyleConfigurationToXml(input BucketLifecyleConfiguration, returnMd5 bool, isObs bool) (data string, md5 string) {
 	xml := make([]string, 0, 2+len(input.LifecycleRules)*9)
@@ -396,8 +416,13 @@ func ConvertLifecyleConfigurationToXml(input BucketLifecyleConfiguration, return
 			xml = append(xml, fmt.Sprintf("<ID>%s</ID>", lifecyleRuleID))
 		}
 		lifecyleRulePrefix := XmlTranscoding(lifecyleRule.Prefix)
-		xml = append(xml, fmt.Sprintf("<Prefix>%s</Prefix>", lifecyleRulePrefix))
+		if lifecyleRulePrefix != "" {
+			xml = append(xml, fmt.Sprintf("<Prefix>%s</Prefix>", lifecyleRulePrefix))
+		}
 		xml = append(xml, fmt.Sprintf("<Status>%s</Status>", lifecyleRule.Status))
+		if ret := converLifeCycleFilterToXML(lifecyleRule.Filter); ret != "" {
+			xml = append(xml, ret)
+		}
 		if ret := convertTransitionsToXML(lifecyleRule.Transitions, isObs); ret != "" {
 			xml = append(xml, ret)
 		}
@@ -408,6 +433,9 @@ func ConvertLifecyleConfigurationToXml(input BucketLifecyleConfiguration, return
 			xml = append(xml, ret)
 		}
 		if ret := convertNoncurrentVersionExpirationToXML(lifecyleRule.NoncurrentVersionExpiration); ret != "" {
+			xml = append(xml, ret)
+		}
+		if ret := convertAbortIncompleteMultipartUploadToXML(lifecyleRule.AbortIncompleteMultipartUpload); ret != "" {
 			xml = append(xml, ret)
 		}
 		xml = append(xml, "</Rule>")
@@ -749,6 +777,17 @@ func ParseCopyPartOutput(output *CopyPartOutput) {
 	output.SseHeader = parseSseHeader(output.ResponseHeaders)
 }
 
+// ParseStringToAvailableZoneType converts string value to AvailableZoneType value and returns it
+func ParseStringToAvailableZoneType(value string) (ret AvailableZoneType) {
+	switch value {
+	case "3az":
+		ret = AvailableZoneMultiAz
+	default:
+		ret = ""
+	}
+	return
+}
+
 // ParseGetBucketMetadataOutput sets GetBucketMetadataOutput field values with response headers
 func ParseGetBucketMetadataOutput(output *GetBucketMetadataOutput) {
 	output.AllowOrigin, output.AllowHeader, output.AllowMethod, output.ExposeHeader, output.MaxAgeSeconds = parseCorsHeader(output.BaseModel)
@@ -769,7 +808,7 @@ func ParseGetBucketMetadataOutput(output *GetBucketMetadataOutput) {
 		output.Epid = ret[0]
 	}
 	if ret, ok := output.ResponseHeaders[HEADER_AZ_REDUNDANCY]; ok {
-		output.AZRedundancy = ret[0]
+		output.AZRedundancy = ParseStringToAvailableZoneType(ret[0])
 	}
 	if ret, ok := output.ResponseHeaders[HEADER_BUCKET_REDUNDANCY]; ok {
 		output.BucketRedundancy = parseStringToBucketRedundancy(ret[0])
@@ -866,9 +905,6 @@ func ParseGetObjectOutput(output *GetObjectOutput) {
 func ConvertRequestToIoReaderV2(req interface{}) (io.Reader, string, error) {
 	data, err := TransToXml(req)
 	if err == nil {
-		if isDebugLogEnabled() {
-			doLog(LEVEL_DEBUG, "Do http request with data: %s", string(data))
-		}
 		return bytes.NewReader(data), Base64Md5(data), nil
 	}
 	return nil, "", err
@@ -878,9 +914,6 @@ func ConvertRequestToIoReaderV2(req interface{}) (io.Reader, string, error) {
 func ConvertRequestToIoReader(req interface{}) (io.Reader, error) {
 	body, err := TransToXml(req)
 	if err == nil {
-		if isDebugLogEnabled() {
-			doLog(LEVEL_DEBUG, "Do http request with data: %s", string(body))
-		}
 		return bytes.NewReader(body), nil
 	}
 	return nil, err
@@ -965,6 +998,13 @@ func ParseResponseToObsError(resp *http.Response, isObs bool) error {
 		doLog(LEVEL_WARN, "Parse response to BaseModel with error: %v", respError)
 	}
 	obsError.Status = resp.Status
+	responseHeaders := cleanHeaderPrefix(resp.Header)
+	if values, ok := responseHeaders[HEADER_ERROR_MESSAGE]; ok {
+		obsError.Message = values[0]
+	}
+	if values, ok := responseHeaders[HEADER_ERROR_CODE]; ok {
+		obsError.Code = values[0]
+	}
 	return obsError
 }
 

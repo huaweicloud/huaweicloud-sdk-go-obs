@@ -359,7 +359,7 @@ func setBucketCors() {
 	var corsRules [2]obs.CorsRule
 	corsRule0 := obs.CorsRule{}
 	corsRule0.ID = "rule1"
-	corsRule0.AllowedOrigin = []string{"http://www.a.com", "http://www.b.com"}
+	corsRule0.AllowedOrigin = []string{"***"}
 	corsRule0.AllowedMethod = []string{"GET", "PUT", "POST", "HEAD"}
 	corsRule0.AllowedHeader = []string{"header1", "header2"}
 	corsRule0.MaxAgeSeconds = 100
@@ -368,7 +368,7 @@ func setBucketCors() {
 	corsRule1 := obs.CorsRule{}
 
 	corsRule1.ID = "rule2"
-	corsRule1.AllowedOrigin = []string{"http://www.c.com", "http://www.d.com"}
+	corsRule1.AllowedOrigin = []string{"***"}
 	corsRule1.AllowedMethod = []string{"GET", "PUT", "POST", "HEAD"}
 	corsRule1.AllowedHeader = []string{"header3", "header4"}
 	corsRule1.MaxAgeSeconds = 50
@@ -580,7 +580,7 @@ func getBucketLoggingConfiguration() {
 func setBucketWebsiteConfiguration() {
 	input := &obs.SetBucketWebsiteConfigurationInput{}
 	input.Bucket = bucketName
-	//	input.RedirectAllRequestsTo.HostName = "www.a.com"
+	//	input.RedirectAllRequestsTo.HostName = "***"
 	//	input.RedirectAllRequestsTo.Protocol = obs.ProtocolHttp
 	input.IndexDocument.Suffix = "suffix"
 	input.ErrorDocument.Key = "key"
@@ -588,7 +588,7 @@ func setBucketWebsiteConfiguration() {
 	var routingRules [2]obs.RoutingRule
 	routingRule0 := obs.RoutingRule{}
 
-	routingRule0.Redirect.HostName = "www.a.com"
+	routingRule0.Redirect.HostName = "***"
 	routingRule0.Redirect.Protocol = obs.ProtocolHttp
 	routingRule0.Redirect.ReplaceKeyPrefixWith = "prefix"
 	routingRule0.Redirect.HttpRedirectCode = "304"
@@ -596,7 +596,7 @@ func setBucketWebsiteConfiguration() {
 
 	routingRule1 := obs.RoutingRule{}
 
-	routingRule1.Redirect.HostName = "www.b.com"
+	routingRule1.Redirect.HostName = "***"
 	routingRule1.Redirect.Protocol = obs.ProtocolHttps
 	routingRule1.Redirect.ReplaceKeyWith = "replaceKey"
 	routingRule1.Redirect.HttpRedirectCode = "304"
@@ -822,7 +822,7 @@ func deleteBucketMirrorBackToSource() {
 func setBucketCustomDomain() {
 	input := &obs.SetBucketCustomDomainInput{}
 	input.Bucket = bucketName
-	input.CustomDomain = "www.example.com"
+	input.CustomDomain = "***"
 
 	output, err := getObsClient().SetBucketCustomDomain(input)
 	if err == nil {
@@ -860,7 +860,7 @@ func getBucketCustomDomain() {
 func deleteBucketCustomdomain() {
 	input := &obs.DeleteBucketCustomDomainInput{}
 	input.Bucket = bucketName
-	input.CustomDomain = "www.test-go4444.com"
+	input.CustomDomain = "***"
 
 	output, err := getObsClient().DeleteBucketCustomDomain(input)
 	if err == nil {
@@ -1602,6 +1602,126 @@ func renameFolder() {
 
 }
 
+// 定义进度条监听器。
+type ObsProgressListener struct {
+}
+
+// 定义进度变更事件处理函数。
+func (listener *ObsProgressListener) ProgressChanged(event *obs.ProgressEvent) {
+	switch event.EventType {
+	case obs.TransferStartedEvent:
+		fmt.Printf("Transfer Started, ConsumedBytes: %d, TotalBytes %d.\n",
+			event.ConsumedBytes, event.TotalBytes)
+	case obs.TransferDataEvent:
+		fmt.Printf("\rTransfer Data, ConsumedBytes: %d, TotalBytes %d, %d%%.\n",
+			event.ConsumedBytes, event.TotalBytes, event.ConsumedBytes*100/event.TotalBytes)
+	case obs.TransferCompletedEvent:
+		fmt.Printf("\nTransfer Completed, ConsumedBytes: %d, TotalBytes %d.\n",
+			event.ConsumedBytes, event.TotalBytes)
+	case obs.TransferFailedEvent:
+		fmt.Printf("\nTransfer Failed, ConsumedBytes: %d, TotalBytes %d.\n",
+			event.ConsumedBytes, event.TotalBytes)
+	default:
+	}
+}
+
+func getObjectWithProgress() {
+	input := &obs.GetObjectInput{}
+	input.Bucket = bucketName
+	input.Key = objectKey
+	output, err := getObsClient().GetObject(input, obs.WithProgress(&ObsProgressListener{}))
+	if err == nil {
+		defer output.Body.Close()
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+		fmt.Printf("StorageClass:%s, ETag:%s, ContentType:%s, ContentLength:%d, LastModified:%s\n",
+			output.StorageClass, output.ETag, output.ContentType, output.ContentLength, output.LastModified)
+		p := make([]byte, 1024)
+		var readErr error
+		var readCount int
+		for {
+			readCount, readErr = output.Body.Read(p)
+			if readCount > 0 {
+				fmt.Printf("%s", p[:readCount])
+			}
+			if readErr != nil {
+				break
+			}
+		}
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
+func putObjectWithProgress() {
+	input := &obs.PutObjectInput{}
+	input.Bucket = bucketName
+	input.Key = objectKey
+	input.Metadata = map[string]string{"meta": "value"}
+	input.Body = strings.NewReader("Hello OBS")
+	output, err := getObsClient().PutObject(input, obs.WithProgress(&ObsProgressListener{}))
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+		fmt.Printf("ETag:%s, StorageClass:%s\n", output.ETag, output.StorageClass)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
+func putFileWithProgress() {
+	input := &obs.PutFileInput{}
+	input.Bucket = bucketName
+	input.Key = objectKey
+	input.SourceFile = "localfile"
+	output, err := getObsClient().PutFile(input, obs.WithProgress(&ObsProgressListener{}))
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+		fmt.Printf("ETag:%s, StorageClass:%s\n", output.ETag, output.StorageClass)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
+func appendObjectWithProgress() {
+	input := &obs.AppendObjectInput{}
+	input.Bucket = bucketName
+	input.Key = objectKey
+	input.Position = 9
+	input.Body = strings.NewReader("Hello OBS")
+	output, err := getObsClient().AppendObject(input, obs.WithProgress(&ObsProgressListener{}))
+	if err == nil {
+		fmt.Printf("Append object(%s) under the bucket(%s) successful!\n", input.Key, input.Bucket)
+		fmt.Printf("ETag:%s, NextAppendPosition:%d\n", output.ETag, output.NextAppendPosition)
+		return
+	}
+	fmt.Printf("Append objects under the bucket(%s) fail!\n", input.Bucket)
+	if obsError, ok := err.(obs.ObsError); ok {
+		fmt.Println("An ObsError was found, which means your request sent to OBS was rejected with an error response.")
+		fmt.Println(obsError.Error())
+	} else {
+		fmt.Println("An Exception was found, which means the client encountered an internal problem when attempting to communicate with OBS, for example, the client was unable to access the network.")
+		fmt.Println(err)
+	}
+
+}
+
 func runExamples() {
 	examples.RunBucketOperationsSample()
 	//	examples.RunObjectOperationsSample()
@@ -1696,9 +1816,11 @@ func main() {
 	//  completeMultipartUpload()
 	//  abortMultipartUpload()
 	//  putObject()
+	//  putObjectWithProgress()
 	//  putFile()
 	//  getObjectMetadata()
 	//  getObject()
+	//  getObjectWithProgress()
 	//  putObjectWithCallback()
 	//  deleteBucket()
 }

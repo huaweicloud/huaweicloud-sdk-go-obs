@@ -1,3 +1,37 @@
+Version 3.23.9
+
+新特性：
+1. 新增obs.WithProgress方法支持进度条回调。
+2. 新增配置生命周期管理规则中的碎片过期时间。
+
+资料&demo:
+
+-----------------------------------------------------------------------------------
+Version 3.23.4
+
+新特性：
+1. 新增obs.WithCustomHeader方法。
+2. 新增自定义域名相关API，包括SetBucketCustomDomain,GetBucketCustomDomain,DeleteBucketCustomDomain。
+3. 新增镜像回源相关API，包括SetBucketMirrorBackToSource、GetBucketMirrorBackToSource、DeleteBucketMirrorBackToSource。
+
+资料&demo:
+1. 补充自定义域名相关API的描述。
+2. 补充镜像回源相关API的描述。
+
+-----------------------------------------------------------------------------------
+Version 3.23.3
+
+新特性：
+1. 新增obs.WithCallbackHeader方法；
+
+资料&demo:
+1. 补充上传时回调的说明。
+2. 补充SDK API扩展配置说明。
+
+修复问题：
+1. 优化部分代码实现
+
+-----------------------------------------------------------------------------------
 Version 3.21.12
 
 新特性：

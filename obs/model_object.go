@@ -194,6 +194,7 @@ type GetObjectInput struct {
 	GetObjectMetadataInput
 	IfMatch                    string
 	IfNoneMatch                string
+	AcceptEncoding             string
 	IfUnmodifiedSince          time.Time
 	IfModifiedSince            time.Time
 	RangeStart                 int64
@@ -233,6 +234,7 @@ type ObjectOperationInput struct {
 	Expires                 int64
 	SseHeader               ISseHeader
 	Metadata                map[string]string
+	HttpHeader
 }
 
 // PutObjectBasicInput defines the basic object operation properties
@@ -240,7 +242,6 @@ type PutObjectBasicInput struct {
 	ObjectOperationInput
 	ContentMD5    string
 	ContentLength int64
-	HttpHeader
 }
 
 // PutObjectInput is the input parameter of PutObject function

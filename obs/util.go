@@ -13,6 +13,7 @@
 package obs
 
 import (
+	"bytes"
 	"crypto/hmac"
 	"crypto/md5"
 	"crypto/sha1"
@@ -22,8 +23,10 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -68,7 +71,7 @@ func IsHandleCallbackResponse(action string, headers map[string][]string, isObs 
 	if isObs == true {
 		headerPrefix = HEADER_PREFIX_OBS
 	}
-	supportCallbackActions := []string{"PutObject", "PutFile", "CompleteMultipartUpload"}
+	supportCallbackActions := []string{PUT_OBJECT, PUT_FILE, "CompleteMultipartUpload"}
 	return len(headers[headerPrefix+CALLBACK]) != 0 && IsContain(supportCallbackActions, action)
 }
 
@@ -580,4 +583,38 @@ func getTemporaryAuthorization(ak, sk, method, bucketName, objectKey, signature 
 	}
 
 	return
+}
+
+func GetContentType(key string) (string, bool) {
+	if ct, ok := mimeTypes[strings.ToLower(key[strings.LastIndex(key, ".")+1:])]; ok {
+		return ct, ok
+	}
+	return "", false
+}
+
+func GetReaderLen(reader io.Reader) (int64, error) {
+	var contentLength int64
+	var err error
+	switch v := reader.(type) {
+	case *bytes.Buffer:
+		contentLength = int64(v.Len())
+	case *bytes.Reader:
+		contentLength = int64(v.Len())
+	case *strings.Reader:
+		contentLength = int64(v.Len())
+	case *os.File:
+		fInfo, fError := v.Stat()
+		if fError != nil {
+			err = fmt.Errorf("can't get reader content length,%s", fError.Error())
+		} else {
+			contentLength = fInfo.Size()
+		}
+	case *io.LimitedReader:
+		contentLength = int64(v.N)
+	case *fileReaderWrapper:
+		contentLength = int64(v.totalCount)
+	default:
+		err = fmt.Errorf("can't get reader content length,unkown reader type")
+	}
+	return contentLength, err
 }

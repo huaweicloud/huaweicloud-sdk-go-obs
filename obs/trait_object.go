@@ -148,6 +148,9 @@ func (input GetObjectMetadataInput) trans(isObs bool) (params map[string]string,
 }
 
 func (input SetObjectMetadataInput) prepareContentHeaders(headers map[string][]string) {
+	if input.CacheControl != "" {
+		headers[HEADER_CACHE_CONTROL_CAMEL] = []string{input.CacheControl}
+	}
 	if input.ContentDisposition != "" {
 		headers[HEADER_CONTENT_DISPOSITION_CAMEL] = []string{input.ContentDisposition}
 	}
@@ -157,9 +160,14 @@ func (input SetObjectMetadataInput) prepareContentHeaders(headers map[string][]s
 	if input.ContentLanguage != "" {
 		headers[HEADER_CONTENT_LANGUAGE_CAMEL] = []string{input.ContentLanguage}
 	}
-
 	if input.ContentType != "" {
 		headers[HEADER_CONTENT_TYPE_CAML] = []string{input.ContentType}
+	}
+	// 这里为了兼容老版本，默认以Expire值为准，但如果Expires没有，则以HttpExpires为准。
+	if input.Expires != "" {
+		headers[HEADER_EXPIRES_CAMEL] = []string{input.Expires}
+	} else if input.HttpExpires != "" {
+		headers[HEADER_EXPIRES_CAMEL] = []string{input.HttpExpires}
 	}
 }
 
@@ -189,13 +197,8 @@ func (input SetObjectMetadataInput) trans(isObs bool) (params map[string]string,
 	} else {
 		setHeaders(headers, HEADER_METADATA_DIRECTIVE, []string{string(ReplaceNew)}, isObs)
 	}
-	if input.CacheControl != "" {
-		headers[HEADER_CACHE_CONTROL_CAMEL] = []string{input.CacheControl}
-	}
+
 	input.prepareContentHeaders(headers)
-	if input.Expires != "" {
-		headers[HEADER_EXPIRES_CAMEL] = []string{input.Expires}
-	}
 	if input.WebsiteRedirectLocation != "" {
 		setHeaders(headers, HEADER_WEBSITE_REDIRECT_LOCATION, []string{input.WebsiteRedirectLocation}, isObs)
 	}
@@ -242,7 +245,9 @@ func (input GetObjectInput) trans(isObs bool) (params map[string]string, headers
 	if input.RangeStart >= 0 && input.RangeEnd > input.RangeStart {
 		headers[HEADER_RANGE] = []string{fmt.Sprintf("bytes=%d-%d", input.RangeStart, input.RangeEnd)}
 	}
-
+	if input.AcceptEncoding != "" {
+		headers[HEADER_ACCEPT_ENCODING] = []string{input.AcceptEncoding}
+	}
 	if input.IfMatch != "" {
 		headers[HEADER_IF_MATCH] = []string{input.IfMatch}
 	}
