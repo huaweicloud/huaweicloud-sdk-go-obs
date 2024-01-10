@@ -1701,11 +1701,11 @@ func putFileWithProgress() {
 
 func appendObjectWithProgress() {
 	input := &obs.AppendObjectInput{}
-	input.Bucket = bucketName
+		input.Bucket = bucketName
 	input.Key = objectKey
 	input.Position = 9
-	input.Body = strings.NewReader("Hello OBS")
-	output, err := getObsClient().AppendObject(input, obs.WithProgress(&ObsProgressListener{}))
+		input.Body = strings.NewReader("Hello OBS")
+		output, err := getObsClient().AppendObject(input, obs.WithProgress(&ObsProgressListener{}))
 	if err == nil {
 		fmt.Printf("Append object(%s) under the bucket(%s) successful!\n", input.Key, input.Bucket)
 		fmt.Printf("ETag:%s, NextAppendPosition:%d\n", output.ETag, output.NextAppendPosition)
