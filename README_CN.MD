@@ -1,3 +1,15 @@
+Version 3.24.3
+
+新特性：
+1. 新增accesslabel相关接口：设置对象accesslabel(SetDirAccesslabel), 获取对象accesslabel(GetDirAccesslabel), 删除对象accesslabel(DeleteDirAccesslabel);
+
+资料&demo:
+1. 补充accesslabel相关接口描述；
+
+修复问题：
+
+-----------------------------------------------------------------------------------
+
 Version 3.23.12
 
 新特性：

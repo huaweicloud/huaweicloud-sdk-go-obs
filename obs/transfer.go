@@ -140,7 +140,7 @@ func updateCheckpointFile(fc interface{}, checkpointFilePath string) error {
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile(checkpointFilePath, result, 0666)
+	err = ioutil.WriteFile(checkpointFilePath, result, 0640)
 	return err
 }
 
@@ -634,7 +634,7 @@ func sliceObject(objectSize, partSize int64, dfc *DownloadCheckpoint) {
 }
 
 func createFile(tempFileURL string, fileSize int64) error {
-	fd, err := syscall.Open(tempFileURL, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+	fd, err := syscall.Open(tempFileURL, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0640)
 	if err != nil {
 		doLog(LEVEL_WARN, "Failed to open temp download file [%s].", tempFileURL)
 		return err
@@ -671,7 +671,7 @@ func prepareTempFile(tempFileURL string, fileSize int64) error {
 	if err == nil {
 		return nil
 	}
-	fd, err := os.OpenFile(tempFileURL, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+	fd, err := os.OpenFile(tempFileURL, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0640)
 	if err != nil {
 		doLog(LEVEL_ERROR, "Failed to open temp download file [%s].", tempFileURL)
 		return err
@@ -780,7 +780,7 @@ func (obsClient ObsClient) resumeDownload(input *DownloadFileInput, extensions [
 }
 
 func updateDownloadFile(filePath string, rangeStart int64, output *GetObjectOutput) error {
-	fd, err := os.OpenFile(filePath, os.O_WRONLY, 0666)
+	fd, err := os.OpenFile(filePath, os.O_WRONLY, 0640)
 	if err != nil {
 		doLog(LEVEL_ERROR, "Failed to open file [%s].", filePath)
 		return err

@@ -44,8 +44,8 @@ func (obsClient ObsClient) SetBucketCustomDomain(input *SetBucketCustomDomainInp
 	return
 }
 
-func (obsClient ObsClient) GetBucketCustomDomain(bucketName string, extensions ...extensionOptions) (output *GetBucketCustomDomainOuput, err error) {
-	output = &GetBucketCustomDomainOuput{}
+func (obsClient ObsClient) GetBucketCustomDomain(bucketName string, extensions ...extensionOptions) (output *GetBucketCustomDomainOutput, err error) {
+	output = &GetBucketCustomDomainOutput{}
 	err = obsClient.doActionWithBucket("GetBucketCustomDomain", HTTP_GET, bucketName, newSubResourceSerial(SubResourceCustomDomain), output, extensions)
 	if err != nil {
 		output = nil
@@ -72,8 +72,8 @@ func (obsClient ObsClient) DeleteBucketMirrorBackToSource(bucketName string, ext
 	return
 }
 
-func (obsClient ObsClient) GetBucketMirrorBackToSource(bucketName string, extensions ...extensionOptions) (output *GetBucketMirrorBackToSourceOuput, err error) {
-	output = &GetBucketMirrorBackToSourceOuput{}
+func (obsClient ObsClient) GetBucketMirrorBackToSource(bucketName string, extensions ...extensionOptions) (output *GetBucketMirrorBackToSourceOutput, err error) {
+	output = &GetBucketMirrorBackToSourceOutput{}
 	err = obsClient.doActionWithBucketV2("GetBucketMirrorBackToSource", HTTP_GET, bucketName, newSubResourceSerial(SubResourceMirrorBackToSource), output, extensions)
 	if err != nil {
 		output = nil

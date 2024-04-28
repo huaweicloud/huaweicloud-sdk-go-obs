@@ -504,3 +504,39 @@ func (obsClient ObsClient) RenameFolder(input *RenameFolderInput, extensions ...
 	}
 	return
 }
+
+func (obsClient ObsClient) SetDirAccesslabel(input *SetDirAccesslabelInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+	if input == nil {
+		return nil, errors.New("SetDirAccesslabelInput is nil")
+	}
+	output = &BaseModel{}
+	err = obsClient.doActionWithBucketAndKeyV2("SetDirAccesslabel", HTTP_PUT, input.Bucket, input.Key, input, output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+func (obsClient ObsClient) GetDirAccesslabel(input *GetDirAccesslabelInput, extensions ...extensionOptions) (output *GetDirAccesslabelOutput, err error) {
+	if input == nil {
+		return nil, errors.New("GetDirAccesslabelInput is nil")
+	}
+	output = &GetDirAccesslabelOutput{}
+	err = obsClient.doActionWithBucketAndKeyV2("GetDirAccesslabel", HTTP_GET, input.Bucket, input.Key, input, output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+func (obsClient ObsClient) DeleteDirAccesslabel(input *DeleteDirAccesslabelInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+	if input == nil {
+		return nil, errors.New("DeleteDirAccesslabelInput is nil")
+	}
+	output = &BaseModel{}
+	err = obsClient.doActionWithBucketAndKeyV2("DeleteDirAccesslabel", HTTP_DELETE, input.Bucket, input.Key, input, output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}

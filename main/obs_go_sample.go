@@ -1701,11 +1701,11 @@ func putFileWithProgress() {
 
 func appendObjectWithProgress() {
 	input := &obs.AppendObjectInput{}
-		input.Bucket = bucketName
+	input.Bucket = bucketName
 	input.Key = objectKey
 	input.Position = 9
-		input.Body = strings.NewReader("Hello OBS")
-		output, err := getObsClient().AppendObject(input, obs.WithProgress(&ObsProgressListener{}))
+	input.Body = strings.NewReader("Hello OBS")
+	output, err := getObsClient().AppendObject(input, obs.WithProgress(&ObsProgressListener{}))
 	if err == nil {
 		fmt.Printf("Append object(%s) under the bucket(%s) successful!\n", input.Key, input.Bucket)
 		fmt.Printf("ETag:%s, NextAppendPosition:%d\n", output.ETag, output.NextAppendPosition)
@@ -1720,6 +1720,61 @@ func appendObjectWithProgress() {
 		fmt.Println(err)
 	}
 
+}
+
+func setDirAccesslabel() {
+	input := &obs.SetDirAccesslabelInput{}
+	input.Bucket = posixBucketName
+	input.Key = posixFileKey
+	input.Accesslabel = []string{"role_label_01", "role_label_02"}
+	output, err := getObsClient().SetDirAccesslabel(input)
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
+func getDirAccesslabel() {
+	input := &obs.GetDirAccesslabelInput{}
+	input.Bucket = posixBucketName
+	input.Key = posixFileKey
+	output, err := getObsClient().GetDirAccesslabel(input)
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
+}
+
+func deleteDirAccesslabel() {
+	input := &obs.DeleteDirAccesslabelInput{}
+	input.Bucket = posixBucketName
+	input.Key = posixFileKey
+	output, err := getObsClient().DeleteDirAccesslabel(input)
+	if err == nil {
+		fmt.Printf("StatusCode:%d, RequestId:%s\n", output.StatusCode, output.RequestId)
+	} else {
+		if obsError, ok := err.(obs.ObsError); ok {
+			fmt.Println(obsError.StatusCode)
+			fmt.Println(obsError.Code)
+			fmt.Println(obsError.Message)
+		} else {
+			fmt.Println(err)
+		}
+	}
 }
 
 func runExamples() {
@@ -1823,4 +1878,7 @@ func main() {
 	//  getObjectWithProgress()
 	//  putObjectWithCallback()
 	//  deleteBucket()
+	//  setDirAccesslabel()
+	//  getDirAccesslabel()
+	//  deleteDirAccesslabel()
 }

@@ -269,10 +269,8 @@ func (input GetBucketFetchJobInput) trans(isObs bool) (params map[string]string,
 
 func (input SetBucketMirrorBackToSourceInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
 	params = map[string]string{string(SubResourceMirrorBackToSource): ""}
-
-	contentType, _ := mimeTypes["json"]
 	headers = make(map[string][]string, 1)
-	headers[HEADER_CONTENT_TYPE] = []string{contentType}
+	headers[HEADER_CONTENT_TYPE] = []string{mimeTypes["json"]}
 	data = input.Rules
 	return
 }

@@ -22,8 +22,8 @@ type DeleteBucketCustomDomainInput struct {
 	CustomDomain string
 }
 
-// GetBucketCustomDomainOuput is the result of GetBucketCustomdomain function
-type GetBucketCustomDomainOuput struct {
+// GetBucketCustomDomainOutput is the result of GetBucketCustomDomain function
+type GetBucketCustomDomainOutput struct {
 	BaseModel
 	Domains []Domain `xml:"Domains"`
 }
@@ -34,8 +34,8 @@ type SetBucketCustomDomainInput struct {
 	CustomDomain string
 }
 
-// GetBucketMirrorBackToSourceOuput is the result of GetBucketMirrorBackToSource function
-type GetBucketMirrorBackToSourceOuput struct {
+// GetBucketMirrorBackToSourceOutput is the result of GetBucketMirrorBackToSource function
+type GetBucketMirrorBackToSourceOutput struct {
 	BaseModel
 	Rules string `json:"body"`
 }
@@ -376,4 +376,29 @@ type GetBucketFSStatusInput struct {
 type GetBucketFSStatusOutput struct {
 	GetBucketMetadataOutput
 	FSStatus FSStatusType
+}
+
+type SetDirAccesslabelInput struct {
+	BaseDirAccesslabelInput
+	Accesslabel []string
+}
+
+type GetDirAccesslabelInput struct {
+	BaseDirAccesslabelInput
+}
+
+type GetDirAccesslabelOutput struct {
+	BaseModel
+	Accesslabel []string
+}
+
+type DeleteDirAccesslabelInput struct {
+	BaseDirAccesslabelInput
+	Accesslabel []string
+}
+
+type BaseDirAccesslabelInput struct {
+	Bucket      string
+	Key         string
+	Accesslabel []string
 }

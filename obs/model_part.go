@@ -57,7 +57,7 @@ type AbortMultipartUploadInput struct {
 // InitiateMultipartUploadInput is the input parameter of InitiateMultipartUpload function
 type InitiateMultipartUploadInput struct {
 	ObjectOperationInput
-	ContentType  string
+	HttpHeader
 	EncodingType string
 }
 

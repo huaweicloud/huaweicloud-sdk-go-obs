@@ -1,3 +1,15 @@
+Version 3.24.3
+
+New Features:
+1. Added directory accesslable-related APIs, including SetDirAccesslabel, GetDirAccesslabel, and DeleteDirAccesslabel.
+
+Documentation & Demo:
+1. Added descriptions about directory accesslable-related APIs.
+
+Resolved Issues:
+
+-----------------------------------------------------------------------------------
+
 Version 3.23.12
 
 New Features:

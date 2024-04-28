@@ -52,6 +52,21 @@ func (input InitiateMultipartUploadInput) trans(isObs bool) (params map[string]s
 	if input.ContentType != "" {
 		headers[HEADER_CONTENT_TYPE_CAML] = []string{input.ContentType}
 	}
+	if input.ContentEncoding != "" {
+		headers[HEADER_CONTENT_ENCODING_CAMEL] = []string{input.ContentEncoding}
+	}
+	if input.CacheControl != "" {
+		headers[HEADER_CACHE_CONTROL_CAMEL] = []string{input.CacheControl}
+	}
+	if input.ContentDisposition != "" {
+		headers[HEADER_CONTENT_DISPOSITION_CAMEL] = []string{input.ContentDisposition}
+	}
+	if input.ContentLanguage != "" {
+		headers[HEADER_CONTENT_LANGUAGE_CAMEL] = []string{input.ContentLanguage}
+	}
+	if input.HttpExpires != "" {
+		headers[HEADER_EXPIRES_CAMEL] = []string{input.HttpExpires}
+	}
 	params[string(SubResourceUploads)] = ""
 	if input.EncodingType != "" {
 		params["encoding-type"] = input.EncodingType

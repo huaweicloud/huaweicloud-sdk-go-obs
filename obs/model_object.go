@@ -167,7 +167,6 @@ type GetObjectMetadataOutput struct {
 	NextAppendPosition      string
 	StorageClass            StorageClassType
 	ContentLength           int64
-	ContentType             string
 	ETag                    string
 	AllowOrigin             string
 	AllowHeader             string
@@ -211,13 +210,9 @@ type GetObjectInput struct {
 // GetObjectOutput is the result of GetObject function
 type GetObjectOutput struct {
 	GetObjectMetadataOutput
-	DeleteMarker       bool
-	CacheControl       string
-	ContentDisposition string
-	ContentEncoding    string
-	ContentLanguage    string
-	Expires            string
-	Body               io.ReadCloser
+	DeleteMarker bool
+	Expires      string
+	Body         io.ReadCloser
 }
 
 // ObjectOperationInput defines the object operation properties
@@ -234,12 +229,12 @@ type ObjectOperationInput struct {
 	Expires                 int64
 	SseHeader               ISseHeader
 	Metadata                map[string]string
-	HttpHeader
 }
 
 // PutObjectBasicInput defines the basic object operation properties
 type PutObjectBasicInput struct {
 	ObjectOperationInput
+	HttpHeader
 	ContentMD5    string
 	ContentLength int64
 }
@@ -287,14 +282,10 @@ type CopyObjectInput struct {
 	CopySourceIfUnmodifiedSince time.Time
 	CopySourceIfModifiedSince   time.Time
 	SourceSseHeader             ISseHeader
-	CacheControl                string
-	ContentDisposition          string
-	ContentEncoding             string
-	ContentLanguage             string
-	ContentType                 string
 	Expires                     string
 	MetadataDirective           MetadataDirectiveType
 	SuccessActionRedirect       string
+	HttpHeader
 }
 
 // CopyObjectOutput is the result of CopyObject function
@@ -311,13 +302,13 @@ type CopyObjectOutput struct {
 // UploadFileInput is the input parameter of UploadFile function
 type UploadFileInput struct {
 	ObjectOperationInput
-	ContentType      string
 	UploadFile       string
 	PartSize         int64
 	TaskNum          int
 	EnableCheckpoint bool
 	CheckpointFile   string
 	EncodingType     string
+	HttpHeader
 }
 
 // DownloadFileInput is the input parameter of DownloadFile function
@@ -403,15 +394,11 @@ type SetObjectMetadataInput struct {
 	HttpHeader
 }
 
-//SetObjectMetadataOutput is the result of SetObjectMetadata function
+// SetObjectMetadataOutput is the result of SetObjectMetadata function
 type SetObjectMetadataOutput struct {
 	BaseModel
-	MetadataDirective       MetadataDirectiveType
-	CacheControl            string
-	ContentDisposition      string
-	ContentEncoding         string
-	ContentLanguage         string
-	ContentType             string
+	MetadataDirective MetadataDirectiveType
+	HttpHeader
 	Expires                 string
 	WebsiteRedirectLocation string
 	StorageClass            StorageClassType

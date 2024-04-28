@@ -117,6 +117,9 @@ const (
 
 	// SubResourceMirrorBackToSource subResource value: mirrorBackToSource
 	SubResourceMirrorBackToSource SubResourceType = "mirrorBackToSource"
+
+	// SubResourceMirrorBackToSource subResource value: mirrorBackToSource
+	SubResourceAccesslabel SubResourceType = "x-obs-accesslabel"
 )
 
 // objectKeyType defines the objectKey value

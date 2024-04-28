@@ -21,6 +21,7 @@ import (
 	"runtime"
 	"strings"
 	"sync"
+	"time"
 )
 
 // Level defines the level of the log
@@ -63,24 +64,24 @@ func getDefaultLogConf() logConfType {
 var logConf logConfType
 
 type loggerWrapper struct {
-	fullPath        string
-	fd              *os.File
-	ch              chan string
-	wg              sync.WaitGroup
-	queue           []string
-	logger          *log.Logger
-	index           int
-	cacheCount      int
-	closed          bool
-	formatLoggerNow func(string) string
+	fullPath   string
+	fd         *os.File
+	ch         chan string
+	wg         sync.WaitGroup
+	queue      []string
+	logger     *log.Logger
+	index      int
+	cacheCount int
+	closed     bool
+	loc        *time.Location
 }
 
 func (lw *loggerWrapper) doInit() {
 	lw.queue = make([]string, 0, lw.cacheCount)
 	lw.logger = log.New(lw.fd, "", 0)
 	lw.ch = make(chan string, lw.cacheCount)
-	if lw.formatLoggerNow == nil {
-		lw.formatLoggerNow = FormatUtcNow
+	if lw.loc == nil {
+		lw.loc = time.FixedZone("UTC", 0)
 	}
 	lw.wg.Add(1)
 	go lw.doWrite()
@@ -98,7 +99,7 @@ func (lw *loggerWrapper) rotate() {
 	if stat.Size() >= logConf.maxLogSize {
 		_err := lw.fd.Sync()
 		if _err != nil {
-			panic(err)
+			panic(_err)
 		}
 		_err = lw.fd.Close()
 		if _err != nil {
@@ -109,7 +110,7 @@ func (lw *loggerWrapper) rotate() {
 		}
 		_err = os.Rename(lw.fullPath, lw.fullPath+"."+IntToString(lw.index))
 		if _err != nil {
-			panic(err)
+			panic(_err)
 		}
 		lw.index++
 
@@ -198,9 +199,9 @@ func reset() {
 
 type logConfig func(lw *loggerWrapper)
 
-func WithFormatLoggerTime(formatNow func(string) string) logConfig {
+func WithLoggerTimeLoc(loc *time.Location) logConfig {
 	return func(lw *loggerWrapper) {
-		lw.formatLoggerNow = formatNow
+		lw.loc = loc
 	}
 }
 
@@ -339,11 +340,12 @@ func doLog(level Level, format string, v ...interface{}) {
 			_ = recover()
 			// ignore ch closed error
 		}()
+		nowDate := FormatNowWithLoc("2006-01-02T15:04:05.000ZZ", fileLogger.loc)
+
 		if consoleLogger != nil {
 			consoleLogger.Printf("%s%s", prefix, msg)
 		}
 		if fileLogger != nil {
-			nowDate := fileLogger.formatLoggerNow("2006-01-02T15:04:05.000ZZ")
 			fileLogger.Printf("%s %s%s", nowDate, prefix, msg)
 		}
 	}

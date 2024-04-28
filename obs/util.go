@@ -122,9 +122,9 @@ func FormatUtcNow(format string) string {
 	return time.Now().UTC().Format(format)
 }
 
-// FormatNow gets a textual representation of the format time value
-func FormatNow(format string) string {
-	return time.Now().Format(format)
+// FormatNowWithLoc gets a textual representation of the format time value with loc
+func FormatNowWithLoc(format string, loc *time.Location) string {
+	return time.Now().In(loc).Format(format)
 }
 
 // FormatUtcToRfc1123 gets a textual representation of the RFC1123 format time value
@@ -215,6 +215,14 @@ func TransToXml(value interface{}) ([]byte, error) {
 		return []byte{}, nil
 	}
 	return xml.Marshal(value)
+}
+
+// TransToJSON wrapper of json.Marshal
+func TransToJSON(value interface{}) ([]byte, error) {
+	if value == nil {
+		return []byte{}, nil
+	}
+	return json.Marshal(value)
 }
 
 // Hex wrapper of hex.EncodeToString

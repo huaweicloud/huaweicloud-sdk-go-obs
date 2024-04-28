@@ -538,8 +538,8 @@ func converntConfigureToXML(topicConfiguration TopicConfiguration, xmlElem strin
 	return strings.Join(xml, "")
 }
 
-// ConverntObsRestoreToXml converts RestoreObjectInput value to XML data and returns it
-func ConverntObsRestoreToXml(restoreObjectInput RestoreObjectInput) string {
+// ConventObsRestoreToXml converts RestoreObjectInput value to XML data and returns it
+func ConventObsRestoreToXml(restoreObjectInput RestoreObjectInput) string {
 	xml := make([]string, 0, 2)
 	xml = append(xml, fmt.Sprintf("<RestoreRequest><Days>%d</Days>", restoreObjectInput.Days))
 	if restoreObjectInput.Tier != "Bulk" {
@@ -669,26 +669,24 @@ func parseUnCommonHeader(output *GetObjectMetadataOutput) {
 }
 
 func parseStandardMetadataHeader(output *GetObjectMetadataOutput) {
-	httpHeader := HttpHeader{}
 	if ret, ok := output.ResponseHeaders[HEADER_CONTENT_TYPE]; ok {
-		httpHeader.ContentType = ret[0]
+		output.ContentType = ret[0]
 	}
 	if ret, ok := output.ResponseHeaders[HEADER_CONTENT_ENCODING]; ok {
-		httpHeader.ContentEncoding = ret[0]
+		output.ContentEncoding = ret[0]
 	}
 	if ret, ok := output.ResponseHeaders[HEADER_CACHE_CONTROL]; ok {
-		httpHeader.CacheControl = ret[0]
+		output.CacheControl = ret[0]
 	}
 	if ret, ok := output.ResponseHeaders[HEADER_CONTENT_DISPOSITION]; ok {
-		httpHeader.ContentDisposition = ret[0]
+		output.ContentDisposition = ret[0]
 	}
 	if ret, ok := output.ResponseHeaders[HEADER_CONTENT_LANGUAGE]; ok {
-		httpHeader.ContentLanguage = ret[0]
+		output.ContentLanguage = ret[0]
 	}
 	if ret, ok := output.ResponseHeaders[HEADER_EXPIRES]; ok {
-		httpHeader.HttpExpires = ret[0]
+		output.HttpExpires = ret[0]
 	}
-	output.HttpHeader = httpHeader
 }
 
 // ParseGetObjectMetadataOutput sets GetObjectMetadataOutput field values with response headers
@@ -701,9 +699,6 @@ func ParseGetObjectMetadataOutput(output *GetObjectMetadataOutput) {
 	}
 	if ret, ok := output.ResponseHeaders[HEADER_ETAG]; ok {
 		output.ETag = ret[0]
-	}
-	if ret, ok := output.ResponseHeaders[HEADER_CONTENT_TYPE]; ok {
-		output.ContentType = ret[0]
 	}
 
 	output.SseHeader = parseSseHeader(output.ResponseHeaders)
@@ -888,6 +883,9 @@ func ParseGetObjectOutput(output *GetObjectOutput) {
 	if ret, ok := output.ResponseHeaders[HEADER_DELETE_MARKER]; ok {
 		output.DeleteMarker = ret[0] == "true"
 	}
+	if ret, ok := output.ResponseHeaders[HEADER_CONTENT_TYPE]; ok {
+		output.ContentType = ret[0]
+	}
 	if ret, ok := output.ResponseHeaders[HEADER_CACHE_CONTROL]; ok {
 		output.CacheControl = ret[0]
 	}
@@ -902,6 +900,7 @@ func ParseGetObjectOutput(output *GetObjectOutput) {
 	}
 	if ret, ok := output.ResponseHeaders[HEADER_EXPIRES]; ok {
 		output.Expires = ret[0]
+		output.HttpExpires = ret[0]
 	}
 }
 

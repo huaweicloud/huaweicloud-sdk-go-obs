@@ -124,7 +124,7 @@ func (input RestoreObjectInput) trans(isObs bool) (params map[string]string, hea
 	if !isObs {
 		data, err = ConvertRequestToIoReader(input)
 	} else {
-		data = ConverntObsRestoreToXml(input)
+		data = ConventObsRestoreToXml(input)
 	}
 	return
 }
@@ -386,6 +386,9 @@ func (input ModifyObjectInput) trans(isObs bool) (params map[string]string, head
 }
 
 func (input CopyObjectInput) prepareReplaceHeaders(headers map[string][]string) {
+	if input.ContentType != "" {
+		headers[HEADER_CONTENT_TYPE] = []string{input.ContentType}
+	}
 	if input.CacheControl != "" {
 		headers[HEADER_CACHE_CONTROL] = []string{input.CacheControl}
 	}
@@ -398,11 +401,11 @@ func (input CopyObjectInput) prepareReplaceHeaders(headers map[string][]string) 
 	if input.ContentLanguage != "" {
 		headers[HEADER_CONTENT_LANGUAGE] = []string{input.ContentLanguage}
 	}
-	if input.ContentType != "" {
-		headers[HEADER_CONTENT_TYPE] = []string{input.ContentType}
-	}
+	// 这里为了兼容老版本，默认以Expire值为准，但如果Expires没有，则以HttpExpires为准。
 	if input.Expires != "" {
-		headers[HEADER_EXPIRES] = []string{input.Expires}
+		headers[HEADER_EXPIRES_CAMEL] = []string{input.Expires}
+	} else if input.HttpExpires != "" {
+		headers[HEADER_EXPIRES_CAMEL] = []string{input.HttpExpires}
 	}
 }
 
@@ -482,5 +485,29 @@ func (input RenameFolderInput) trans(isObs bool) (params map[string]string, head
 	if requestPayer := string(input.RequestPayer); requestPayer != "" {
 		headers[HEADER_REQUEST_PAYER] = []string{requestPayer}
 	}
+	return
+}
+
+func (input SetDirAccesslabelInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params = map[string]string{string(SubResourceAccesslabel): ""}
+
+	accesslabelJson, err := TransToJSON(input.Accesslabel)
+	if err != nil {
+		return
+	}
+	json := make([]string, 0, 2)
+	json = append(json, fmt.Sprintf("{\"accesslabel\": %s}", accesslabelJson))
+	data = strings.Join(json, "")
+
+	return
+}
+
+func (input GetDirAccesslabelInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params = map[string]string{string(SubResourceAccesslabel): ""}
+	return
+}
+
+func (input DeleteDirAccesslabelInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params = map[string]string{string(SubResourceAccesslabel): ""}
 	return
 }

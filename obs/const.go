@@ -290,6 +290,7 @@ var (
 		"rename":                       true,
 		"customdomain":                 true,
 		"mirrorbacktosource":           true,
+		"x-obs-accesslabel":            true,
 	}
 
 	obsStorageClasses = []string{
