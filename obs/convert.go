@@ -95,18 +95,30 @@ func ParseStringToFSStatusType(value string) (ret FSStatusType) {
 	return
 }
 
-func prepareGrantURI(grant Grant) string {
-	if grant.Grantee.URI == GroupAllUsers || grant.Grantee.URI == GroupAuthenticatedUsers {
-		return fmt.Sprintf("<URI>%s%s</URI>", "http://acs.amazonaws.com/groups/global/", grant.Grantee.URI)
+func prepareGrantURI(grantUri GroupUriType) string {
+	if grantUri == GroupAllUsers || grantUri == GroupAuthenticatedUsers {
+		return fmt.Sprintf("<URI>%s%s</URI>", "http://acs.amazonaws.com/groups/global/", grantUri)
 	}
-	if grant.Grantee.URI == GroupLogDelivery {
-		return fmt.Sprintf("<URI>%s%s</URI>", "http://acs.amazonaws.com/groups/s3/", grant.Grantee.URI)
+	if grantUri == GroupLogDelivery {
+		return fmt.Sprintf("<URI>%s%s</URI>", "http://acs.amazonaws.com/groups/s3/", grantUri)
 	}
-	return fmt.Sprintf("<URI>%s</URI>", grant.Grantee.URI)
+	return fmt.Sprintf("<URI>%s</URI>", grantUri)
 }
 
 func convertGrantToXML(grant Grant, isObs bool, isBucket bool) string {
 	xml := make([]string, 0, 4)
+
+	if grant.Grantee.ID != "" &&
+		grant.Grantee.URI == "" &&
+		grant.Grantee.Type == "" {
+		grant.Grantee.Type = GranteeUser
+	}
+
+	if grant.Grantee.URI != "" &&
+		grant.Grantee.ID == "" &&
+		grant.Grantee.Type == "" {
+		grant.Grantee.Type = GranteeGroup
+	}
 
 	if grant.Grantee.Type == GranteeUser {
 		if isObs {
@@ -126,7 +138,7 @@ func convertGrantToXML(grant Grant, isObs bool, isBucket bool) string {
 	} else {
 		if !isObs {
 			xml = append(xml, fmt.Sprintf("<Grant><Grantee xsi:type=\"%s\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">", grant.Grantee.Type))
-			xml = append(xml, prepareGrantURI(grant))
+			xml = append(xml, prepareGrantURI(grant.Grantee.URI))
 			xml = append(xml, "</Grantee>")
 		} else if grant.Grantee.URI == GroupAllUsers {
 			xml = append(xml, "<Grant><Grantee>")
@@ -157,7 +169,11 @@ func ConvertLoggingStatusToXml(input BucketLoggingStatus, returnMd5 bool, isObs 
 	grantsLength := len(input.TargetGrants)
 	xml := make([]string, 0, 8+grantsLength)
 
-	xml = append(xml, "<BucketLoggingStatus>")
+	if isObs {
+		xml = append(xml, "<BucketLoggingStatus>")
+	} else {
+		xml = append(xml, `<BucketLoggingStatus xmlns="http://s3.amazonaws.com/doc/2006-03-01/">`)
+	}
 	if isObs && input.Agency != "" {
 		agency := XmlTranscoding(input.Agency)
 		xml = append(xml, fmt.Sprintf("<Agency>%s</Agency>", agency))

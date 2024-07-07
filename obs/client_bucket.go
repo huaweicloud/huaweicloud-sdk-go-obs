@@ -323,8 +323,9 @@ func (obsClient ObsClient) getBucketACLObs(bucketName string, extensions []exten
 			tempOutput.Grantee.DisplayName = valGrant.Grantee.DisplayName
 			tempOutput.Grantee.ID = valGrant.Grantee.ID
 			tempOutput.Grantee.Type = valGrant.Grantee.Type
-			tempOutput.Grantee.URI = GroupAllUsers
-
+			if valGrant.Grantee.Canned == "Everyone" {
+				tempOutput.Grantee.URI = GroupAllUsers
+			}
 			output.Grants = append(output.Grants, tempOutput)
 		}
 	}

@@ -364,10 +364,10 @@ func logResponseHeader(respHeader http.Header) string {
 		if key == "" {
 			continue
 		}
-		if strings.HasPrefix(key, HEADER_PREFIX) || strings.HasPrefix(key, HEADER_PREFIX_OBS) {
-			key = key[len(HEADER_PREFIX):]
-		}
 		_key := strings.ToLower(key)
+		if strings.HasPrefix(_key, HEADER_PREFIX) || strings.HasPrefix(_key, HEADER_PREFIX_OBS) {
+			_key = _key[len(HEADER_PREFIX):]
+		}
 		if _, ok := allowedLogResponseHTTPHeaderNames[_key]; ok {
 			resp = append(resp, fmt.Sprintf("%s: [%s]", key, value[0]))
 		}

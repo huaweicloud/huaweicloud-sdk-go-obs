@@ -151,6 +151,7 @@ func (obsClient ObsClient) UploadPart(_input *UploadPartInput, extensions ...ext
 			input.PartSize = fileSize - input.Offset
 		}
 		fileReaderWrapper.totalCount = input.PartSize
+		fileReaderWrapper.mark = input.Offset
 		if _, err = fd.Seek(input.Offset, io.SeekStart); err != nil {
 			return nil, err
 		}

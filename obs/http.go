@@ -152,7 +152,7 @@ func (obsClient ObsClient) doAction(action, method, bucketName, objectKey string
 
 	for _, extension := range extensions {
 		if extensionHeader, ok := extension.(extensionHeaders); ok {
-			if _err := extensionHeader(headers, isObs); err != nil {
+			if _err := extensionHeader(headers, isObs); _err != nil {
 				doLog(LEVEL_INFO, fmt.Sprintf("set header with error: %v", _err))
 			}
 		} else {

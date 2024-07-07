@@ -56,6 +56,7 @@ func WithCustomHeader(key string, value string) extensionHeaders {
 		if strings.TrimSpace(value) == "" {
 			return fmt.Errorf("set header %s with empty value", key)
 		}
+		allowedRequestHTTPHeaderMetadataNames[strings.ToLower(key)] = true
 		headers[key] = []string{value}
 		return nil
 	}

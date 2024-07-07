@@ -1,3 +1,16 @@
+Version 3.24.6
+
+New Features:
+1. Supports passing metadata when use CopyObject and InitiateMultipartUpload mehod.
+
+Documentation & Demo:
+
+Resolved Issues:
+1. Fixed the issue where bucket acl configuration failed in some scenarios.
+2. Fixed the issue where data transmission exception in retry scenarios.
+
+-----------------------------------------------------------------------------------
+
 Version 3.24.3
 
 New Features:
