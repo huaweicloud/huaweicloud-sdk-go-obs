@@ -35,6 +35,10 @@ type ListObjectsInput struct {
 	Marker string
 }
 
+type ListPosixObjectsInput struct {
+	ListObjectsInput
+}
+
 // ListObjectsOutput is the result of ListObjects function
 type ListObjectsOutput struct {
 	BaseModel
@@ -50,6 +54,20 @@ type ListObjectsOutput struct {
 	CommonPrefixes []string  `xml:"CommonPrefixes>Prefix"`
 	Location       string    `xml:"-"`
 	EncodingType   string    `xml:"EncodingType,omitempty"`
+}
+
+type ListPosixObjectsOutput struct {
+	ListObjectsOutput
+	CommonPrefixes []CommonPrefix `xml:"CommonPrefixes"`
+}
+
+type CommonPrefix struct {
+	XMLName      xml.Name  `xml:"CommonPrefixes"`
+	Prefix       string    `xml:"Prefix"`
+	MTime        string    `xml:"MTime"`
+	Mode         string    `xml:"Mode"`
+	InodeNo      string    `xml:"InodeNo"`
+	LastModified time.Time `xml:"LastModified"`
 }
 
 // ListVersionsInput is the input parameter of ListVersions function
@@ -236,6 +254,7 @@ type PutObjectBasicInput struct {
 	ObjectOperationInput
 	HttpHeader
 	ContentMD5    string
+	ContentSHA256 string
 	ContentLength int64
 }
 

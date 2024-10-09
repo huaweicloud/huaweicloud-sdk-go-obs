@@ -46,6 +46,32 @@ func (obsClient ObsClient) ListObjects(input *ListObjectsInput, extensions ...ex
 	return
 }
 
+// ListPosixObjects lists objects in a posix.
+//
+// You can use this API to list objects in a posix. By default, a maximum of 1000 objects are listed.
+func (obsClient ObsClient) ListPosixObjects(input *ListPosixObjectsInput, extensions ...extensionOptions) (output *ListPosixObjectsOutput, err error) {
+	if input == nil {
+		return nil, errors.New("ListPosixObjects is nil")
+	}
+	output = &ListPosixObjectsOutput{}
+	err = obsClient.doActionWithBucket("ListPosixObjects", HTTP_GET, input.Bucket, input, output, extensions)
+	if err != nil {
+		output = nil
+	} else {
+		if location, ok := output.ResponseHeaders[HEADER_BUCKET_REGION]; ok {
+			output.Location = location[0]
+		}
+		if output.EncodingType == "url" {
+			err = decodeListPosixObjectsOutput(output)
+			if err != nil {
+				doLog(LEVEL_ERROR, "Failed to get ListPosixObjectsOutput with error: %v.", err)
+				output = nil
+			}
+		}
+	}
+	return
+}
+
 // ListVersions lists versioning objects in a bucket.
 //
 // You can use this API to list versioning objects in a bucket. By default, a maximum of 1000 versioning objects are listed.

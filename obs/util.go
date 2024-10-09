@@ -183,6 +183,19 @@ func Base64Md5(value []byte) string {
 	return Base64Encode(Md5(value))
 }
 
+// Base64Md5OrSha256 returns the md5 or sha256 value of input with Base64Encode
+func Base64Md5OrSha256(value []byte, enableSha256 bool) string {
+	if enableSha256 {
+		return Base64Sha256(value)
+	}
+	return Base64Md5(value)
+}
+
+// Base64Sha256 returns the sha256 value of input with Base64Encode
+func Base64Sha256(value []byte) string {
+	return Base64Encode(Sha256Hash(value))
+}
+
 // Sha256Hash returns sha256 checksum
 func Sha256Hash(value []byte) []byte {
 	hash := sha256.New()

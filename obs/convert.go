@@ -27,11 +27,16 @@ import (
 	"time"
 )
 
-func cleanHeaderPrefix(header http.Header) map[string][]string {
+func cleanHeaderPrefix(header http.Header, isObs bool) map[string][]string {
 	responseHeaders := make(map[string][]string)
 	for key, value := range header {
 		if len(value) > 0 {
 			key = strings.ToLower(key)
+
+			if !isObs && strings.HasSuffix(key, HEADER_EXPIRES_OBS) {
+				responseHeaders[key] = value
+				continue
+			}
 			if strings.HasPrefix(key, HEADER_PREFIX) || strings.HasPrefix(key, HEADER_PREFIX_OBS) {
 				key = key[len(HEADER_PREFIX):]
 			}
@@ -425,7 +430,7 @@ func convertAbortIncompleteMultipartUploadToXML(abortIncompleteMultipartUpload A
 }
 
 // ConvertLifecycleConfigurationToXml converts BucketLifecycleConfiguration value to XML data and returns it
-func ConvertLifecycleConfigurationToXml(input BucketLifecycleConfiguration, returnMd5 bool, isObs bool) (data string, md5 string) {
+func ConvertLifecycleConfigurationToXml(input BucketLifecycleConfiguration, returnMd5, isObs, enableSha256 bool) (data string, md5OrSha256 string) {
 	xml := make([]string, 0, 2+len(input.LifecycleRules)*9)
 	xml = append(xml, "<LifecycleConfiguration>")
 	for _, lifecycleRule := range input.LifecycleRules {
@@ -463,7 +468,7 @@ func ConvertLifecycleConfigurationToXml(input BucketLifecycleConfiguration, retu
 	xml = append(xml, "</LifecycleConfiguration>")
 	data = strings.Join(xml, "")
 	if returnMd5 {
-		md5 = Base64Md5([]byte(data))
+		md5OrSha256 = Base64Md5OrSha256([]byte(data), enableSha256)
 	}
 	return
 }
@@ -921,10 +926,11 @@ func ParseGetObjectOutput(output *GetObjectOutput) {
 }
 
 // ConvertRequestToIoReaderV2 converts req to XML data
-func ConvertRequestToIoReaderV2(req interface{}) (io.Reader, string, error) {
+func ConvertRequestToIoReaderV2(req interface{}, enableSha256 bool) (io.Reader, string, error) {
 	data, err := TransToXml(req)
+	md5OrSha256 := Base64Md5OrSha256(data, enableSha256)
 	if err == nil {
-		return bytes.NewReader(data), Base64Md5(data), nil
+		return bytes.NewReader(data), md5OrSha256, nil
 	}
 	return nil, "", err
 }
@@ -950,7 +956,7 @@ func parseResponseBodyOutput(s reflect.Type, baseModel IBaseModel, body []byte) 
 // ParseCallbackResponseToBaseModel gets response from Callback Service
 func ParseCallbackResponseToBaseModel(resp *http.Response, baseModel IBaseModel, isObs bool) error {
 	baseModel.setStatusCode(resp.StatusCode)
-	responseHeaders := cleanHeaderPrefix(resp.Header)
+	responseHeaders := cleanHeaderPrefix(resp.Header, isObs)
 	baseModel.setResponseHeaders(responseHeaders)
 	if values, ok := responseHeaders[HEADER_REQUEST_ID]; ok {
 		baseModel.setRequestID(values[0])
@@ -976,11 +982,12 @@ func ParseResponseToBaseModel(resp *http.Response, baseModel IBaseModel, xmlResu
 		var body []byte
 		body, err = ioutil.ReadAll(resp.Body)
 		if err == nil && len(body) > 0 {
+
+			name := reflect.TypeOf(baseModel).Elem().Name()
 			if xmlResult {
 				err = ParseXml(body, baseModel)
 			} else {
 				s := reflect.TypeOf(baseModel).Elem()
-				name := reflect.TypeOf(baseModel).Elem().Name()
 				if name == "GetBucketPolicyOutput" || name == "GetBucketMirrorBackToSourceOuput" {
 					parseResponseBodyOutput(s, baseModel, body)
 				} else {
@@ -988,7 +995,13 @@ func ParseResponseToBaseModel(resp *http.Response, baseModel IBaseModel, xmlResu
 				}
 			}
 			if err != nil {
-				doLog(LEVEL_ERROR, "Unmarshal error: %v", err)
+				doLog(LEVEL_ERROR, "body: %s", body)
+				if _, ok := baseModel.(*ObsError); !ok && name == "CopyObjectOutput" {
+					doLog(LEVEL_ERROR, "Unmarshal error: %v, try parse response to ObsError", err)
+					err = ParseResponseToObsError(resp, isObs)
+				} else {
+					doLog(LEVEL_ERROR, "Unmarshal error: %v", err)
+				}
 			}
 		}
 	} else {
@@ -996,7 +1009,7 @@ func ParseResponseToBaseModel(resp *http.Response, baseModel IBaseModel, xmlResu
 	}
 
 	baseModel.setStatusCode(resp.StatusCode)
-	responseHeaders := cleanHeaderPrefix(resp.Header)
+	responseHeaders := cleanHeaderPrefix(resp.Header, isObs)
 	baseModel.setResponseHeaders(responseHeaders)
 	if values, ok := responseHeaders[HEADER_REQUEST_ID]; ok {
 		baseModel.setRequestID(values[0])
@@ -1017,12 +1030,15 @@ func ParseResponseToObsError(resp *http.Response, isObs bool) error {
 		doLog(LEVEL_WARN, "Parse response to BaseModel with error: %v", respError)
 	}
 	obsError.Status = resp.Status
-	responseHeaders := cleanHeaderPrefix(resp.Header)
+	responseHeaders := cleanHeaderPrefix(resp.Header, isObs)
 	if values, ok := responseHeaders[HEADER_ERROR_MESSAGE]; ok {
 		obsError.Message = values[0]
 	}
 	if values, ok := responseHeaders[HEADER_ERROR_CODE]; ok {
 		obsError.Code = values[0]
+	}
+	if values, ok := responseHeaders[HEADER_ERROR_INDICATOR]; ok {
+		obsError.Indicator = values[0]
 	}
 	return obsError
 }
@@ -1102,6 +1118,38 @@ func decodeListObjectsOutput(output *ListObjectsOutput) (err error) {
 	}
 	for index, value := range output.CommonPrefixes {
 		output.CommonPrefixes[index], err = url.QueryUnescape(value)
+		if err != nil {
+			return
+		}
+	}
+	for index, content := range output.Contents {
+		output.Contents[index].Key, err = url.QueryUnescape(content.Key)
+		if err != nil {
+			return
+		}
+	}
+	return
+}
+
+func decodeListPosixObjectsOutput(output *ListPosixObjectsOutput) (err error) {
+	output.Delimiter, err = url.QueryUnescape(output.Delimiter)
+	if err != nil {
+		return
+	}
+	output.Marker, err = url.QueryUnescape(output.Marker)
+	if err != nil {
+		return
+	}
+	output.NextMarker, err = url.QueryUnescape(output.NextMarker)
+	if err != nil {
+		return
+	}
+	output.Prefix, err = url.QueryUnescape(output.Prefix)
+	if err != nil {
+		return
+	}
+	for index, value := range output.CommonPrefixes {
+		output.CommonPrefixes[index].Prefix, err = url.QueryUnescape(value.Prefix)
 		if err != nil {
 			return
 		}

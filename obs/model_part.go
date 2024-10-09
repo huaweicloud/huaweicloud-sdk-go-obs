@@ -74,16 +74,17 @@ type InitiateMultipartUploadOutput struct {
 
 // UploadPartInput is the input parameter of UploadPart function
 type UploadPartInput struct {
-	Bucket     string
-	Key        string
-	PartNumber int
-	UploadId   string
-	ContentMD5 string
-	SseHeader  ISseHeader
-	Body       io.Reader
-	SourceFile string
-	Offset     int64
-	PartSize   int64
+	Bucket        string
+	Key           string
+	PartNumber    int
+	UploadId      string
+	ContentMD5    string
+	ContentSHA256 string
+	SseHeader     ISseHeader
+	Body          io.Reader
+	SourceFile    string
+	Offset        int64
+	PartSize      int64
 }
 
 // UploadPartOutput is the result of UploadPart function

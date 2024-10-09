@@ -81,6 +81,9 @@ func (input UploadPartInput) trans(isObs bool) (params map[string]string, header
 	if input.ContentMD5 != "" {
 		headers[HEADER_MD5_CAMEL] = []string{input.ContentMD5}
 	}
+	if input.ContentSHA256 != "" {
+		setHeaders(headers, HEADER_SHA256, []string{input.ContentSHA256}, isObs)
+	}
 	if input.Body != nil {
 		data = input.Body
 	}

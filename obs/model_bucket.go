@@ -183,6 +183,7 @@ type GetBucketPolicyOutput struct {
 type SetBucketCorsInput struct {
 	Bucket string `xml:"-"`
 	BucketCors
+	EnableSha256 bool `xml:"-"`
 }
 
 // GetBucketCorsOutput is the result of GetBucketCors function
@@ -261,6 +262,7 @@ type BucketLifecycleConfiguration struct {
 type SetBucketLifecycleConfigurationInput struct {
 	Bucket string `xml:"-"`
 	BucketLifecycleConfiguration
+	EnableSha256 bool `xml:"-"`
 }
 
 // GetBucketLifecycleConfigurationOutput is the result of GetBucketLifecycleConfiguration function
@@ -285,6 +287,7 @@ type GetBucketEncryptionOutput struct {
 type SetBucketTaggingInput struct {
 	Bucket string `xml:"-"`
 	BucketTagging
+	EnableSha256 bool `xml:"-"`
 }
 
 // GetBucketTaggingOutput is the result of GetBucketTagging function

@@ -59,6 +59,17 @@ func (input ListObjectsInput) trans(isObs bool) (params map[string]string, heade
 	return
 }
 
+func (input ListPosixObjectsInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params, headers, data, err = input.ListObjsInput.trans(isObs)
+	if err != nil {
+		return
+	}
+	if input.Marker != "" {
+		params["marker"] = input.Marker
+	}
+	return
+}
+
 func (input ListVersionsInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
 	params, headers, data, err = input.ListObjsInput.trans(isObs)
 	if err != nil {
@@ -90,6 +101,7 @@ func (input DeleteObjectsInput) trans(isObs bool) (params map[string]string, hea
 		}
 	}
 	data, md5 := convertDeleteObjectsToXML(input)
+
 	headers = map[string][]string{HEADER_MD5_CAMEL: {md5}}
 	return
 }
@@ -185,7 +197,6 @@ func (input SetObjectMetadataInput) prepareStorageClass(headers map[string][]str
 }
 
 func (input SetObjectMetadataInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
-	params = make(map[string]string)
 	params = map[string]string{string(SubResourceMetadata): ""}
 	if input.VersionId != "" {
 		params[PARAM_VERSION_ID] = input.VersionId
@@ -320,6 +331,10 @@ func (input PutObjectBasicInput) trans(isObs bool) (params map[string]string, he
 
 	if input.ContentMD5 != "" {
 		headers[HEADER_MD5_CAMEL] = []string{input.ContentMD5}
+	}
+
+	if input.ContentSHA256 != "" {
+		setHeaders(headers, HEADER_SHA256, []string{input.ContentSHA256}, isObs)
 	}
 
 	if input.ContentLength > 0 {

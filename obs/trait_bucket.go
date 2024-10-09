@@ -163,11 +163,17 @@ func (input SetBucketPolicyInput) trans(isObs bool) (params map[string]string, h
 
 func (input SetBucketCorsInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
 	params = map[string]string{string(SubResourceCors): ""}
-	data, md5, err := ConvertRequestToIoReaderV2(input)
+	data, md5OrSha256, err := ConvertRequestToIoReaderV2(input, input.EnableSha256)
 	if err != nil {
 		return
 	}
-	headers = map[string][]string{HEADER_MD5_CAMEL: {md5}}
+
+	headerCheckAlgorithm := HEADER_MD5_CAMEL
+	if input.EnableSha256 {
+		headerCheckAlgorithm = HEADER_SHA256_CAMEL
+	}
+
+	headers = map[string][]string{headerCheckAlgorithm: {md5OrSha256}}
 	return
 }
 
@@ -200,8 +206,15 @@ func (input SetBucketLoggingConfigurationInput) trans(isObs bool) (params map[st
 
 func (input SetBucketLifecycleConfigurationInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
 	params = map[string]string{string(SubResourceLifecycle): ""}
-	data, md5 := ConvertLifecycleConfigurationToXml(input.BucketLifecycleConfiguration, true, isObs)
-	headers = map[string][]string{HEADER_MD5_CAMEL: {md5}}
+
+	data, md5OrSha256 := ConvertLifecycleConfigurationToXml(input.BucketLifecycleConfiguration, true, isObs, input.EnableSha256)
+
+	headerCheckAlgorithm := HEADER_MD5_CAMEL
+	if input.EnableSha256 {
+		headerCheckAlgorithm = HEADER_SHA256_CAMEL
+	}
+
+	headers = map[string][]string{headerCheckAlgorithm: {md5OrSha256}}
 	return
 }
 
@@ -213,11 +226,17 @@ func (input SetBucketEncryptionInput) trans(isObs bool) (params map[string]strin
 
 func (input SetBucketTaggingInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
 	params = map[string]string{string(SubResourceTagging): ""}
-	data, md5, err := ConvertRequestToIoReaderV2(input)
+	data, md5OrSha256, err := ConvertRequestToIoReaderV2(input, input.EnableSha256)
 	if err != nil {
 		return
 	}
-	headers = map[string][]string{HEADER_MD5_CAMEL: {md5}}
+
+	headerCheckAlgorithm := HEADER_MD5_CAMEL
+	if input.EnableSha256 {
+		headerCheckAlgorithm = HEADER_SHA256_CAMEL
+	}
+
+	headers = map[string][]string{headerCheckAlgorithm: {md5OrSha256}}
 	return
 }
 

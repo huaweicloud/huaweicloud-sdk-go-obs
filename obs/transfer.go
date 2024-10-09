@@ -97,6 +97,9 @@ func (task *uploadPartTask) Run() interface{} {
 	input.SourceFile = task.SourceFile
 	input.Offset = task.Offset
 	input.PartSize = task.PartSize
+	input.ContentMD5 = task.ContentMD5
+	input.ContentSHA256 = task.ContentSHA256
+
 	extensions := task.extensions
 
 	var output *UploadPartOutput

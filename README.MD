@@ -1,3 +1,15 @@
+Version 3.24.9
+
+New Features:
+1. Added list POSIX Object API.
+
+Documentation & Demo:
+
+Resolved Issues:
+1. Optimize error log printing.
+
+-----------------------------------------------------------------------------------
+
 Version 3.24.6
 
 New Features:

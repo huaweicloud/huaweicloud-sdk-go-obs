@@ -50,6 +50,7 @@ const (
 	HEADER_GRANT_FULL_CONTROL_DELIVERED_OBS = "grant-full-control-delivered"
 	HEADER_REQUEST_ID                       = "request-id"
 	HEADER_ERROR_CODE                       = "error-code"
+	HEADER_ERROR_INDICATOR                  = "x-reserved-indicator"
 	HEADER_ERROR_MESSAGE                    = "error-message"
 	HEADER_BUCKET_REGION                    = "bucket-region"
 	HEADER_ACCESS_CONRTOL_ALLOW_ORIGIN      = "access-control-allow-origin"
@@ -121,6 +122,8 @@ const (
 	HEADER_HOST                                = "host"
 	HEADER_AUTH_CAMEL                          = "Authorization"
 	HEADER_MD5_CAMEL                           = "Content-MD5"
+	HEADER_SHA256_CAMEL                        = "Content-SHA256"
+	HEADER_SHA256                              = "content-sha256"
 	HEADER_LOCATION_CAMEL                      = "Location"
 	HEADER_CONTENT_LENGTH_CAMEL                = "Content-Length"
 	HEADER_CONTENT_TYPE_CAML                   = "Content-Type"
@@ -210,6 +213,7 @@ var (
 	allowedRequestHTTPHeaderMetadataNames = map[string]bool{
 		"content-type":                   true,
 		"content-md5":                    true,
+		"content-sha256":                 true,
 		"content-length":                 true,
 		"content-language":               true,
 		"expires":                        true,
@@ -235,12 +239,13 @@ var (
 	}
 
 	allowedLogResponseHTTPHeaderNames = map[string]bool{
-		"content-type":   true,
-		"etag":           true,
-		"connection":     true,
-		"content-length": true,
-		"date":           true,
-		"server":         true,
+		"content-type":         true,
+		"etag":                 true,
+		"connection":           true,
+		"content-length":       true,
+		"date":                 true,
+		"server":               true,
+		"x-reserved-indicator": true,
 	}
 
 	allowedResourceParameterNames = map[string]bool{
@@ -291,6 +296,15 @@ var (
 		"customdomain":                 true,
 		"mirrorbacktosource":           true,
 		"x-obs-accesslabel":            true,
+		"object-lock":                  true,
+		"retention":                    true,
+		"x-obs-security-token":         true,
+		"truncate":                     true,
+		"length":                       true,
+		"inventory":                    true,
+		"directcoldaccess":             true,
+		"attname":                      true,
+		"cdnnotifyconfiguration":       true,
 	}
 
 	obsStorageClasses = []string{

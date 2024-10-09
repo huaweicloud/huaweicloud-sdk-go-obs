@@ -106,6 +106,7 @@ func (obsClient ObsClient) UploadPart(_input *UploadPartInput, extensions ...ext
 	input.PartNumber = _input.PartNumber
 	input.UploadId = _input.UploadId
 	input.ContentMD5 = _input.ContentMD5
+	input.ContentSHA256 = _input.ContentSHA256
 	input.SourceFile = _input.SourceFile
 	input.Offset = _input.Offset
 	input.PartSize = _input.PartSize
