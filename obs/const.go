@@ -13,7 +13,7 @@
 package obs
 
 const (
-	OBS_SDK_VERSION        = "3.24.6"
+	OBS_SDK_VERSION        = "3.25.3"
 	USER_AGENT             = "obs-sdk-go/" + OBS_SDK_VERSION
 	HEADER_PREFIX          = "x-amz-"
 	HEADER_PREFIX_META     = "x-amz-meta-"
@@ -201,10 +201,17 @@ const (
 	DEFAULT_PART_SIZE = 9 * 1024 * 1024
 	MAX_PART_NUM      = 10000
 
-	GET_OBJECT    = "GetObject"
-	PUT_OBJECT    = "PutObject"
-	PUT_FILE      = "PutFile"
-	APPEND_OBJECT = "AppendObject"
+	GET_OBJECT                  = "GetObject"
+	PUT_OBJECT                  = "PutObject"
+	PUT_FILE                    = "PutFile"
+	APPEND_OBJECT               = "AppendObject"
+	MAX_CERT_XML_BODY_SIZE      = 40 * 1024
+	CERT_ID_SIZE                = 16
+	MAX_CERTIFICATE_NAME_LENGTH = 63
+	MIN_CERTIFICATE_NAME_LENGTH = 3
+	CERTIFICATE_FIELD_NAME      = "CERTIFICATE ID SIZE"
+	NAME_LENGTH                 = "Name Length"
+	XML_SIZE                    = "XML SIZE"
 )
 
 var (
@@ -305,6 +312,9 @@ var (
 		"directcoldaccess":             true,
 		"attname":                      true,
 		"cdnnotifyconfiguration":       true,
+		"publicaccessblock":            true,
+		"bucketstatus":                 true,
+		"policystatus":                 true,
 	}
 
 	obsStorageClasses = []string{
@@ -312,5 +322,6 @@ var (
 		string(StorageClassWarm),
 		string(StorageClassCold),
 		string(StorageClassDeepArchive),
+		string(StorageClassIntelligentTiering),
 	}
 )

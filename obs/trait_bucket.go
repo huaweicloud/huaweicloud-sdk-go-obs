@@ -70,6 +70,8 @@ func (input CreateBucketInput) trans(isObs bool) (params map[string]string, head
 				storageClass = string(storageClassStandardIA)
 			} else if storageClass == string(StorageClassCold) {
 				storageClass = string(storageClassGlacier)
+			} else if storageClass == string(StorageClassIntelligentTiering) {
+				doLog(LEVEL_WARN, "Intelligent tiering supports only OBS signature.")
 			}
 		}
 		setHeadersNext(headers, HEADER_STORAGE_CLASS_OBS, HEADER_STORAGE_CLASS, []string{storageClass}, isObs)
@@ -125,6 +127,8 @@ func (input SetBucketStoragePolicyInput) trans(isObs bool) (params map[string]st
 			storageClass = storageClassStandardIA
 		} else if input.StorageClass == StorageClassCold {
 			storageClass = storageClassGlacier
+		} else if storageClass == StorageClassIntelligentTiering {
+			doLog(LEVEL_WARN, "Intelligent tiering supports only OBS signature.")
 		}
 		params = map[string]string{string(SubResourceStoragePolicy): ""}
 		xml = append(xml, fmt.Sprintf("<StoragePolicy><DefaultStorageClass>%s</DefaultStorageClass></StoragePolicy>", storageClass))
@@ -298,6 +302,51 @@ func (input DeleteBucketCustomDomainInput) trans(isObs bool) (params map[string]
 	return trans(SubResourceCustomDomain, input)
 }
 
+func handleDomainConfig(customDomainConfiguration CustomDomainConfiguration) (headers map[string][]string, data interface{}, err error) {
+
+	headers = make(map[string][]string)
+	if customDomainConfiguration.CertificateId != "" {
+		err = validateLength(len(customDomainConfiguration.CertificateId), CERT_ID_SIZE, CERT_ID_SIZE, CERTIFICATE_FIELD_NAME)
+		if err != nil {
+			return headers, nil, err
+		}
+	}
+
+	err = validateLength(len(customDomainConfiguration.Name), MIN_CERTIFICATE_NAME_LENGTH, MAX_CERTIFICATE_NAME_LENGTH, NAME_LENGTH)
+	if err != nil {
+		return headers, nil, err
+	}
+
+	reader, md5, convertErr := ConvertRequestToIoReaderV2(customDomainConfiguration, false)
+	if convertErr != nil {
+		return headers, nil, convertErr
+	}
+
+	readerLen, err := GetReaderLen(reader)
+	if err != nil {
+		return headers, nil, err
+	}
+
+	err = validateLength(int(readerLen), 0, MAX_CERT_XML_BODY_SIZE, XML_SIZE)
+	if err != nil {
+		return headers, nil, err
+	}
+	data = reader
+
+	headers = map[string][]string{HEADER_MD5_CAMEL: {md5}}
+	return
+}
+
 func (input SetBucketCustomDomainInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
-	return trans(SubResourceCustomDomain, input)
+	params = map[string]string{string(SubResourceCustomDomain): input.CustomDomain}
+	headers = make(map[string][]string)
+	data = nil
+	if input.CustomDomainConfiguration != nil {
+		headers, data, err = handleDomainConfig(*input.CustomDomainConfiguration)
+	}
+	return
+}
+
+func (input PutBucketPublicAccessBlockInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	return trans(SubResourcePublicAccessBlock, input)
 }

@@ -25,12 +25,14 @@ import (
 )
 
 const (
-	endpoint   = "https://your-endpoint"
-	ak         = "*** Provide your Access Key ***"
-	sk         = "*** Provide your Secret Key ***"
-	bucketName = "bucket-test"
-	objectKey  = "object-test"
-	location   = "yourbucketlocation"
+	endpoint        = "https://your-endpoint"
+	ak              = "*** Provide your Access Key ***"
+	sk              = "*** Provide your Secret Key ***"
+	bucketName      = "bucket-test"
+	posixBucketName = "posix-bucket-name"
+	posixFileKey    = "posix-file-key"
+	objectKey       = "object-test"
+	location        = "yourbucketlocation"
 )
 
 var obsClient *obs.ObsClient

@@ -82,6 +82,8 @@ func ParseStringToStorageClassType(value string) (ret StorageClassType) {
 		ret = StorageClassCold
 	case string(StorageClassDeepArchive):
 		ret = StorageClassDeepArchive
+	case string(StorageClassIntelligentTiering):
+		ret = StorageClassIntelligentTiering
 	default:
 		ret = ""
 	}

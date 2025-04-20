@@ -1,3 +1,16 @@
+Version 3.25.3
+
+New Features:
+1. Added BPA feature.
+2. Added intelligent tiering feature.
+
+Documentation & Demo:
+1. Added descriptions about BPA APIs.
+
+Resolved Issues:
+
+-----------------------------------------------------------------------------------
+
 Version 3.24.9
 
 New Features:

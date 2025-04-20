@@ -120,6 +120,15 @@ const (
 
 	// SubResourceMirrorBackToSource subResource value: mirrorBackToSource
 	SubResourceAccesslabel SubResourceType = "x-obs-accesslabel"
+
+	// SubResourceMirrorBackToSource subResource value: publicAccessBlock
+	SubResourcePublicAccessBlock SubResourceType = "publicAccessBlock"
+
+	// SubResourcePublicBucketStatus subResource value: bucketStatus
+	SubResourceBucketPublicStatus SubResourceType = "bucketStatus"
+
+	// SubResourcePublicPolicyStatus subResource value: policyStatus
+	SubResourceBucketPolicyPublicStatus SubResourceType = "policyStatus"
 )
 
 // objectKeyType defines the objectKey value
@@ -163,6 +172,9 @@ const (
 
 	//StorageClassDeepArchive storage class: DEEP_ARCHIVE
 	StorageClassDeepArchive StorageClassType = "DEEP_ARCHIVE"
+
+	//StorageClassIntelligentTiering storage class: INTELLIGENT_TIERING
+	StorageClassIntelligentTiering StorageClassType = "INTELLIGENT_TIERING"
 
 	storageClassStandardIA StorageClassType = "STANDARD_IA"
 	storageClassGlacier    StorageClassType = "GLACIER"

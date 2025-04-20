@@ -423,3 +423,10 @@ type SetObjectMetadataOutput struct {
 	StorageClass            StorageClassType
 	Metadata                map[string]string
 }
+
+type CallbackInput struct {
+	CallbackUrl      string `json:"callbackUrl"`
+	CallbackHost     string `json:"callbackHost,omitempty"`
+	CallbackBody     string `json:"callbackBody"`
+	CallbackBodyType string `json:"callbackBodyType,omitempty"`
+}

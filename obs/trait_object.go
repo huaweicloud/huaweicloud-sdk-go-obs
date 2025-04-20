@@ -190,6 +190,8 @@ func (input SetObjectMetadataInput) prepareStorageClass(headers map[string][]str
 				storageClass = string(storageClassStandardIA)
 			} else if storageClass == string(StorageClassCold) {
 				storageClass = string(storageClassGlacier)
+			} else if storageClass == string(StorageClassIntelligentTiering) {
+				doLog(LEVEL_WARN, "Intelligent tiering supports only OBS signature.")
 			}
 		}
 		setHeaders(headers, HEADER_STORAGE_CLASS2, []string{storageClass}, isObs)
@@ -302,6 +304,8 @@ func (input ObjectOperationInput) trans(isObs bool) (params map[string]string, h
 				storageClass = string(storageClassStandardIA)
 			} else if storageClass == string(StorageClassCold) {
 				storageClass = string(storageClassGlacier)
+			} else if storageClass == string(StorageClassIntelligentTiering) {
+				doLog(LEVEL_WARN, "Intelligent tiering supports only OBS signature.")
 			}
 		}
 		setHeaders(headers, HEADER_STORAGE_CLASS2, []string{storageClass}, isObs)

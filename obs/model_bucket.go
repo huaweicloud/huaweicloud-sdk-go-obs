@@ -28,10 +28,18 @@ type GetBucketCustomDomainOutput struct {
 	Domains []Domain `xml:"Domains"`
 }
 
-// SetBucketCustomDomainInput is the input parameter of SetBucketCustomDomain function
+type CustomDomainConfiguration struct {
+	Name             string `xml:"Name"`
+	CertificateId    string `xml:"CertificateId,omitempty"`
+	Certificate      string `xml:"Certificate"`
+	CertificateChain string `xml:"CertificateChain,omitempty"`
+	PrivateKey       string `xml:"PrivateKey"`
+}
+
 type SetBucketCustomDomainInput struct {
-	Bucket       string
-	CustomDomain string
+	Bucket                    string
+	CustomDomain              string
+	CustomDomainConfiguration *CustomDomainConfiguration `json:"customDomainConfiguration"` //optional
 }
 
 // GetBucketMirrorBackToSourceOutput is the result of GetBucketMirrorBackToSource function
@@ -47,8 +55,9 @@ type SetBucketMirrorBackToSourceInput struct {
 
 // Content defines the object content properties
 type Domain struct {
-	DomainName string `xml:"DomainName"`
-	CreateTime string `xml:"CreateTime"`
+	DomainName    string `xml:"DomainName"`
+	CreateTime    string `xml:"CreateTime"`
+	CertificateId string `xml:"CertificateId"`
 }
 
 // ListBucketsInput is the input parameter of ListBuckets function
@@ -254,7 +263,7 @@ type GetBucketLoggingConfigurationOutput struct {
 
 // BucketLifecycleConfiguration defines the bucket lifecycle configuration
 type BucketLifecycleConfiguration struct {
-	XMLName        xml.Name        `xml:"LifecycleConfiguration"`
+	XMLName        xml.Name        `xml:"LifecycleConfiguration" json:"-"`
 	LifecycleRules []LifecycleRule `xml:"Rule"`
 }
 
@@ -404,4 +413,25 @@ type BaseDirAccesslabelInput struct {
 	Bucket      string
 	Key         string
 	Accesslabel []string
+}
+
+// PutBucketPublicAccessBlockInput is the input parameter of PutBucketPublicAccessBlock function
+type PutBucketPublicAccessBlockInput struct {
+	Bucket string `xml:"-"`
+	PublicAccessBlockConfiguration
+}
+
+type GetBucketPublicAccessBlockOutput struct {
+	BaseModel
+	PublicAccessBlockConfiguration
+}
+
+type GetBucketPublicStatusOutput struct {
+	BaseModel
+	BucketPublicStatus
+}
+
+type GetBucketPolicyPublicStatusOutput struct {
+	BaseModel
+	PolicyPublicStatus
 }

@@ -646,3 +646,16 @@ func GetReaderLen(reader io.Reader) (int64, error) {
 	}
 	return contentLength, err
 }
+
+func validateLength(value int, minLen int, maxLen int, fieldName string) error {
+	if minLen > maxLen {
+		return fmt.Errorf("Min Value can not be greater than Max Value")
+	}
+	if minLen == maxLen && value != minLen {
+		return fmt.Errorf("%s length must be %d characters. (value len: %d)", fieldName, maxLen, value)
+	}
+	if value < minLen || value > maxLen {
+		return fmt.Errorf("%s length must be between %d and %d characters. (value len: %d)", fieldName, minLen, maxLen, value)
+	}
+	return nil
+}
