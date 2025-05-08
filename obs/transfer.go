@@ -183,7 +183,14 @@ func getCheckpointFile(ufc *UploadCheckpoint, uploadFileStat os.FileInfo, input 
 func prepareUpload(ufc *UploadCheckpoint, uploadFileStat os.FileInfo, input *UploadFileInput, obsClient *ObsClient, extensions []extensionOptions) error {
 	initiateInput := &InitiateMultipartUploadInput{}
 	initiateInput.ObjectOperationInput = input.ObjectOperationInput
-	initiateInput.ContentType = input.ContentType
+	initiateInput.HttpHeader = HttpHeader{
+		CacheControl:       input.CacheControl,
+		ContentEncoding:    input.ContentEncoding,
+		ContentType:        input.ContentType,
+		ContentDisposition: input.ContentDisposition,
+		ContentLanguage:    input.ContentLanguage,
+		HttpExpires:        input.HttpExpires,
+	}
 	initiateInput.EncodingType = input.EncodingType
 	var output *InitiateMultipartUploadOutput
 	var err error
