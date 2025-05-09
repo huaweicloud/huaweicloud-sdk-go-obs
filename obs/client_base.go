@@ -24,6 +24,10 @@ type ObsClient struct {
 	httpClient *http.Client
 }
 
+func (cli *ObsClient) GetClient() *http.Client {
+	return cli.httpClient
+}
+
 // New creates a new ObsClient instance.
 func New(ak, sk, endpoint string, configurers ...configurer) (*ObsClient, error) {
 	conf := &config{endpoint: endpoint}
