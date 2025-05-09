@@ -13,7 +13,7 @@
 package obs
 
 const (
-	OBS_SDK_VERSION        = "3.25.3"
+	OBS_SDK_VERSION        = "3.25.4"
 	USER_AGENT             = "obs-sdk-go/" + OBS_SDK_VERSION
 	HEADER_PREFIX          = "x-amz-"
 	HEADER_PREFIX_META     = "x-amz-meta-"

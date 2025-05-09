@@ -1,3 +1,14 @@
+Version 3.25.4
+
+New Features:
+1. Supports passing metadata when use UploadFile method.
+
+Documentation & Demo:
+
+Resolved Issues:
+
+-----------------------------------------------------------------------------------
+
 Version 3.25.3
 
 New Features:
@@ -26,7 +37,7 @@ Resolved Issues:
 Version 3.24.6
 
 New Features:
-1. Supports passing metadata when use CopyObject and InitiateMultipartUpload mehod.
+1. Supports passing metadata when use CopyObject and InitiateMultipartUpload method.
 
 Documentation & Demo:
 
