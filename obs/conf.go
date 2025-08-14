@@ -430,7 +430,7 @@ func (conf *config) prepareBaseURL(bucketName string) (requestURL string, canoni
 		if conf.signature == "v4" {
 			canonicalizedURL = "/"
 		} else {
-			canonicalizedURL = "/" + urlHolder.host + "/"
+			canonicalizedURL = "/" + bucketName + "/"
 		}
 	} else {
 		if bucketName == "" {
