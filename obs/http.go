@@ -524,6 +524,20 @@ func (obsClient ObsClient) doHTTP(method, bucketName, objectKey string, params m
 	tracker := &readerTracker{completedBytes: 0}
 
 	for i, redirectCount := 0, 0; i <= maxRetryCount; i++ {
+		// Handle the scenario where the bucket name changes after a redirection.
+		if redirectURL != "" {
+			parsedURL, err := url.Parse(redirectURL)
+			if err != nil {
+				return nil, fmt.Errorf("Failed to parse url: %v", err)
+			}
+
+			pathParts := strings.Split(strings.Trim(parsedURL.Path, "/"), "/")
+
+			if len(pathParts) != 0 {
+				bucketName = pathParts[0]
+			}
+		}
+		
 		req, err := obsClient.getRequest(redirectURL, requestURL, redirectFlag, _data,
 			method, bucketName, objectKey, params, headers)
 		if err != nil {
