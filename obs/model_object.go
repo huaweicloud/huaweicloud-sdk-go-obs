@@ -216,6 +216,7 @@ type GetObjectInput struct {
 	IfModifiedSince            time.Time
 	RangeStart                 int64
 	RangeEnd                   int64
+	Range                      string
 	ImageProcess               string
 	ResponseCacheControl       string
 	ResponseContentDisposition string

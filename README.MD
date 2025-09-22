@@ -1,3 +1,14 @@
+Version 3.25.9
+
+New Features:
+
+Documentation & Demo:
+
+Resolved Issues:
+1. Fixed an issue where the first byte could not be downloaded using range.
+
+-----------------------------------------------------------------------------------
+
 Version 3.25.4
 
 New Features:

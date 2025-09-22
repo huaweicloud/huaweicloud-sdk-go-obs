@@ -541,7 +541,7 @@ func (task *downloadPartTask) Run() interface{} {
 	getObjectInput.IfUnmodifiedSince = task.IfUnmodifiedSince
 	getObjectInput.RangeStart = task.RangeStart
 	getObjectInput.RangeEnd = task.RangeEnd
-
+	getObjectInput.Range = fmt.Sprintf("bytes=%d-%d", getObjectInput.RangeStart, getObjectInput.RangeEnd)
 	var output *GetObjectOutput
 	var err error
 	if len(task.extensions) != 0 {

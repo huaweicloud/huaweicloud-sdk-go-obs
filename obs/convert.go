@@ -990,7 +990,7 @@ func ParseResponseToBaseModel(resp *http.Response, baseModel IBaseModel, xmlResu
 				err = ParseXml(body, baseModel)
 			} else {
 				s := reflect.TypeOf(baseModel).Elem()
-				if name == "GetBucketPolicyOutput" || name == "GetBucketMirrorBackToSourceOuput" {
+				if name == "GetBucketPolicyOutput" || name == "GetBucketMirrorBackToSourceOutput" {
 					parseResponseBodyOutput(s, baseModel, body)
 				} else {
 					err = parseJSON(body, baseModel)

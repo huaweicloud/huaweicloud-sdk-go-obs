@@ -126,7 +126,9 @@ func (input CopyPartInput) trans(isObs bool) (params map[string]string, headers 
 	if input.CopySourceRangeStart >= 0 && input.CopySourceRangeEnd > input.CopySourceRangeStart {
 		setHeaders(headers, HEADER_COPY_SOURCE_RANGE, []string{fmt.Sprintf("bytes=%d-%d", input.CopySourceRangeStart, input.CopySourceRangeEnd)}, isObs)
 	}
-
+	if input.CopySourceRange != "" {
+		setHeaders(headers, HEADER_COPY_SOURCE_RANGE, []string{input.CopySourceRange}, isObs)
+	}
 	setSseHeader(headers, input.SseHeader, true, isObs)
 	if input.SourceSseHeader != nil {
 		if sseCHeader, ok := input.SourceSseHeader.(SseCHeader); ok {

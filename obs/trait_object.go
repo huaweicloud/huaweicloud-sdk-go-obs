@@ -258,6 +258,9 @@ func (input GetObjectInput) trans(isObs bool) (params map[string]string, headers
 	if input.RangeStart >= 0 && input.RangeEnd > input.RangeStart {
 		headers[HEADER_RANGE] = []string{fmt.Sprintf("bytes=%d-%d", input.RangeStart, input.RangeEnd)}
 	}
+	if input.Range != "" {
+		headers[HEADER_RANGE] = []string{input.Range}
+	}
 	if input.AcceptEncoding != "" {
 		headers[HEADER_ACCEPT_ENCODING] = []string{input.AcceptEncoding}
 	}

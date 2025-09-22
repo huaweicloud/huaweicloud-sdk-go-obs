@@ -241,6 +241,9 @@ func (obsClient ObsClient) CopyPart(input *CopyPartInput, extensions ...extensio
 	if strings.TrimSpace(input.CopySourceKey) == "" {
 		return nil, errors.New("Source key is empty")
 	}
+	if input.CopySourceRange != "" && !strings.HasPrefix(input.CopySourceRange, "bytes=") {
+		return nil, errors.New("Source Range should start with [bytes=]")
+	}
 
 	output = &CopyPartOutput{}
 	err = obsClient.doActionWithBucketAndKey("CopyPart", HTTP_PUT, input.Bucket, input.Key, input, output, extensions)

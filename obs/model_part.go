@@ -158,6 +158,7 @@ type CopyPartInput struct {
 	CopySourceVersionId  string
 	CopySourceRangeStart int64
 	CopySourceRangeEnd   int64
+	CopySourceRange      string
 	SseHeader            ISseHeader
 	SourceSseHeader      ISseHeader
 }

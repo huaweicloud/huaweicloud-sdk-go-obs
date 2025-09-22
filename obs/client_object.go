@@ -248,6 +248,9 @@ func (obsClient ObsClient) GetObject(input *GetObjectInput, extensions ...extens
 	if input == nil {
 		return nil, errors.New("GetObjectInput is nil")
 	}
+	if input.Range != "" && !strings.HasPrefix(input.Range, "bytes=") {
+		return nil, errors.New("Range should start with [bytes=]")
+	}
 	output = &GetObjectOutput{}
 	err = obsClient.doActionWithBucketAndKeyWithProgress(GET_OBJECT, HTTP_GET, input.Bucket, input.Key, input, output, extensions, nil)
 	if err != nil {
