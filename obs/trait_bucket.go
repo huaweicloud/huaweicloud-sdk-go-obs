@@ -13,6 +13,8 @@
 package obs
 
 import (
+	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"strings"
 )
@@ -164,6 +166,22 @@ func (input SetBucketAclInput) trans(isObs bool) (params map[string]string, head
 func (input SetBucketPolicyInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
 	params = map[string]string{string(SubResourcePolicy): ""}
 	data = strings.NewReader(input.Policy)
+	return
+}
+
+func (input GetBucketInventoryInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params = map[string]string{
+		string(SubResourceInventory): "",
+		"id":                         input.Id,
+	}
+	return
+}
+
+func (input DeleteBucketInventoryInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params = map[string]string{
+		string(SubResourceInventory): "",
+		"id":                         input.Id,
+	}
 	return
 }
 
@@ -352,4 +370,96 @@ func (input SetBucketCustomDomainInput) trans(isObs bool) (params map[string]str
 
 func (input PutBucketPublicAccessBlockInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
 	return trans(SubResourcePublicAccessBlock, input)
+}
+
+func (input SetBucketInventoryInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params = map[string]string{
+		string(SubResourceInventory): "",
+		"id":                         input.Id,
+	}
+	data, err = ConvertRequestToIoReader(input.InventoryConfiguration)
+	return
+}
+
+func (input SetBucketReplicationInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	config := ReplicationConfiguration{
+		Agency: input.Agency,
+		Rules:  input.Rules,
+	}
+	params = map[string]string{string(SubResourceReplication): ""}
+	data, md5, err := ConvertRequestToIoReaderV2(config, false)
+	if err != nil {
+		return
+	}
+
+	headers = map[string][]string{HEADER_MD5_CAMEL: {md5}}
+	return
+}
+
+func (input GetBucketReplicationInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params = map[string]string{string(SubResourceReplication): ""}
+	return
+}
+
+func (input DeleteBucketReplicationInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params = map[string]string{string(SubResourceReplication): ""}
+	return
+}
+
+func (input SetBucketDirectColdAccessInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	data, md5OrSha256, err := ConvertRequestToIoReaderV2(input.DirectColdAccessConfiguration, false)
+	if err != nil {
+		return
+	}
+	params = map[string]string{string(SubResourceDirectcoldaccess): ""}
+	headers = map[string][]string{HEADER_MD5_CAMEL: {md5OrSha256}}
+	return
+}
+
+// trans implements ISerializable interface for SetDisPolicyInput
+func (input SetDisPolicyInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params = map[string]string{string(SubResourceDisPolicy): ""}
+	jsonBytes, jsonErr := json.Marshal(input)
+	if jsonErr != nil {
+		return nil, nil, nil, jsonErr
+	}
+	headers = map[string][]string{
+		"Content-Type": {"application/json"},
+	}
+	data = strings.NewReader(string(jsonBytes))
+	return
+}
+
+// trans implements ISerializable interface for SetBucketWormConfigurationInput
+func (input SetBucketWormConfigurationInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params = map[string]string{string(SubResourceWormPolicy): ""}
+	xmlBytes, xmlErr := xml.Marshal(input.ObjectLockConfiguration)
+	if xmlErr != nil {
+		return nil, nil, nil, xmlErr
+	}
+	headers = map[string][]string{
+		"Content-Type": {"application/xml"},
+	}
+	data = strings.NewReader(string(xmlBytes))
+	return
+}
+
+// trans implements ISerializable interface for GetBucketWormConfigurationInput
+func (input GetBucketWormConfigurationInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params = map[string]string{string(SubResourceWormPolicy): ""}
+	return
+}
+
+// trans implements ISerializable interface for SetBucketDecompressionInput
+func (input SetBucketDecompressionInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params = map[string]string{string(SubResourceDecompression): ""}
+	jsonBytes, jsonErr := json.Marshal(input)
+	if jsonErr != nil {
+		return nil, nil, nil, jsonErr
+	}
+	headers = map[string][]string{
+		"Content-Type": {"application/json"},
+	}
+	data = strings.NewReader(string(jsonBytes))
+	return
 }

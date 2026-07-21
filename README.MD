@@ -1,3 +1,32 @@
+Version 3.26.6
+
+New Features:
+
+1. Added bucket inventory-related APIs, including SetBucketInventory, GetBucketInventory, ListBucketInventory, and DeleteBucketInventory.
+2. Added bucket replication-related APIs, including SetBucketReplication, GetBucketReplication, and DeleteBucketReplication.
+3. Added bucket direct cold access-related APIs, including SetBucketDirectColdAccess, GetBucketDirectColdAccess, and DeleteBucketDirectColdAccess.
+4. Added bucket DIS policy-related APIs, including SetDisPolicy, GetDisPolicy, and DeleteDisPolicy.
+5. Added bucket decompression policy-related APIs, including SetBucketDecompression, GetBucketDecompression, and DeleteBucketDecompression.
+6. Added bucket WORM configuration-related APIs, including SetBucketWormConfiguration and GetBucketWormConfiguration.
+7. Added the object retention (object lock) API, including PutObjectRetention.
+8. Added the asynchronous resumable upload and download APIs (ObsClient.UploadFileAsync and ObsClient.DownloadFileAsync), which return a TransferTask that supports Pause, Resume, Cancel, Status, and GetResult.
+9. Supported asynchronous checkpoint writing for resumable upload and download (UploadFile/DownloadFile). Checkpoint files are now persisted by a background AsyncWriter goroutine instead of being written synchronously under a lock, which reduces lock contention and improves transfer throughput.
+
+Documentation & Demo:
+
+1. Added descriptions about bucket inventory-related APIs.
+2. Added descriptions about bucket replication-related APIs.
+3. Added descriptions about bucket direct cold access-related APIs.
+4. Added descriptions about bucket DIS policy-related APIs.
+5. Added descriptions about bucket decompression policy-related APIs.
+6. Added descriptions about bucket WORM configuration-related APIs.
+7. Added descriptions about object retention-related APIs.
+8. Added descriptions about bucket advanced operations sample, including direct cold access, bucket replication, bucket WORM configuration, object retention, and bucket decompression.
+
+Resolved Issues:
+
+-----------------------------------------------------------------------------------
+
 Version 3.26.3
 
 New Features:

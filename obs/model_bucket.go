@@ -146,9 +146,20 @@ type GetBucketQuotaOutput struct {
 // GetBucketStorageInfoOutput is the result of GetBucketStorageInfo function
 type GetBucketStorageInfoOutput struct {
 	BaseModel
-	XMLName      xml.Name `xml:"GetBucketStorageInfoResult"`
-	Size         int64    `xml:"Size"`
-	ObjectNumber int      `xml:"ObjectNumber"`
+	XMLName      xml.Name          `xml:"GetBucketStorageInfoResult"`
+	Location     string            `xml:"Location"`
+	Bucket       string            `xml:"Bucket"`
+	Size         int64             `xml:"Size"`
+	ObjectNumber int64             `xml:"ObjectNumber"`
+	Standard     StorageTypeDetail `xml:"Standard"`
+	Warm         StorageTypeDetail `xml:"Warm"`
+	Cold         StorageTypeDetail `xml:"Cold"`
+}
+
+// StorageTypeDetail defines storage information for a specific storage class
+type StorageTypeDetail struct {
+	ObjectNumber int64 `xml:"ObjectNumber"`
+	Size         int64 `xml:"Size"`
 }
 
 type getBucketLocationOutputS3 struct {
@@ -442,4 +453,238 @@ type GetBucketPublicStatusOutput struct {
 type GetBucketPolicyPublicStatusOutput struct {
 	BaseModel
 	PolicyPublicStatus
+}
+
+// SetBucketInventoryInput is the input parameter of SetBucketInventory function
+type SetBucketInventoryInput struct {
+	Bucket string `xml:"-"`
+	InventoryConfiguration
+}
+
+// GetBucketInventoryInput is the input parameter of GetBucketInventory function
+type GetBucketInventoryInput struct {
+	Bucket string `xml:"-"`
+	Id     string `xml:"-"`
+}
+
+// GetBucketInventoryOutput is the result of GetBucketInventory function
+type GetBucketInventoryOutput struct {
+	BaseModel
+	InventoryConfiguration
+}
+
+// ListBucketInventoryOutput is the result of ListBucketInventory function
+type ListBucketInventoryOutput struct {
+	BaseModel
+	XMLName                 xml.Name                 `xml:"ListInventoryConfiguration"`
+	InventoryConfigurations []InventoryConfiguration `xml:"InventoryConfiguration"`
+}
+
+// DeleteBucketInventoryInput is the input parameter of DeleteBucketInventory function
+type DeleteBucketInventoryInput struct {
+	Bucket string `xml:"-"`
+	Id     string `xml:"-"`
+}
+
+// InventoryConfiguration defines the bucket inventory configuration
+type InventoryConfiguration struct {
+	XMLName                xml.Name                 `xml:"InventoryConfiguration" json:"-"`
+	Id                     string                   `xml:"Id"`
+	IsEnabled              bool                     `xml:"IsEnabled"`
+	Destination            InventoryDestination     `xml:"Destination"`
+	Schedule               InventorySchedule        `xml:"Schedule"`
+	Filter                 *InventoryFilter         `xml:"Filter,omitempty"`
+	IncludedObjectVersions string                   `xml:"IncludedObjectVersions,omitempty"`
+	OptionalFields         *InventoryOptionalFields `xml:"OptionalFields,omitempty"`
+}
+
+// InventoryDestination defines where inventory reports are stored
+type InventoryDestination struct {
+	XMLName xml.Name `xml:"Destination" json:"-"`
+	Format  string   `xml:"Format"`
+	Bucket  string   `xml:"Bucket"`
+	Prefix  string   `xml:"Prefix"`
+}
+
+// InventorySchedule defines the frequency of inventory generation
+type InventorySchedule struct {
+	XMLName   xml.Name `xml:"Schedule" json:"-"`
+	Frequency string   `xml:"Frequency"`
+}
+
+// InventoryFilter defines object filter for inventory
+type InventoryFilter struct {
+	XMLName xml.Name `xml:"Filter" json:"-"`
+	Prefix  string   `xml:"Prefix,omitempty"`
+}
+
+// InventoryOptionalFields defines optional metadata fields to include in inventory
+type InventoryOptionalFields struct {
+	XMLName xml.Name `xml:"OptionalFields" json:"-"`
+	Fields  []string `xml:"Field,omitempty"`
+}
+
+// ReplicationDestination represents the destination bucket configuration for replication
+type ReplicationDestination struct {
+	Bucket       string `xml:"Bucket"`
+	StorageClass string `xml:"StorageClass,omitempty"`
+	DeleteData   string `xml:"DeleteData,omitempty"`
+}
+
+// ReplicationRule represents a single replication rule
+type ReplicationRule struct {
+	ID                          string                 `xml:"ID,omitempty"`
+	Prefix                      string                 `xml:"Prefix"`
+	Status                      string                 `xml:"Status"`
+	Destination                 ReplicationDestination `xml:"Destination"`
+	HistoricalObjectReplication string                 `xml:"HistoricalObjectReplication,omitempty"`
+}
+
+// ReplicationConfiguration represents the replication configuration for a bucket
+type ReplicationConfiguration struct {
+	XMLName xml.Name          `xml:"ReplicationConfiguration" json:"-"`
+	Agency  string            `xml:"Agency"`
+	Rules   []ReplicationRule `xml:"Rule"`
+}
+
+// SetBucketReplicationInput is input parameter of SetBucketReplication function
+type SetBucketReplicationInput struct {
+	Bucket string
+	Agency string
+	Rules  []ReplicationRule
+}
+
+// GetBucketReplicationOutput is result of GetBucketReplication function
+type GetBucketReplicationOutput struct {
+	BaseModel
+	XMLName xml.Name          `xml:"ReplicationConfiguration"`
+	Agency  string            `xml:"Agency"`
+	Rules   []ReplicationRule `xml:"Rule"`
+}
+
+// GetBucketReplicationInput is input parameter of GetBucketReplication function
+type GetBucketReplicationInput struct {
+	Bucket string
+}
+
+// DeleteBucketReplicationInput is input parameter of DeleteBucketReplication function
+type DeleteBucketReplicationInput struct {
+	Bucket string
+}
+
+// DirectColdAccessConfiguration defines the bucket direct cold access configuration
+type DirectColdAccessConfiguration struct {
+	XMLName xml.Name               `xml:"DirectColdAccessConfiguration"`
+	Status  DirectColdAccessStatus `xml:"Status"`
+}
+
+// SetBucketDirectColdAccessInput is input parameter of SetBucketDirectColdAccess function
+type SetBucketDirectColdAccessInput struct {
+	Bucket string `xml:"-"`
+	DirectColdAccessConfiguration
+}
+
+// GetBucketDirectColdAccessOutput is result of GetBucketDirectColdAccess function
+type GetBucketDirectColdAccessOutput struct {
+	BaseModel
+	DirectColdAccessConfiguration
+}
+
+// DeleteBucketDirectColdAccessInput is input parameter of DeleteBucketDirectColdAccess function
+type DeleteBucketDirectColdAccessInput struct {
+	Bucket string `xml:"-"`
+}
+
+// DisPolicyRule represents a single DIS policy rule
+type DisPolicyRule struct {
+	ID      string   `json:"id"`
+	Stream  string   `json:"stream"`
+	Project string   `json:"project"`
+	Events  []string `json:"events"`
+	Prefix  string   `json:"prefix,omitempty"`
+	Suffix  string   `json:"suffix,omitempty"`
+	Agency  string   `json:"agency"`
+}
+
+// SetDisPolicyInput is the input parameter of SetDisPolicy function
+type SetDisPolicyInput struct {
+	Bucket string
+	Rules  []DisPolicyRule `json:"rules"`
+}
+
+// GetDisPolicyOutput is the result of GetDisPolicy function
+type GetDisPolicyOutput struct {
+	BaseModel
+	Rules []DisPolicyRule `json:"rules"`
+}
+
+// DecompressionRule defines a single decompression rule configuration
+type DecompressionRule struct {
+	ID             string   `json:"id"`
+	Project        string   `json:"project"`
+	Agency         string   `json:"agency"`
+	Events         []string `json:"events"`
+	Prefix         string   `json:"prefix,omitempty"`
+	Suffix         string   `json:"suffix"`
+	Overwrite      int      `json:"overwrite"`
+	DecompressPath string   `json:"decompressPath,omitempty"`
+	PolicyType     string   `json:"policyType"`
+}
+
+// SetBucketDecompressionInput is the input parameter of SetBucketDecompression function
+type SetBucketDecompressionInput struct {
+	Bucket string              `json:"-"`
+	Rules  []DecompressionRule `json:"rules"`
+}
+
+// GetBucketDecompressionInput is the input parameter of GetBucketDecompression function
+type GetBucketDecompressionInput struct {
+	Bucket string `json:"-"`
+}
+
+// GetBucketDecompressionOutput is the result of GetBucketDecompression function
+type GetBucketDecompressionOutput struct {
+	BaseModel
+	Rules []DecompressionRule `json:"rules"`
+}
+
+// DeleteBucketDecompressionInput is the input parameter of DeleteBucketDecompression function
+type DeleteBucketDecompressionInput struct {
+	Bucket string `json:"-"`
+}
+
+// SetBucketWormConfigurationInput is the input parameter of PutBucketWorm function
+type SetBucketWormConfigurationInput struct {
+	Bucket string `xml:"-"`
+	ObjectLockConfiguration
+}
+
+// ObjectLockConfiguration defines the bucket-level WORM configuration
+type ObjectLockConfiguration struct {
+	XMLName           xml.Name `xml:"ObjectLockConfiguration"`
+	ObjectLockEnabled string   `xml:"ObjectLockEnabled,omitempty"`
+	Rule              *Rule    `xml:"Rule,omitempty"`
+}
+
+// Rule defines the WORM policy rule
+type Rule struct {
+	DefaultRetention *DefaultRetention `xml:"DefaultRetention"`
+}
+
+// DefaultRetention defines the default retention settings
+type DefaultRetention struct {
+	Mode  string `xml:"Mode"`
+	Days  int    `xml:"Days,omitempty"`
+	Years int    `xml:"Years,omitempty"`
+}
+
+// GetBucketWormConfigurationOutput is the result of GetBucketWorm function
+type GetBucketWormConfigurationOutput struct {
+	BaseModel
+	ObjectLockConfiguration
+}
+
+// GetBucketWormConfigurationInput is the input parameter of GetBucketWorm function
+type GetBucketWormConfigurationInput struct {
+	Bucket string `xml:"-"`
 }

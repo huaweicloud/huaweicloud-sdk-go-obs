@@ -87,15 +87,15 @@ func (sample ObjectOperationsSample) GetObject() {
 	if err != nil {
 		panic(err)
 	}
-	defer func(){
+	defer func() {
 		errMsg := output.Body.Close()
-		if errMsg != nil{
+		if errMsg != nil {
 			panic(errMsg)
 		}
 	}()
 	fmt.Println("Object content:")
 	body, err := ioutil.ReadAll(output.Body)
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 	fmt.Println(string(body))

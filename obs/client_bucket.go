@@ -248,6 +248,10 @@ func (obsClient ObsClient) GetBucketFSStatus(input *GetBucketFSStatusInput, exte
 // You can use this API to obtain storage information about a bucket, including the
 // bucket size and number of objects in the bucket.
 func (obsClient ObsClient) GetBucketStorageInfo(bucketName string, extensions ...extensionOptions) (output *GetBucketStorageInfoOutput, err error) {
+	if bucketName == "" {
+		return nil, errors.New("obs: bucketName is empty")
+	}
+
 	output = &GetBucketStorageInfoOutput{}
 	err = obsClient.doActionWithBucket("GetBucketStorageInfo", HTTP_GET, bucketName, newSubResourceSerial(SubResourceStorageInfo), output, extensions)
 	if err != nil {
@@ -864,6 +868,321 @@ func (obsClient ObsClient) GetBucketPolicyPublicStatus(bucketName string, extens
 func (obsClient ObsClient) GetBucketPublicStatus(bucketName string, extensions ...extensionOptions) (output *GetBucketPublicStatusOutput, err error) {
 	output = &GetBucketPublicStatusOutput{}
 	err = obsClient.doActionWithBucket("GetBucketPublicStatus", HTTP_GET, bucketName, newSubResourceSerial(SubResourceBucketPublicStatus), output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// SetBucketInventory sets the inventory configuration for a bucket.
+//
+// You can use this API to set an inventory configuration for a bucket.
+// The inventory configuration will periodically generate inventory reports listing objects in the bucket.
+func (obsClient ObsClient) SetBucketInventory(input *SetBucketInventoryInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+	if input == nil {
+		return nil, errors.New("SetBucketInventoryInput is nil")
+	}
+
+	output = &BaseModel{}
+	err = obsClient.doActionWithBucket("SetBucketInventory", HTTP_PUT, input.Bucket, input, output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// GetBucketInventory gets an inventory configuration for a bucket.
+//
+// You can use this API to get a specific inventory configuration for a bucket.
+func (obsClient ObsClient) GetBucketInventory(input *GetBucketInventoryInput, extensions ...extensionOptions) (output *GetBucketInventoryOutput, err error) {
+	if input == nil {
+		return nil, errors.New("GetBucketInventoryInput is nil")
+	}
+	if input.Bucket == "" {
+		return nil, errors.New("GetBucketInventory: bucketName is empty")
+	}
+	if input.Id == "" {
+		return nil, errors.New("GetBucketInventory: id is empty")
+	}
+
+	output = &GetBucketInventoryOutput{}
+	err = obsClient.doActionWithBucket("GetBucketInventory", HTTP_GET, input.Bucket, input, output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// ListBucketInventory lists all inventory configurations for a bucket.
+//
+// You can use this API to list all inventory configurations for a bucket.
+func (obsClient ObsClient) ListBucketInventory(bucketName string, extensions ...extensionOptions) (output *ListBucketInventoryOutput, err error) {
+	output = &ListBucketInventoryOutput{}
+	err = obsClient.doActionWithBucket("ListBucketInventory", HTTP_GET, bucketName, newSubResourceSerial(SubResourceInventory), output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// DeleteBucketInventory deletes an inventory configuration for a bucket.
+//
+// You can use this API to delete a specific inventory configuration for a bucket.
+func (obsClient ObsClient) DeleteBucketInventory(input *DeleteBucketInventoryInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+	if input == nil {
+		return nil, errors.New("DeleteBucketInventoryInput is nil")
+	}
+	if input.Bucket == "" {
+		return nil, errors.New("DeleteBucketInventory: bucketName is empty")
+	}
+	if input.Id == "" {
+		return nil, errors.New("DeleteBucketInventory: id is empty")
+	}
+
+	output = &BaseModel{}
+	err = obsClient.doActionWithBucket("DeleteBucketInventory", HTTP_DELETE, input.Bucket, input, output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// SetBucketReplication sets the cross-region replication configuration for a bucket.
+//
+// You can use this API to set cross-region replication for a bucket.
+// Cross-region replication automatically and asynchronously copies objects from a source bucket to a destination bucket in a different region.
+func (obsClient ObsClient) SetBucketReplication(input *SetBucketReplicationInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+	if input == nil {
+		return nil, errors.New("SetBucketReplicationInput is nil")
+	}
+	if input.Bucket == "" {
+		return nil, errors.New("SetBucketReplication: bucketName is empty")
+	}
+
+	output = &BaseModel{}
+	err = obsClient.doActionWithBucket("SetBucketReplication", HTTP_PUT, input.Bucket, input, output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// GetBucketReplication gets the cross-region replication configuration for a bucket.
+//
+// You can use this API to get the cross-region replication configuration for a bucket.
+func (obsClient ObsClient) GetBucketReplication(bucketName string, extensions ...extensionOptions) (output *GetBucketReplicationOutput, err error) {
+	if bucketName == "" {
+		return nil, errors.New("GetBucketReplication: bucketName is empty")
+	}
+
+	output = &GetBucketReplicationOutput{}
+	err = obsClient.doActionWithBucket("GetBucketReplication", HTTP_GET, bucketName, newSubResourceSerial(SubResourceReplication), output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// DeleteBucketReplication deletes the cross-region replication configuration for a bucket.
+//
+// You can use this API to delete the cross-region replication configuration for a bucket.
+func (obsClient ObsClient) DeleteBucketReplication(bucketName string, extensions ...extensionOptions) (output *BaseModel, err error) {
+	if bucketName == "" {
+		return nil, errors.New("DeleteBucketReplication: bucketName is empty")
+	}
+
+	output = &BaseModel{}
+	err = obsClient.doActionWithBucket("DeleteBucketReplication", HTTP_DELETE, bucketName, newSubResourceSerial(SubResourceReplication), output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// SetBucketDirectColdAccess sets bucket direct cold access.
+//
+// You can use this API to set direct cold access for a bucket.
+// When enabled, archived objects can be downloaded without restore.
+func (obsClient ObsClient) SetBucketDirectColdAccess(input *SetBucketDirectColdAccessInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+	if input == nil {
+		return nil, errors.New("SetBucketDirectColdAccessInput is nil")
+	}
+	if input.Bucket == "" {
+		return nil, errors.New("SetBucketDirectColdAccess: bucketName is empty")
+	}
+
+	output = &BaseModel{}
+	err = obsClient.doActionWithBucket("SetBucketDirectColdAccess", HTTP_PUT, input.Bucket, input, output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// GetBucketDirectColdAccess gets bucket direct cold access configuration.
+//
+// You can use this API to get the direct cold access configuration of a bucket.
+func (obsClient ObsClient) GetBucketDirectColdAccess(bucketName string, extensions ...extensionOptions) (output *GetBucketDirectColdAccessOutput, err error) {
+	if bucketName == "" {
+		return nil, errors.New("GetBucketDirectColdAccess: bucketName is empty")
+	}
+
+	output = &GetBucketDirectColdAccessOutput{}
+	err = obsClient.doActionWithBucket("GetBucketDirectColdAccess", HTTP_GET, bucketName, newSubResourceSerial(SubResourceDirectcoldaccess), output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// DeleteBucketDirectColdAccess deletes bucket direct cold access configuration.
+//
+// You can use this API to delete the direct cold access configuration of a bucket.
+func (obsClient ObsClient) DeleteBucketDirectColdAccess(bucketName string, extensions ...extensionOptions) (output *BaseModel, err error) {
+	if bucketName == "" {
+		return nil, errors.New("DeleteBucketDirectColdAccess: bucketName is empty")
+	}
+
+	output = &BaseModel{}
+	err = obsClient.doActionWithBucket("DeleteBucketDirectColdAccess", HTTP_DELETE, bucketName, newSubResourceSerial(SubResourceDirectcoldaccess), output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// SetDisPolicy sets up DIS notification policy.
+//
+// You can use this API to configure DIS notification policy for a bucket.
+// DIS (Data Ingestion Service) provides real-time event notification for bucket operations.
+func (obsClient ObsClient) SetDisPolicy(input *SetDisPolicyInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+	if input == nil {
+		return nil, errors.New("SetDisPolicyInput is nil")
+	}
+	if input.Bucket == "" {
+		return nil, errors.New("SetDisPolicy: bucketName is empty")
+	}
+
+	output = &BaseModel{}
+	err = obsClient.doActionWithBucketV2("SetDisPolicy", HTTP_PUT, input.Bucket, input, output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// GetDisPolicy gets DIS notification policy.
+//
+// You can use this API to obtain DIS notification policy of a bucket.
+func (obsClient ObsClient) GetDisPolicy(bucketName string, extensions ...extensionOptions) (output *GetDisPolicyOutput, err error) {
+	if bucketName == "" {
+		return nil, errors.New("GetDisPolicy: bucketName is empty")
+	}
+
+	output = &GetDisPolicyOutput{}
+	err = obsClient.doActionWithBucketV2("GetDisPolicy", HTTP_GET, bucketName, newSubResourceSerial(SubResourceDisPolicy), output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// DeleteDisPolicy deletes DIS notification policy.
+//
+// You can use this API to delete DIS notification policy of a bucket.
+func (obsClient ObsClient) DeleteDisPolicy(bucketName string, extensions ...extensionOptions) (output *BaseModel, err error) {
+	if bucketName == "" {
+		return nil, errors.New("DeleteDisPolicy: bucketName is empty")
+	}
+
+	output = &BaseModel{}
+	err = obsClient.doActionWithBucketV2("DeleteDisPolicy", HTTP_DELETE, bucketName, newSubResourceSerial(SubResourceDisPolicy), output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// SetBucketWormConfiguration sets bucket WORM configuration.
+//
+// You can use this API to configure WORM (Write Once Read Many) policy for a bucket.
+// WORM policy enables object lock functionality to protect objects from being deleted or overwritten.
+func (obsClient ObsClient) SetBucketWormConfiguration(input *SetBucketWormConfigurationInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+	if input == nil {
+		return nil, errors.New("PutBucketWormConfigurationInput is nil")
+	}
+	if input.Bucket == "" {
+		return nil, errors.New("PutBucketWormConfiguration: bucketName is empty")
+	}
+
+	output = &BaseModel{}
+	err = obsClient.doActionWithBucket("PutBucketWormConfiguration", HTTP_PUT, input.Bucket, input, output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// GetBucketWormConfiguration gets bucket WORM configuration.
+//
+// You can use this API to obtain WORM configuration of a bucket.
+func (obsClient ObsClient) GetBucketWormConfiguration(bucketName string, extensions ...extensionOptions) (output *GetBucketWormConfigurationOutput, err error) {
+	if bucketName == "" {
+		return nil, errors.New("GetBucketWormConfiguration: bucketName is empty")
+	}
+
+	output = &GetBucketWormConfigurationOutput{}
+	err = obsClient.doActionWithBucket("GetBucketWormConfiguration", HTTP_GET, bucketName, newSubResourceSerial(SubResourceWormPolicy), output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// SetBucketDecompression sets bucket decompression policy.
+//
+// You can use this API to set bucket decompression policy. The interface is idempotent.
+// If the same policy content already exists on the bucket, the status code returned is 200;
+// otherwise, the status code returned is 201.
+func (obsClient ObsClient) SetBucketDecompression(input *SetBucketDecompressionInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+	if input == nil {
+		return nil, errors.New("SetBucketDecompression: input is nil")
+	}
+
+	output = &BaseModel{}
+	err = obsClient.doActionWithBucketV2("SetBucketDecompression", HTTP_PUT, input.Bucket, input, output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// GetBucketDecompression gets bucket decompression policy.
+//
+// You can use this API to get the bucket decompression policy.
+func (obsClient ObsClient) GetBucketDecompression(input *GetBucketDecompressionInput, extensions ...extensionOptions) (output *GetBucketDecompressionOutput, err error) {
+	if input == nil {
+		return nil, errors.New("GetBucketDecompression: input is nil")
+	}
+
+	output = &GetBucketDecompressionOutput{}
+	err = obsClient.doActionWithBucketV2("GetBucketDecompression", HTTP_GET, input.Bucket, newSubResourceSerial(SubResourceDecompression), output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}
+
+// DeleteBucketDecompression deletes bucket decompression policy.
+//
+// You can use this API to delete the bucket decompression policy.
+func (obsClient ObsClient) DeleteBucketDecompression(input *DeleteBucketDecompressionInput, extensions ...extensionOptions) (output *BaseModel, err error) {
+	if input == nil {
+		return nil, errors.New("DeleteBucketDecompression: input is nil")
+	}
+
+	output = &BaseModel{}
+	err = obsClient.doActionWithBucketV2("DeleteBucketDecompression", HTTP_DELETE, input.Bucket, newSubResourceSerial(SubResourceDecompression), output, extensions)
 	if err != nil {
 		output = nil
 	}

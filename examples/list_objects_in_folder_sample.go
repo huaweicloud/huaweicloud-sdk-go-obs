@@ -49,7 +49,7 @@ func (sample ListObjectsInFolderSample) CreateBucket() {
 	fmt.Println()
 }
 
-func (sample ListObjectsInFolderSample) prepareObjects(input *obs.PutObjectInput){
+func (sample ListObjectsInFolderSample) prepareObjects(input *obs.PutObjectInput) {
 	_, err := sample.obsClient.PutObject(input)
 	if err != nil {
 		panic(err)
@@ -82,7 +82,7 @@ func (sample ListObjectsInFolderSample) PrepareFoldersAndObjects() {
 	listObjectsInput := &obs.ListObjectsInput{}
 	listObjectsInput.Bucket = sample.bucketName
 	output, err := sample.obsClient.ListObjects(listObjectsInput)
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 	for _, content := range output.Contents {

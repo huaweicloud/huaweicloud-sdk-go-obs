@@ -75,9 +75,9 @@ func (sample DownloadSample) GetObject() {
 	if err != nil {
 		panic(err)
 	}
-	defer func(){
+	defer func() {
 		errMsg := output.Body.Close()
-		if errMsg != nil{
+		if errMsg != nil {
 			panic(errMsg)
 		}
 	}()
@@ -150,9 +150,9 @@ func RunDownloadSample() {
 	fmt.Println("Uploading a new object to OBS from file")
 	sampleFilePath := "/temp/text.txt"
 	sample.createSampleFile(sampleFilePath)
-	defer func(){
+	defer func() {
 		errMsg := os.Remove(sampleFilePath)
-		if errMsg != nil{
+		if errMsg != nil {
 			panic(errMsg)
 		}
 	}()
