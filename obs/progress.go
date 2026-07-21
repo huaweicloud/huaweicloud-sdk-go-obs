@@ -28,6 +28,8 @@ const (
 	TransferDataEvent
 	TransferCompletedEvent
 	TransferFailedEvent
+	TransferPausedEvent
+	TransferCancelledEvent
 )
 
 func newProgressEvent(eventType ProgressEventType, consumed, total int64) *ProgressEvent {

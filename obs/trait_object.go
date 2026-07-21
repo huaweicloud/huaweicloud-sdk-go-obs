@@ -56,6 +56,11 @@ func (input ListObjectsInput) trans(isObs bool) (params map[string]string, heade
 	if input.Marker != "" {
 		params["marker"] = input.Marker
 	}
+
+	if input.EncodingType != "" {
+		params["encoding-type"] = input.EncodingType
+	}
+
 	return
 }
 
@@ -562,5 +567,23 @@ func (input GetDirAccesslabelInput) trans(isObs bool) (params map[string]string,
 
 func (input DeleteDirAccesslabelInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
 	params = map[string]string{string(SubResourceAccesslabel): ""}
+	return
+}
+
+func (input PutObjectRetentionInput) trans(isObs bool) (params map[string]string, headers map[string][]string, data interface{}, err error) {
+	params = map[string]string{
+		string(SubResourceRetention): "",
+	}
+	if input.VersionId != "" {
+		params["versionId"] = input.VersionId
+	}
+
+	headers = make(map[string][]string)
+	headers[HEADER_CONTENT_TYPE] = []string{"application/xml"}
+
+	// Directly build XML string
+	xmlStr := fmt.Sprintf("<Retention><Mode>%s</Mode><RetainUntilDate>%d</RetainUntilDate></Retention>",
+		input.RetentionMode, input.RetainUntilDate)
+	data = strings.NewReader(xmlStr)
 	return
 }

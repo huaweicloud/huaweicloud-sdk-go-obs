@@ -13,7 +13,7 @@
 package obs
 
 const (
-	OBS_SDK_VERSION        = "3.26.3"
+	OBS_SDK_VERSION        = "3.26.6"
 	USER_AGENT             = "obs-sdk-go/" + OBS_SDK_VERSION
 	HEADER_PREFIX          = "x-amz-"
 	HEADER_PREFIX_META     = "x-amz-meta-"
@@ -66,6 +66,8 @@ const (
 	HEADER_METADATA_DIRECTIVE               = "metadata-directive"
 	HEADER_EXPIRATION                       = "expiration"
 	HEADER_EXPIRES_OBS                      = "x-obs-expires"
+	HEADER_OBJECT_LOCK_MODE                 = "x-obs-object-lock-mode"
+	HEADER_OBJECT_LOCK_RETAIN_UNTIL_DATE    = "x-obs-object-lock-retain-until-date"
 	HEADER_RESTORE                          = "restore"
 	HEADER_OBJECT_TYPE                      = "object-type"
 	HEADER_NEXT_APPEND_POSITION             = "next-append-position"
@@ -115,7 +117,10 @@ const (
 
 	HEADER_SSEKMS_KEY_AMZ = "x-amz-server-side-encryption-aws-kms-key-id"
 
-	HEADER_SSEKMS_KEY_OBS = "x-obs-server-side-encryption-kms-key-id"
+	HEADER_SSEKMS_KEY_OBS              = "x-obs-server-side-encryption-kms-key-id"
+	HEADER_SSE_KMS_KEY_ID              = "x-obs-sse-kms-key-id"
+	HEADER_SSE_KMS_KEY_PROJECT_ID      = "x-obs-sse-kms-key-project-id"
+	HEADER_SERVER_SIDE_DATA_ENCRYPTION = "x-obs-server-side-data-encryption"
 
 	HEADER_SUCCESS_ACTION_REDIRECT = "success_action_redirect"
 
@@ -323,6 +328,8 @@ var (
 		"publicaccessblock":            true,
 		"bucketstatus":                 true,
 		"policystatus":                 true,
+		"obscompresspolicy":            true,
+		"dispolicy":                    true,
 	}
 
 	obsStorageClasses = []string{

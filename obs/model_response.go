@@ -18,9 +18,9 @@ import (
 
 // BaseModel defines base model response from OBS
 type BaseModel struct {
-	StatusCode      int                 `xml:"-"`
+	StatusCode      int                 `xml:"-" json:"-"`
 	RequestId       string              `xml:"RequestId" json:"request_id"`
-	ResponseHeaders map[string][]string `xml:"-"`
+	ResponseHeaders map[string][]string `xml:"-" json:"-"`
 }
 
 // Error defines the error property in DeleteObjectsOutput

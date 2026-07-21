@@ -31,8 +31,9 @@ type ListObjsInput struct {
 // ListObjectsInput is the input parameter of ListObjects function
 type ListObjectsInput struct {
 	ListObjsInput
-	Bucket string
-	Marker string
+	Bucket       string
+	Marker       string
+	EncodingType string
 }
 
 type ListPosixObjectsInput struct {
@@ -241,18 +242,20 @@ type GetObjectOutput struct {
 
 // ObjectOperationInput defines the object operation properties
 type ObjectOperationInput struct {
-	Bucket                  string
-	Key                     string
-	ACL                     AclType
-	GrantReadId             string
-	GrantReadAcpId          string
-	GrantWriteAcpId         string
-	GrantFullControlId      string
-	StorageClass            StorageClassType
-	WebsiteRedirectLocation string
-	Expires                 int64
-	SseHeader               ISseHeader
-	Metadata                map[string]string
+	Bucket                    string
+	Key                       string
+	ACL                       AclType
+	GrantReadId               string
+	GrantReadAcpId            string
+	GrantWriteAcpId           string
+	GrantFullControlId        string
+	StorageClass              StorageClassType
+	WebsiteRedirectLocation   string
+	Expires                   int64
+	SseHeader                 ISseHeader
+	Metadata                  map[string]string
+	ObjectLockMode            string
+	ObjectLockRetainUntilDate string
 }
 
 // PutObjectBasicInput defines the basic object operation properties
@@ -475,4 +478,18 @@ type CallbackInput struct {
 	CallbackHost     string `json:"callbackHost,omitempty"`
 	CallbackBody     string `json:"callbackBody"`
 	CallbackBodyType string `json:"callbackBodyType,omitempty"`
+}
+
+// PutObjectRetentionInput is the input parameter of PutObjectRetention function
+type PutObjectRetentionInput struct {
+	Bucket          string `xml:"-"`
+	Key             string `xml:"-"`
+	VersionId       string `xml:"-"`
+	RetentionMode   string `xml:"Mode"`
+	RetainUntilDate int64  `xml:"RetainUntilDate"`
+}
+
+// PutObjectRetentionOutput is the result of PutObjectRetention function
+type PutObjectRetentionOutput struct {
+	BaseModel
 }

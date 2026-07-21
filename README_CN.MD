@@ -1,3 +1,32 @@
+版本号：V3.26.6
+
+新特性：
+
+1. 新增桶清单（Bucket Inventory）相关接口：设置桶清单（SetBucketInventory）、获取桶清单（GetBucketInventory）、列举桶清单（ListBucketInventory）、删除桶清单（DeleteBucketInventory）。
+2. 新增桶复制（Replication）相关接口：设置桶复制规则（SetBucketReplication）、获取桶复制规则（GetBucketReplication）、删除桶复制规则（DeleteBucketReplication）。
+3. 新增直读冷存（DirectColdAccess）相关接口：设置直读冷存（SetBucketDirectColdAccess）、获取直读冷存（GetBucketDirectColdAccess）、删除直读冷存（DeleteBucketDirectColdAccess）。
+4. 新增桶 DIS 策略（DisPolicy）相关接口：设置 DIS 策略（SetDisPolicy）、获取 DIS 策略（GetDisPolicy）、删除 DIS 策略（DeleteDisPolicy）。
+5. 新增桶解压策略（Decompression）相关接口：设置桶解压策略（SetBucketDecompression）、获取桶解压策略（GetBucketDecompression）、删除桶解压策略（DeleteBucketDecompression）。
+6. 新增桶 WORM 配置相关接口：设置桶 WORM 配置（SetBucketWormConfiguration）、获取桶 WORM 配置（GetBucketWormConfiguration）。
+7. 新增对象 WORM（对象锁/对象 retention）接口：设置对象 retention（PutObjectRetention）。
+8. 新增异步断点续传上传和下载接口（ObsClient.UploadFileAsync 和 ObsClient.DownloadFileAsync），返回 TransferTask，支持 Pause（暂停）、Resume（恢复）、Cancel（取消）、Status（状态查询）、GetResult（获取结果）。
+9. 后台断点续传： 断点续传上传（UploadFile）和断点续传下载（DownloadFile）的检查点（checkpoint）文件改为由后台 AsyncWriter 协程异步持久化，取代原先加锁同步写入的方式，降低锁竞争，提升传输吞吐量。
+
+资料 & demo：
+
+1. 补充桶清单（Bucket Inventory）相关接口描述。
+2. 补充桶复制（Replication）相关接口描述。
+3. 补充直读冷存（DirectColdAccess）相关接口描述。
+4. 补充桶 DIS 策略（DisPolicy）相关接口描述。
+5. 补充桶解压策略（Decompression）相关接口描述。
+6. 补充桶 WORM 配置相关接口描述。
+7. 补充对象 retention 相关接口描述。
+8. 补充桶高级操作示例描述，包括直读冷存、桶复制、桶 WORM 配置、对象 retention、桶解压相关接口示例。
+
+修复问题：
+
+-----------------------------------------------------------------------------------
+
 版本号：V3.26.3
 
 新特性：

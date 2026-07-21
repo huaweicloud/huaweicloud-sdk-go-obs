@@ -23,7 +23,7 @@ import (
 	"strings"
 )
 
-const(
+const (
 	MyObjectKey string = "MyObjectKey"
 )
 

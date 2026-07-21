@@ -615,3 +615,38 @@ func (obsClient ObsClient) DeleteDirAccesslabel(input *DeleteDirAccesslabelInput
 	}
 	return
 }
+
+// PutObjectRetention sets the retention policy for an object.
+//
+// The bucket must have WORM enabled. Retention period can only be extended,
+// not shortened. Only COMPLIANCE mode is supported.
+//
+// Parameters:
+//   - input: PutObjectRetentionInput containing bucket, key, versionId (optional),
+//            retention mode and retain until date
+//   - extensions: optional extension parameters
+//
+// Returns:
+//   - output: PutObjectRetentionOutput with base model information
+//   - err: error if operation fails
+func (obsClient ObsClient) PutObjectRetention(input *PutObjectRetentionInput, extensions ...extensionOptions) (output *PutObjectRetentionOutput, err error) {
+	if input == nil {
+		return nil, errors.New("PutObjectRetentionInput is nil")
+	}
+	if input.Bucket == "" {
+		return nil, errors.New("PutObjectRetention: bucket is empty")
+	}
+	if input.Key == "" {
+		return nil, errors.New("PutObjectRetention: key is empty")
+	}
+	if input.RetentionMode == "" {
+		return nil, errors.New("PutObjectRetention: retentionMode is empty")
+	}
+
+	output = &PutObjectRetentionOutput{}
+	err = obsClient.doActionWithBucketAndKey("PutObjectRetention", HTTP_PUT, input.Bucket, input.Key, input, output, extensions)
+	if err != nil {
+		output = nil
+	}
+	return
+}

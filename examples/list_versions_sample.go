@@ -58,7 +58,7 @@ func (sample ListVersionsSample) CreateBucket() {
 	fmt.Println()
 }
 
-func (sample ListVersionsSample) preparePutObject(input *obs.PutObjectInput){
+func (sample ListVersionsSample) preparePutObject(input *obs.PutObjectInput) {
 	_, err := sample.obsClient.PutObject(input)
 	if err != nil {
 		panic(err)
@@ -91,7 +91,7 @@ func (sample ListVersionsSample) PrepareFoldersAndObjects() {
 	listVersionsInput := &obs.ListVersionsInput{}
 	listVersionsInput.Bucket = sample.bucketName
 	output, err := sample.obsClient.ListVersions(listVersionsInput)
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 	for _, version := range output.Versions {

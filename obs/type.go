@@ -129,6 +129,27 @@ const (
 
 	// SubResourcePublicPolicyStatus subResource value: policyStatus
 	SubResourceBucketPolicyPublicStatus SubResourceType = "policyStatus"
+
+	// SubResourceInventory subResource value: inventory
+	SubResourceInventory SubResourceType = "inventory"
+
+	// SubResourceReplication subResource value: replication
+	SubResourceReplication SubResourceType = "replication"
+
+	// SubResourceDirectcoldaccess subResource value: directcoldaccess
+	SubResourceDirectcoldaccess SubResourceType = "directcoldaccess"
+
+	// SubResourceDisPolicy subResource value: dispolicy
+	SubResourceDisPolicy SubResourceType = "disPolicy"
+
+	// SubResourceDecompression subResource value: obscompresspolicy
+	SubResourceDecompression SubResourceType = "obscompresspolicy"
+
+	// SubResourceWormPolicy subResource value: object-lock
+	SubResourceWormPolicy SubResourceType = "object-lock"
+
+	// SubResourceRetention subResource value: retention
+	SubResourceRetention SubResourceType = "retention"
 )
 
 // objectKeyType defines the objectKey value
@@ -234,6 +255,17 @@ const (
 
 	// VersioningStatusSuspended version status: Suspended
 	VersioningStatusSuspended VersioningStatusType = "Suspended"
+)
+
+// ReplicationStatusType defines bucket replication status
+type ReplicationStatusType string
+
+const (
+	// ReplicationStatusEnabled replication status: Enabled
+	ReplicationStatusEnabled ReplicationStatusType = "Enabled"
+
+	// ReplicationStatusDisabled replication status: Disabled
+	ReplicationStatusDisabled ReplicationStatusType = "Disabled"
 )
 
 // ProtocolType defines protocol type
@@ -363,10 +395,69 @@ const (
 	POSIX  BucketType = "POSIX"
 )
 
+// WormBucketStatusType defines bucket WORM status type
+type WormBucketStatusType string
+
+const (
+	// WormBucketStatusDisabled bucket WORM status: Disabled
+	WormBucketStatusDisabled WormBucketStatusType = "Disabled"
+
+	// WormBucketStatusEnabled bucket WORM status: Enabled
+	WormBucketStatusEnabled WormBucketStatusType = "Enabled"
+)
+
+// WormRetentionModeType defines WORM retention mode
+type WormRetentionModeType string
+
+const (
+	// WormRetentionModeCompliance WORM retention mode: Compliance
+	WormRetentionModeCompliance WormRetentionModeType = "Compliance"
+
+	// WormRetentionModeGovernance WORM retention mode: Governance
+	WormRetentionModeGovernance WormRetentionModeType = "Governance"
+
+	// WormRetentionModeNone WORM retention mode: None
+	WormRetentionModeNone WormRetentionModeType = "None"
+)
+
 // RedundancyType defines type of redundancyType
 type BucketRedundancyType string
 
 const (
 	BucketRedundancyClassic BucketRedundancyType = "CLASSIC"
 	BucketRedundancyFusion  BucketRedundancyType = "FUSION"
+)
+
+// InventoryFrequencyType defines inventory schedule frequency
+type InventoryFrequencyType string
+
+const (
+	// InventoryFrequencyDaily inventory frequency: Daily
+	InventoryFrequencyDaily InventoryFrequencyType = "Daily"
+
+	// InventoryFrequencyWeekly inventory frequency: Weekly
+	InventoryFrequencyWeekly InventoryFrequencyType = "Weekly"
+)
+
+type DirectColdAccessStatus string
+
+const (
+	DirectColdAccessStatusEnabled  DirectColdAccessStatus = "Enabled"
+	DirectColdAccessStatusDisabled DirectColdAccessStatus = "Disabled"
+)
+
+// TransferStatusType defines the status type of asynchronous transfer tasks
+type TransferStatusType string
+
+const (
+	// TransferStatusRunning indicates the task is running
+	TransferStatusRunning TransferStatusType = "RUNNING"
+	// TransferStatusPaused indicates the task is paused
+	TransferStatusPaused TransferStatusType = "PAUSED"
+	// TransferStatusCancelled indicates the task is cancelled
+	TransferStatusCancelled TransferStatusType = "CANCELLED"
+	// TransferStatusCompleted indicates the task is completed
+	TransferStatusCompleted TransferStatusType = "COMPLETED"
+	// TransferStatusFailed indicates the task has failed
+	TransferStatusFailed TransferStatusType = "FAILED"
 )

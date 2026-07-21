@@ -88,7 +88,7 @@ func (sample ConcurrentDownloadObjectSample) createSampleFile(sampleFilePath str
 		}
 	}
 
-	defer func(){
+	defer func() {
 		errMsg := fd.Close()
 		sample.checkError(errMsg)
 	}()
@@ -107,8 +107,8 @@ func (sample ConcurrentDownloadObjectSample) PutFile(sampleFilePath string) {
 	}
 }
 
-func (sample ConcurrentDownloadObjectSample) checkError(err error){
-	if err != nil{
+func (sample ConcurrentDownloadObjectSample) checkError(err error) {
+	if err != nil {
 		panic(err)
 	}
 }
@@ -168,7 +168,7 @@ func (sample ConcurrentDownloadObjectSample) DoConcurrentDownload(sampleFilePath
 			getObjectInput.RangeEnd = end
 			getObjectOutput, err := sample.obsClient.GetObject(getObjectInput)
 			if err == nil {
-				defer func(){
+				defer func() {
 					errMsg := getObjectOutput.Body.Close()
 					sample.checkError(errMsg)
 				}()
